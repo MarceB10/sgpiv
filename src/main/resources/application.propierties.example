@@ -1,0 +1,9 @@
+spring.datasource.url=jdbc:mysql://localhost:3306/sgpiv
+spring.datasource.username="REEMPLAZAR"
+spring.datasource.password="REEMPLAZAR"
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+
+server.port=8080
