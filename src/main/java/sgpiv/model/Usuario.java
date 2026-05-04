@@ -4,6 +4,8 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sgpiv.model.verificator.Verificador;
+import sgpiv.model.verificator.Verificator;
 
 @Data
 @AllArgsConstructor
@@ -29,11 +31,20 @@ public abstract class Usuario {
     @NotBlank(message = "La contraseña no puede estar vacia")
     private String contrasenia;
 
+    private Verificator verificator = new Verificador();
 
     //esto se usaria para hacer un borrado logico de ser necesario
     private boolean activo = true;
 
     public Usuario(String nombre, String apellido, String email, Long telefono, String contrasenia) {
+
+        this.verificator.verificarTexto(nombre);
+        this.verificator.verificarTexto(apellido);
+        this.verificator.verificarTexto(email);
+        this.verificator.verificarNumeroTelefono(telefono);
+        this.verificator.verificarTexto(contrasenia);
+
+
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
@@ -42,10 +53,12 @@ public abstract class Usuario {
     }
 
 
+    private boolean contraseniaCorrecta(String contrasenia){
+        return this.contrasenia.equals(contrasenia);
+    }
+
     public void modificarContrasenia(String contraseniaActual, String nuevaContrasenia){
-        if (!this.contrasenia.equals(contraseniaActual)){
-            throw new RuntimeException("La contrasenia actual es incorrecta");
-        }
+        verificarContrasenia(contraseniaActual, nuevaContrasenia);
         this.contrasenia = nuevaContrasenia;
     }
 
@@ -55,17 +68,27 @@ public abstract class Usuario {
    }
 
    public void modificarApellido(String nuevoApellido){
+
         this.apellido = nuevoApellido;
    }
 
    public void modificarTelefono(Long nuevoTelefono){
+        this.verificator.verificarNumeroTelefono(nuevoTelefono);
         this.telefono = nuevoTelefono;
    }
 
    public void modificarEmail(String nuevoEmail){
+        this.verificator.verificarTexto(nuevoEmail);
         this.email = nuevoEmail;
    }
 
+   private void verificarContrasenia(String contraseniaActual, String nuevaContrasenia){
+       this.verificator.verificarTexto(contrasenia);
+
+       if (!contraseniaCorrecta(contraseniaActual)){
+           throw new RuntimeException("La contrasenia actual es incorrecta");
+       }
+   }
 
 
 }
