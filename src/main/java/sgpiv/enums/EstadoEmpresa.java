@@ -1,4 +1,4 @@
-package sgpiv.model;
+package sgpiv.enums;
 
 public enum EstadoEmpresa {
     INTERESADA,
