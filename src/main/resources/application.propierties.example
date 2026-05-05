@@ -1,9 +1,18 @@
-spring.datasource.url=jdbc:mysql://localhost:3306/sgpiv
-spring.datasource.username="REEMPLAZAR"
-spring.datasource.password="REEMPLAZAR"
+spring.application.name=sgpiv
 
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
+--- H2 (desarrollo) ----
+spring.datasource.url=jdbc:h2:mem:sgpiv
+spring.datasource.driver-class-name=org.h2.Driver
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=create-drop
+spring.h2.console.enabled=true
+
+--- MySQL(descomentar cuando se implemente
+#spring.datasource.url=jdbc:mysql://localhost:3306/sgpiv
+#spring.datasource.username="REEMPLAZAR"
+#spring.datasource.password="REMPLAZAR"
+#spring.jpa.hibernate.ddl-auto=update
+#spring.jpa.show-sql=true
+#spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
 
 server.port=8080
