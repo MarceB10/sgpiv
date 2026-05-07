@@ -47,6 +47,7 @@ public class Proyecto {
     @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL)
     private List<Tarea> tareas = new ArrayList<>();
 
+
     private Verificator verificator = new Verificador();
 
     public Proyecto(String titulo, String descripcion, LocalDate fechaInicio, int personalAOcupar){
@@ -67,14 +68,13 @@ public class Proyecto {
     }
 
     public double obtenerProgreso(){
+        if (this.tareas == null || this.tareas.isEmpty()) return 0; // ← primero
         double progreso = 0;
         for(Tarea tarea: tareas){
-           if(tarea.isCompleta()){
-               progreso++;
-           }
+            if(tarea.isCompleta()){
+                progreso++;
+            }
         }
-        if (this.tareas == null || this.tareas.isEmpty()) return 0;
-
         return progreso / this.tareas.size();
     }
 
