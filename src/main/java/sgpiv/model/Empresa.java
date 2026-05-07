@@ -8,7 +8,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import sgpiv.enums.EstadoEmpresa;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
+@Table(name = "empresas")
 @Data // lombook, se encarga de todos los getters y setters, toString, equals y hashcode
 @NoArgsConstructor // constructor vacio para JPA
 @AllArgsConstructor // constructor con todos los atributos como parametros
@@ -23,6 +27,7 @@ public class Empresa {
     private String razonSocial;
 
     @NotBlank(message = "El CUIT no puede estar vacio")
+    @Column(unique = true, nullable = false)
     private String cuit;
 
     private String ingresoBrutos;
@@ -34,6 +39,7 @@ public class Empresa {
 
     @NotBlank(message = "El email no puede estar vacio")
     @Email(message = "Ingrese correctamente el email") // verifica el email valido
+    @Column(unique = true)
     private String email;
 
     private String direccion;
@@ -41,7 +47,7 @@ public class Empresa {
     @Enumerated(EnumType.STRING) // guarda el enum como string en la bd
     private EstadoEmpresa estadoEmpresa = (EstadoEmpresa.INTERESADA);
 
-    //@OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL) // define la relacion con proyecto de 1 a mucho y lo
-    //private List<Proyecto> proyectos;                           //mapea, seria que la relacion esta en la tabla proyecto
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL) // define la relacion con proyecto de 1 a mucho y lo
+    private List<Proyecto> proyectos = new ArrayList<>();                           //mapea, seria que la relacion esta en la tabla proyecto
                                                                 //y no en empresa, se borraria en cascada asi que hay que ver esto si esta bien o sacarle esta conf
 }
