@@ -1,12 +1,24 @@
 package sgpiv.model;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import sgpiv.model.verificator.Verificador;
 import sgpiv.model.verificator.Verificator;
 
+@Entity
+@Table(name = "tareas")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class Tarea {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank(message = "El titulo de la tarea no puede estar vacio")
     private String titulo;
@@ -15,16 +27,10 @@ public class Tarea {
     private String descripcion;
 
     private boolean completa;
-    private Verificator verificator = new Verificador();
 
-    public Tarea(String titulo, String descripcion){
-        this.verificator.verificarTexto(titulo);
-        this.verificator.verificarTexto(descripcion);
-
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.completa = false;
-    }
+    @ManyToOne
+    @JoinColumn(name = "proyecto_id")
+    private Proyecto proyecto;
 
     public void completarTarea(){
         this.completa = true;
@@ -37,4 +43,17 @@ public class Tarea {
     public boolean isCompleta() {
         return completa;
     }
+
+//    private Verificator verificator = new Verificador();
+//
+//    public Tarea(String titulo, String descripcion){
+//        this.verificator.verificarTexto(titulo);
+//        this.verificator.verificarTexto(descripcion);
+//
+//        this.titulo = titulo;
+//        this.descripcion = descripcion;
+//        this.completa = false;
+//    }
+
+
 }
