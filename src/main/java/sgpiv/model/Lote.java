@@ -48,5 +48,23 @@ public class Lote {
     }
 
 
+    public void setEstadoLote(EstadoLote estadoLote) {
+        this.estadoLote = estadoLote;
+    }
 
+    public EstadoLote getEstadoLote() {
+        return this.estadoLote;
+    }
+
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
+    public void setPrecio(float precio) {
+        this.precio = precio;
+    }
+
+    public void setSuperficie(float superficie) {
+        this.superficie = superficie;
+    }
 }

@@ -8,8 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sgpiv.enums.EstadoProyecto;
-import sgpiv.model.verificator.Verificador;
-import sgpiv.model.verificator.Verificator;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,16 +46,12 @@ public class Proyecto {
     @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL)
     private List<Tarea> tareas = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private Empresa empresa;
 
-    private Verificator verificator = new Verificador();
 
     public Proyecto(String titulo, String descripcion, LocalDate fechaInicio, int personalAOcupar){
-
-        this.verificator.verificarTexto(titulo);
-        this.verificator.verificarTexto(descripcion);
-        this.verificator.verificarObjeto(fechaInicio);
-        this.verificator.verificarNumeroInt(1, personalAOcupar);
-
 
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -98,31 +93,25 @@ public class Proyecto {
     }
 
     public void completar(LocalDate fechaFin){
-        this.verificator.verificarObjeto(fechaFin);
-
         this.fechaFin = fechaFin;
         this.estadoProyecto = EstadoProyecto.COMPLETADO;
     }
 
     public void modificarTiulo(String titulo){
-        this.verificator.verificarTexto(titulo);
         this.titulo = titulo;
     }
 
     public void modificarDescripcion(String descripcion){
-        this.verificator.verificarTexto(descripcion);
         this.descripcion = descripcion;
     }
 
     public void modificarFechaInicio(LocalDate fechaInicio){
-        this.verificator.verificarObjeto(fechaInicio);
         this.fechaInicio = fechaInicio;
     }
 
 
 
     public void modificarCantPersonal(int personalAOcupar){
-        this.verificator.verificarObjeto(personalAOcupar);
         this.personalAOcupar = personalAOcupar;
     }
 
