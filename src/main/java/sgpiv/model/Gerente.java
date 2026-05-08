@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sgpiv.model.verificator.Verificador;
-import sgpiv.model.verificator.Verificator;
+
 
 @Entity
 @Table(name = "gerentes")
@@ -26,12 +25,9 @@ public class Gerente {
     @JoinColumn(name = "usuario_id", unique = true)
     private Usuario usuario;
 
-    private Verificator verificator = new Verificador();
-
 
     public Gerente(String nombre, String apellido, String email, Long telefono, String contrasenia, String cuit) {
 
-        this.verificator.verificarTexto(cuit);
     }
 
 }

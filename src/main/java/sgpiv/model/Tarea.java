@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sgpiv.model.verificator.Verificador;
-import sgpiv.model.verificator.Verificator;
+
 
 @Entity
 @Table(name = "tareas")
@@ -44,16 +43,7 @@ public class Tarea {
         return completa;
     }
 
-//    private Verificator verificator = new Verificador();
-//
-//    public Tarea(String titulo, String descripcion){
-//        this.verificator.verificarTexto(titulo);
-//        this.verificator.verificarTexto(descripcion);
-//
-//        this.titulo = titulo;
-//        this.descripcion = descripcion;
-//        this.completa = false;
-//    }
+
 
 
 }

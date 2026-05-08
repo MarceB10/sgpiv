@@ -29,15 +29,12 @@ class UsuarioTest {
     @Test
     void usuarioValidoNoDebeTenerErrores(){
         Usuario usuario = new Usuario(
-                1L,
                 "Juan",
                 "Perez",
-                "2000000002",
                 "juan@mail.com",
+                2000000002L,
                 "1234",
-                202021L,
-                true,
-                null
+                "23-456234-9"
         );
 
         Set<ConstraintViolation<Usuario>> errores = validator.validate(usuario);
@@ -55,14 +52,12 @@ class UsuarioTest {
     @Test
     void usuarioCamposVacios(){
         Usuario usuario = new Usuario(
-                1L                ,
                 "",
                 "Perez",
                 "juan@mail.com",
-                "1234",
                 202021L,
-                true,
-                null
+                "1234",
+                "23-456234-9"
         );
 
         //Set<ConstraintViolation<Usuario>> errores = validator.validate(usuario);
@@ -75,7 +70,7 @@ class UsuarioTest {
         }*/
 
         System.out.println(usuario);
-        assertEquals("", usuario.getNombre());
+        assertEquals("", usuario.miNombre());
     }
 
 
