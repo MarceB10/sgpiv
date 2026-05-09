@@ -32,17 +32,4 @@ public class Proveedor {
     @JoinColumn(name = "usuario_id", unique = true)
     private Usuario usuario;
 
-    private Verificator verificator = new Verificador();
-
-
-    public Proveedor(String nombre, String apellido, String email, Long telefono, String contrasenia, String cuit, String rubro, String categoriaProvision) {
-
-        this.verificator.verificarTexto(cuit);
-        this.verificator.verificarTexto(rubro);
-        this.verificator.verificarTexto(categoriaProvision);
-
-
-        this.rubro = rubro;
-        this.categoriaProvision = categoriaProvision;
-    }
 }

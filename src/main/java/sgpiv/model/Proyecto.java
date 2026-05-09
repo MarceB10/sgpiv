@@ -44,28 +44,12 @@ public class Proyecto {
     @Min(value = 1, message = "minimo 1 persona debe trabajar en el proyecto")
     private int personalAOcupar;
 
+    @ManyToOne
+    @JoinColumn(name = "empresa_id")
+    private Empresa empresa;
+
     @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL)
     private List<Tarea> tareas = new ArrayList<>();
-
-
-    private Verificator verificator = new Verificador();
-
-    public Proyecto(String titulo, String descripcion, LocalDate fechaInicio, int personalAOcupar){
-
-        this.verificator.verificarTexto(titulo);
-        this.verificator.verificarTexto(descripcion);
-        this.verificator.verificarObjeto(fechaInicio);
-        this.verificator.verificarNumeroInt(1, personalAOcupar);
-
-
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.fechaInicio = fechaInicio;
-        this.personalAOcupar = personalAOcupar;
-
-        this.estadoProyecto = EstadoProyecto.INACTIVO;
-        this.tareas = new ArrayList<>();
-    }
 
     public double obtenerProgreso(){
         if (this.tareas == null || this.tareas.isEmpty()) return 0; // ← primero
@@ -84,13 +68,9 @@ public class Proyecto {
 
     public void agregarTarea(Tarea tarea){
         if (tarea == null){
-            throw new RuntimeException("No se pudo agregar la Tarea");
+            throw new IllegalArgumentException("No se pudo agregar la Tarea");
         }
         this.tareas.add(tarea);
-    }
-
-    public List<Tarea> obtenerTareas(){
-        return this.tareas;
     }
 
     public void iniciarProyecto(){
@@ -98,32 +78,8 @@ public class Proyecto {
     }
 
     public void completar(LocalDate fechaFin){
-        this.verificator.verificarObjeto(fechaFin);
-
         this.fechaFin = fechaFin;
         this.estadoProyecto = EstadoProyecto.COMPLETADO;
-    }
-
-    public void modificarTiulo(String titulo){
-        this.verificator.verificarTexto(titulo);
-        this.titulo = titulo;
-    }
-
-    public void modificarDescripcion(String descripcion){
-        this.verificator.verificarTexto(descripcion);
-        this.descripcion = descripcion;
-    }
-
-    public void modificarFechaInicio(LocalDate fechaInicio){
-        this.verificator.verificarObjeto(fechaInicio);
-        this.fechaInicio = fechaInicio;
-    }
-
-
-
-    public void modificarCantPersonal(int personalAOcupar){
-        this.verificator.verificarObjeto(personalAOcupar);
-        this.personalAOcupar = personalAOcupar;
     }
 
 
