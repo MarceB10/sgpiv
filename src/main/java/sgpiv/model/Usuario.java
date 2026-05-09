@@ -5,8 +5,6 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sgpiv.model.verificator.Verificador;
-import sgpiv.model.verificator.Verificator;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -56,71 +54,24 @@ public class Usuario {
 
     private Set<Rol> roles = new HashSet<>();
 
-    public void desactivar() {
-        this.activo = false;
-    }
-
-    public void activar() {
-        this.activo = true;
-    }
-
-
-    private Verificator verificator = new Verificador();
-    //esto se usaria para hacer un borrado logico de ser necesario
-
-    public Usuario(String nombre, String apellido, String email, Long telefono, String contrasenia) {
-
-        this.verificator.verificarTexto(nombre);
-        this.verificator.verificarTexto(apellido);
-        this.verificator.verificarTexto(email);
-        this.verificator.verificarNumeroTelefono(telefono);
-        this.verificator.verificarTexto(contrasenia);
-
-
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.email = email;
-        this.telefono = telefono;
-        this.contrasenia = contrasenia;
-    }
-
+    public void desactivar() {this.activo = false;}
+    public void activar() {this.activo = true;}
 
     private boolean contraseniaCorrecta(String contrasenia){
         return this.contrasenia.equals(contrasenia);
     }
 
-    public void modificarContrasenia(String contraseniaActual, String nuevaContrasenia){
-        verificarContrasenia(contraseniaActual, nuevaContrasenia);
-        this.contrasenia = nuevaContrasenia;
+    public void modificarContrasenia(String actual, String nueva) {
+        if (!this.contrasenia.equals(actual)) {
+            throw new RuntimeException("La contraseña actual es incorrecta");
+        }
+        this.contrasenia = nueva;
     }
 
-
-   public void modificarNombre(String nuevoNombre){
-        this.nombre = nuevoNombre;
-   }
-
-   public void modificarApellido(String nuevoApellido){
-
-        this.apellido = nuevoApellido;
-   }
-
-   public void modificarTelefono(Long nuevoTelefono){
-        this.verificator.verificarNumeroTelefono(nuevoTelefono);
-        this.telefono = nuevoTelefono;
-   }
-
-   public void modificarEmail(String nuevoEmail){
-        this.verificator.verificarTexto(nuevoEmail);
-        this.email = nuevoEmail;
-   }
-
-   private void verificarContrasenia(String contraseniaActual, String nuevaContrasenia){
-       this.verificator.verificarTexto(contrasenia);
-
-       if (!contraseniaCorrecta(contraseniaActual)){
-           throw new RuntimeException("La contrasenia actual es incorrecta");
-       }
-   }
-
+    private void verificarContrasenia(String contraseniaActual, String nuevaContrasenia){
+        if (!contraseniaCorrecta(contraseniaActual)){
+            throw new RuntimeException("La contraseña actual es incorrecta");
+        }
+    }
 
 }

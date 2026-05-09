@@ -29,13 +29,6 @@ public class OrganismoPublico {
     @JoinColumn(name = "usuario_id", unique = true)
     private Usuario usuario;
 
-    private Verificator verificator = new Verificador();
-
-    public OrganismoPublico(String nombre, String apellido, String email, Long telefono, String contrasenia, String cuit){
-        this.verificator.verificarTexto(cuit);
-
-    }
-
     public void consultarDatosDelParque(){
 
     }
