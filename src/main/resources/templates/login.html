@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Parque Industrial Viedma</title>
+
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- PANEL IZQUIERDO -->
+    <div class="left-panel">
+
+        <div class="overlay"></div>
+
+        <div class="left-content">
+
+            <h1>Parque Industrial VIEDMA</h1>
+
+            <p>
+                A professional kit that comes with ready-to-use
+                MUI components developed with one common goal in mind,
+                help you build faster & beautiful applications.
+            </p>
+
+            <div class="companies">
+
+                <span>SAMSUNG</span>
+                <span>VISA</span>
+                <span>Bolt</span>
+                <span>AWS</span>
+                <span>accenture</span>
+                <span>AT&T</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PANEL DERECHO -->
+    <div class="right-panel">
+
+        <div class="login-box">
+
+            <a href="#" class="back-link">← Dashboard</a>
+
+            <h2>Log in</h2>
+
+            <p class="register-text">
+                Don't have an account?
+                <a th:href="@{/registro}">Register</a>
+            </p>
+
+            <form th:action="@{/login}" method="post">
+
+                <div class="input-group">
+
+                    <input
+                            type="email"
+                            name="username"
+                            placeholder="Email Address"
+                            required>
+
+                </div>
+
+                <div class="input-group">
+
+                    <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            required>
+
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Continue
+                </button>
+
+            </form>
+
+            <a href="#" class="forgot-password">
+                Forgot password?
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
