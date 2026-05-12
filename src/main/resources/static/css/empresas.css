@@ -1,0 +1,68 @@
+* {
+.tarjeta {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.tarjeta h3 {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.tarjeta p {
+    font-size: 30px;
+    font-weight: bold;
+    color: #1e4ed8;
+}
+
+/* TABLA */
+.tabla-container {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.tabla-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.tabla-header input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background-color: #f7f9fc;
+}
+
+tr:hover {
+    background-color: #fafafa;
+}
+
+.estado {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 14px;
+}

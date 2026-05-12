@@ -1,0 +1,46 @@
+<h1>Lista de empresas</h1>
+
+<form th:action="@{/empresas}" method="get">
+
+    <input type="text"
+           name="buscar"
+           placeholder="Buscar empresa..."
+           th:value="${buscar}">
+
+    <button type="submit">Buscar</button>
+
+</form>
+
+<table>
+
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Razón social</th>
+        <th>CUIT</th>
+        <th>Rubro</th>
+        <th>Email</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="empresa : ${empresas}">
+
+        <td th:text="${empresa.id}"></td>
+        <td th:text="${empresa.razonSocial}"></td>
+        <td th:text="${empresa.cuit}"></td>
+        <td th:text="${empresa.rubro}"></td>
+        <td th:text="${empresa.email}"></td>
+        <td th:text="${empresa.estadoEmpresa}"></td>
+
+        <td>
+            <button>Ver</button>
+            <button>Editar</button>
+        </td>
+
+    </tr>
+    </tbody>
+
+</table>
