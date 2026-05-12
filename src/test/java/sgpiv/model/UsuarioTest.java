@@ -58,6 +58,7 @@ class UsuarioTest {
                 1L                ,
                 "",
                 "Perez",
+                "2000000002",
                 "juan@mail.com",
                 "1234",
                 202021L,
