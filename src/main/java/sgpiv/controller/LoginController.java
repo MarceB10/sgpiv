@@ -1,5 +1,7 @@
 package sgpiv.controller;
 
+
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -29,14 +31,16 @@ public class LoginController {
     @PostMapping("/login")
     public String procesarLogin(@Valid @ModelAttribute LoginDTO dto,
                                 BindingResult result,
-                                Model model){
+                                Model model,
+                                HttpSession session){
 
         if (result.hasErrors()){
             return "login";
         }
         try{
             UsuarioResponseDTO usuario = usuarioService.iniciarSesion(dto);
-            model.addAttribute("usuario", usuario);
+//            model.addAttribute("usuario", usuario); ESTO SE USA MAS ADELANTE NO SE BORRA
+            session.setAttribute("usuario", usuario); //Asi guardamos la session por el momento para hacer redirects
             return "redirect:/home";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());

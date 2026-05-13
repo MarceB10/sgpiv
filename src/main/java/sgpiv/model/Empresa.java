@@ -28,7 +28,7 @@ public class Empresa {
     private String razonSocial;
 
     @NotBlank(message = "El CUIT no puede estar vacio")
-    @Column(unique = true, nullable = false, length = 11)
+    @Column(unique = true, nullable = false, length = 13)
     private String cuit;
 
     private String ingresoBrutos;
