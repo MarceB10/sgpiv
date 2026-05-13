@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div th:fragment="sidebar">
+
+    <div class="sidebar">
+
+        <h2>SGPIV</h2>
+        <div class="user-panel">
+            <div class="user-avatar"
+                 th:text="${#strings.substring(usuario.nombre,0,1) + #strings.substring(usuario.apellido,0,1)}">
+            </div>
+
+            <div class="user-info">
+                <h4 th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></h4>
+
+                <p>
+                    Usuario
+                </p>
+            </div>
+        </div>
+
+        <a th:href="@{/home}"
+           th:classappend="${pagina == 'home'} ? 'active' : ''">
+            Dashboard
+        </a>
+
+        <a th:href="@{/empresas}"
+           th:classappend="${pagina == 'empresas'} ? 'active' : ''">
+            Empresas
+        </a>
+
+        <a href="#">Solicitud de Radicación</a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

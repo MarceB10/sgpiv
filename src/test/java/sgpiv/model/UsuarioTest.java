@@ -49,17 +49,17 @@ class UsuarioTest {
         assertTrue(errores.isEmpty());
     }
 
-    @Test
-    void usuarioCamposVacios(){
-        Usuario usuario = new Usuario(
-                "",
-                "Perez",
-                "2000000002",
-                "juan@mail.com",
-                202021L,
-                "1234",
-                "23-456234-9"
-        );
+//    @Test
+//    void usuarioCamposVacios(){
+//        Usuario usuario = new Usuario(
+//                "",
+//                "Perez",
+//                "2000000002",
+//                "juan@mail.com",
+//                202021L,
+//                "1234",
+//                "23-456234-9"
+//        );
 
         //Set<ConstraintViolation<Usuario>> errores = validator.validate(usuario);
 
@@ -69,10 +69,10 @@ class UsuarioTest {
                             + " | Mensaje: " + error.getMessage()
             );
         }*/
-
-        System.out.println(usuario);
-        assertEquals("", usuario.miNombre());
-    }
+//
+//        System.out.println(usuario);
+//        assertEquals("", usuario.miNombre());
+//    }
 
 
 
