@@ -15,13 +15,11 @@ public class SecurityConfig {
         http
 
                 .authorizeHttpRequests(auth -> auth
-
+                        //Aca abajo habilitas los html como publicos
                         .requestMatchers(
                                 "/login",
                                 "/registro",
-                                "/css/**",
-                                "/js/**",
-                                "/images/**"
+                                "/css/**"
                         ).permitAll()
 
                         .anyRequest().authenticated()
@@ -36,10 +34,7 @@ public class SecurityConfig {
                         .permitAll()
                 )
 
-                .logout(logout -> logout
-
-                        .logoutSuccessUrl("/login?logout")
-                );
+                .logout(logout -> logout.permitAll());
 
         return http.build();
     }
