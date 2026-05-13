@@ -2,6 +2,8 @@ package sgpiv.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import sgpiv.dtos.request.EmpresaRequestDTO;
+import sgpiv.dtos.response.EmpresaResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
 import sgpiv.model.Empresa;
 import sgpiv.repository.EmpresaRepository;
@@ -15,43 +17,74 @@ public class EmpresaService {
 
     private final EmpresaRepository empresaRepository; //para acceso a la bd
 
-    public Empresa registrar(Empresa empresa){
-        if( empresaRepository.existsByCuit(empresa.getCuit())){
-            throw new RuntimeException("Ya existe una empresa con ese CUIT");
+    public EmpresaResponseDTO registrar(EmpresaRequestDTO dto){
+        if( empresaRepository.existsByCuit(dto.getCuit())){
+            throw new RuntimeException("Ya existe una dto con ese CUIT");
         }
 
-        if(empresaRepository.existsByEmail(empresa.getEmail())){
-            throw new RuntimeException("Ya existe una empresa con ese mail");
+        if(empresaRepository.existsByEmail(dto.getEmail())){
+            throw new RuntimeException("Ya existe una dto con ese mail");
         }
 
+        Empresa empresa = new Empresa();
+
+        empresa.setRazonSocial(dto.getRazonSocial());
+        empresa.setCuit(dto.getCuit());
+        empresa.setRubro(dto.getRubro());
+        empresa.setEmail(dto.getEmail());
+        empresa.setDireccion(dto.getDireccion());
+        empresa.setIngresoBrutos(dto.getIngresoBrutos());
+        empresa.setTipoIndustria(dto.getTipoIndustria());
         empresa.setEstadoEmpresa(EstadoEmpresa.INTERESADA);
 
-        return empresaRepository.save(empresa);
+        Empresa guardada = empresaRepository.save(empresa);
+
+        return new EmpresaResponseDTO(guardada);
 
     }
 
-    public List<Empresa> listarTodas(){
-        return empresaRepository.findAll();
+    public List<EmpresaResponseDTO> listarTodas(){
+        return empresaRepository.findAll()
+                .stream()
+                .map(EmpresaResponseDTO::new)
+                .toList();
     }
 
-    public Empresa buscarPorId(Long id){
-        return empresaRepository.findById(id).
-                orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
-    }
-    public List<Empresa> listarPorEstado(EstadoEmpresa estado){
-        return empresaRepository.findByEstadoEmpresa(estado);
+    public EmpresaResponseDTO buscarPorId(Long id) {
+        Empresa empresa = empresaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+
+        return new EmpresaResponseDTO(empresa);
     }
 
-    public Empresa radicar(Long id){
-        Empresa empresa = buscarPorId(id);
+    public List<EmpresaResponseDTO> listarPorEstado(EstadoEmpresa estado) {
+
+        return empresaRepository.findByEstadoEmpresa(estado)
+                .stream()
+                .map(EmpresaResponseDTO::new)
+                .toList();
+    }
+
+    public EmpresaResponseDTO radicar(Long id) {
+        Empresa empresa = empresaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+
         empresa.setEstadoEmpresa(EstadoEmpresa.RADICADA);
-        return empresaRepository.save(empresa);
+
+        return new EmpresaResponseDTO(
+                empresaRepository.save(empresa)
+        );
     }
 
-    public Empresa darDeBaja(Long id){ //marca logica
-        Empresa empresa = buscarPorId(id);
+    public EmpresaResponseDTO darDeBaja(Long id) {
+        Empresa empresa = empresaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+
         empresa.setEstadoEmpresa(EstadoEmpresa.BAJA);
-        return empresaRepository.save(empresa);
+
+        return new EmpresaResponseDTO(
+                empresaRepository.save(empresa)
+        );
     }
 
 }
