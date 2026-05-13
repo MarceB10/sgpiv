@@ -17,18 +17,15 @@ public class HomeController {
     @GetMapping("/home")
     public String home(Model model,
                        HttpSession session){
-        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+
+        UsuarioResponseDTO usuario =
+                (UsuarioResponseDTO) session.getAttribute("usuario");
 
         if (usuario == null){
             return "redirect:/login";
         }
-
         model.addAttribute("usuario", usuario);
-
+        model.addAttribute("pagina", "home");
         return "home";
     }
-
-
-
-
 }
