@@ -1,10 +1,79 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Home - Parque Industrial Viedma</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
+
 <body>
-<h1>Bienvenido</h1>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+    <h2>SGPIV</h2>
+
+    <a th:href="@{/home}" class="active">Dashboard</a>
+
+    <!-- solo visible para ROL_NULO -->
+    <a href="#" class="disabled">Solicitud de Radicación</a>
+
+</div>
+
+<!-- CONTENIDO -->
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div>
+            <h1 th:text="'Bienvenido, ' + ${usuario.nombre} + ' ' + ${usuario.apellido}"></h1>
+            <p>Panel de usuario — Parque Industrial Viedma</p>
+        </div>
+    </div>
+
+    <!-- AVISO PENDIENTE -->
+    <div class="aviso-pendiente">
+
+        <div class="aviso-icono">⏳</div>
+
+        <div class="aviso-texto">
+            <h3>Cuenta pendiente de validación</h3>
+            <p>
+                Tu cuenta fue registrada correctamente. El Gerente del Parque Industrial
+                revisará tu solicitud y te asignará un rol a la brevedad.
+                Una vez validado, tendrás acceso completo al sistema.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- INFO USUARIO -->
+    <div class="cards">
+
+        <div class="card">
+            <h3>Nombre</h3>
+            <h2 th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>CUIT</h3>
+            <h2 th:text="${usuario.cuit}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Email</h3>
+            <h2 th:text="${usuario.email}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Estado</h3>
+            <h2 th:text="${usuario.activo} ? 'Activo' : 'Inactivo'"></h2>
+        </div>
+
+    </div>
+
+</div>
+
 </body>
 </html>

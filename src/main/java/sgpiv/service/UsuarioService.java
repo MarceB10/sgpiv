@@ -2,7 +2,6 @@ package sgpiv.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import sgpiv.dtos.RolDTO;
 import sgpiv.dtos.request.LoginDTO;
 import sgpiv.dtos.request.UsuarioRequestDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
@@ -59,7 +58,7 @@ public class UsuarioService {
     }
 
 
-    public void Registrarse(UsuarioRequestDTO usuarioRequestDTO){
+    public void registrarse(UsuarioRequestDTO usuarioRequestDTO){
 
         Usuario nuevoUsuario = new Usuario(
                 usuarioRequestDTO.getNombre(),

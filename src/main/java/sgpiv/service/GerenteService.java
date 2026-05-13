@@ -22,7 +22,7 @@ public class GerenteService {
         gerenteRepository.save(gerente);
     }
 
-    public void AsignarRol(Usuario usuario, NombreRol rol){
+    public void asignarRol(Usuario usuario, NombreRol rol){
         usuarioService.AsignarRol(usuario, rol);
     }
 
