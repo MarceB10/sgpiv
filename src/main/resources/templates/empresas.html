@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Empresas Registradas</title>
+
+    <link rel="stylesheet" th:href="@{/css/empresas.css}">
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+    <h2>SGPIV</h2>
+
+    <a href="#">Dashboard</a>
+    <a href="/empresas" class="active">Empresas</a>
+    <a href="#">Lotes</a>
+    <a href="#">Reportes</a>
+
+</div>
+
+<!-- CONTENIDO -->
+
+<div class="main-content">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div>
+            <h1>Empresas registradas</h1>
+
+            <p>
+                Gestioná y consultá las empresas registradas dentro del Parque Industrial.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- CARDS -->
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h3>Total empresas</h3>
+
+            <h2 th:text="${totalEmpresas}"></h2>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Interesadas</h3>
+
+            <h2 th:text="${interesadas}"></h2>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Radicadas</h3>
+
+            <h2 th:text="${radicadas}"></h2>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Adjudicadas</h3>
+
+            <h2 th:text="${adjudicadas}"></h2>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+
+    <div class="table-container">
+
+        <!-- TOP BAR -->
+
+        <div class="table-top">
+
+            <h3>Lista de empresas</h3>
+
+            <div class="search-box">
+
+                <form
+                        th:action="@{/empresas}"
+                        method="get"
+                        class="search-form"
+                >
+
+                    <input
+                            type="text"
+                            name="buscar"
+                            placeholder="Buscar empresa..."
+                            th:value="${buscar}"
+                    >
+
+                    <button type="submit" class="search-button">
+                        Buscar
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- TABLA -->
+
+        <table>
+
+            <thead>
+
+            <tr>
+
+                <th>ID</th>
+                <th>Razón social</th>
+                <th>CUIT</th>
+                <th>Rubro</th>
+                <th>Email</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            <tr th:each="empresa : ${empresas}">
+
+                <td th:text="${empresa.id}"></td>
+
+                <td th:text="${empresa.razonSocial}"></td>
+
+                <td th:text="${empresa.cuit}"></td>
+
+                <td th:text="${empresa.rubro}"></td>
+
+                <td th:text="${empresa.email}"></td>
+
+                <td>
+
+                    <span
+                            class="estado"
+                            th:classappend="
+                            ${empresa.estadoEmpresa.name() == 'INTERESADA'} ? ' interesada' :
+                            (${empresa.estadoEmpresa.name() == 'RADICADA'} ? ' radicada' :
+                            (${empresa.estadoEmpresa.name() == 'ADJUDICADA'} ? ' adjudicada' : ' baja'))
+                            "
+                            th:text="${empresa.estadoEmpresa}">
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <button class="btn btn-edit">
+                        Editar
+                    </button>
+
+                    <button class="btn btn-delete">
+                        Eliminar
+                    </button>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
