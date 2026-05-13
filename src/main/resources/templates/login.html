@@ -55,15 +55,23 @@
                 <a th:href="@{/registro}">Register</a>
             </p>
 
-            <form th:action="@{/login}" method="post">
+            <!-- error del service — email no existe, contraseña incorrecta -->
+            <p th:if="${error}" th:text="${error}" class="error-message"></p>
+
+            <form th:action="@{/login}" th:object="${loginDTO}" method="post">
 
                 <div class="input-group">
 
                     <input
                             type="email"
                             name="email"
-                            placeholder="Email Address"
-                            required>
+                            th:field="*{email}"
+                            placeholder="Email Address">
+
+                    <!-- error de validación del campo email -->
+                    <p th:if="${#fields.hasErrors('email')}"
+                       th:errors="*{email}"
+                       class="error-message"></p>
 
                 </div>
 
@@ -72,8 +80,13 @@
                     <input
                             type="password"
                             name="password"
-                            placeholder="Password"
-                            required>
+                            th:field="*{contrasenia}"
+                            placeholder="Password">
+
+                    <!-- error de validación del campo contraseña -->
+                    <p th:if="${#fields.hasErrors('contrasenia')}"
+                       th:errors="*{contrasenia}"
+                       class="error-message"></p>
 
                 </div>
 

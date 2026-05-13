@@ -1,14 +1,48 @@
 package sgpiv.controller;
 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import sgpiv.dtos.request.LoginDTO;
+import sgpiv.dtos.response.UsuarioResponseDTO;
+import sgpiv.service.UsuarioService;
+
 
 @Controller
+@RequiredArgsConstructor
 public class LoginController {
 
+    private final UsuarioService usuarioService;
+
     @GetMapping("/")
-    public String login(){
+    public String login(Model model){
+        model.addAttribute("loginDTO", new LoginDTO());
         return "login";
     }
+
+
+    @PostMapping("/login")
+    public String procesarLogin(@Valid @ModelAttribute LoginDTO dto,
+                                BindingResult result,
+                                Model model){
+
+        if (result.hasErrors()){
+            return "login";
+        }
+        try{
+            UsuarioResponseDTO usuario = usuarioService.iniciarSesion(dto);
+            model.addAttribute("usuario", usuario);
+            return "redirect:/home";
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            return "login";
+        }
+    }
+
 
 }

@@ -1,6 +1,7 @@
 package sgpiv.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,13 +22,14 @@ public class Gerente {
 //    @NotBlank(message = "El CUIT no puede estar vacio")
 //    private String cuit;
 
+    @Valid
     @OneToOne
     @JoinColumn(name = "usuario_id", unique = true)
     private Usuario usuario;
 
 
-    public Gerente(String nombre, String apellido, String email, Long telefono, String contrasenia, String cuit) {
-
+    public Gerente(Usuario usuario) {
+        this.usuario = usuario;
     }
 
 }
