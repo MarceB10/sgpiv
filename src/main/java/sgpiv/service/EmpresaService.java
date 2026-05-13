@@ -56,6 +56,13 @@ public class EmpresaService {
 
         return new EmpresaResponseDTO(empresa);
     }
+    public List<EmpresaResponseDTO> listarPorNombre(String nombre) {
+        return empresaRepository.findByNombre(nombre)
+                .stream()
+                .map(EmpresaResponseDTO::new)
+                .toList();
+
+    }
 
     public List<EmpresaResponseDTO> listarPorEstado(EstadoEmpresa estado) {
 
