@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import sgpiv.enums.NombreRol;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "roles")
 @Data
@@ -21,5 +23,10 @@ public class Rol {
     @Enumerated(EnumType.STRING)
     @Column(unique = true)
     private NombreRol nombre;
+
+
+    public Rol (NombreRol rol){
+        this.nombre = rol;
+    }
 
 }

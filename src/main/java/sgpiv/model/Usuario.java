@@ -5,8 +5,10 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import sgpiv.enums.NombreRol;
 
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,12 +25,14 @@ public class Usuario {
     private Long id;
 
     @NotBlank(message = "El nombre no puede estar vacio")
+    @Column(nullable = false) //indica que es un campo obligatorio a nivel bd
     private String nombre;
 
     @NotBlank(message = "El apellido no puede estar vacio")
     private String apellido;
 
     @NotBlank(message = "El CUIT no puede estar vacio")
+    @Column(unique = true, nullable = false, length = 11) //A nivel de BD el campo, es unico y es obligatorio
     private String cuit;
 
     @NotBlank(message = "El email no puede estar vacio")
@@ -55,7 +59,7 @@ public class Usuario {
 
     private Set<Rol> roles = new HashSet<>();
 
-    //bara borrado logico
+    //para borrado logico
     public void desactivar() {
         this.activo = false;
     }
@@ -80,7 +84,7 @@ public class Usuario {
     }
 
 
-    private boolean contraseniaCorrecta(String contrasenia){
+    public boolean contraseniaCorrecta(String contrasenia){
         return this.contrasenia.equals(contrasenia);
     }
 
@@ -111,6 +115,17 @@ public class Usuario {
        if (!contraseniaCorrecta(contraseniaActual)){
            throw new RuntimeException("La contrasenia actual es incorrecta");
        }
+   }
+
+   public boolean esUsuarioNuevo(){
+       return ( this.roles.size() == 1 && this.roles.stream().anyMatch(r -> r.getNombre() == NombreRol.ROL_NULO) );
+   }
+
+   public void agregarRol(Rol rol){
+        if (esUsuarioNuevo()){ //le doy de baja el ROL_NULO
+            this.roles.removeIf(r -> r.getNombre() == NombreRol.ROL_NULO);
+        }
+        this.roles.add(rol);
    }
 
 

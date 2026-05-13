@@ -23,11 +23,12 @@ public class Empresa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "La razon social no puede estar vacia") // veriefica que no sea null,
+    @NotBlank(message = "La razon social no puede estar vacia") // veriefica que no sea null
+    @Column(nullable = false)
     private String razonSocial;
 
     @NotBlank(message = "El CUIT no puede estar vacio")
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 11)
     private String cuit;
 
     private String ingresoBrutos;

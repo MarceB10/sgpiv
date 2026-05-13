@@ -31,4 +31,16 @@ public class RepresentanteEmpresa {
     @NotNull(message = "El representante debe estar asociado a una empresa")
     private Empresa empresa;
 
+    public RepresentanteEmpresa(Usuario usuario){
+        this.usuario = usuario;
+    }
+
+    public void asignarEmpresa(Empresa empresa){
+        this.empresa = empresa;
+    }
+
+    public Empresa miEmpresaEs(){
+        return this.empresa;
+    }
+
 }
