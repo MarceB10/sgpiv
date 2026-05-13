@@ -7,6 +7,7 @@
 
     <title>Empresas Registradas</title>
 
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/empresas.css}">
 
 </head>
@@ -15,16 +16,7 @@
 
 <!-- SIDEBAR -->
 
-<div class="sidebar">
-
-    <h2>SGPIV</h2>
-
-    <a href="#">Dashboard</a>
-    <a href="/empresas" class="active">Empresas</a>
-    <a href="#">Lotes</a>
-    <a href="#">Reportes</a>
-
-</div>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
 <!-- CONTENIDO -->
 

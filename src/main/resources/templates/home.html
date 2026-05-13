@@ -4,22 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Home - Parque Industrial Viedma</title>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 
 <body>
 
 <!-- SIDEBAR -->
-<div class="sidebar">
-
-    <h2>SGPIV</h2>
-
-    <a th:href="@{/home}" class="active">Dashboard</a>
-
-    <!-- solo visible para ROL_NULO -->
-    <a href="#" class="disabled">Solicitud de Radicación</a>
-
-</div>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
 <!-- CONTENIDO -->
 <div class="main-content">
