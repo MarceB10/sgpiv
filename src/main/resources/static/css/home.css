@@ -11,52 +11,6 @@ body {
 }
 
 /* ========================= */
-/* SIDEBAR */
-/* ========================= */
-
-.sidebar {
-    width: 250px;
-    height: 100vh;
-    background: #0f172a;
-    color: white;
-    padding: 25px;
-    position: fixed;
-}
-
-.sidebar h2 {
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-.sidebar a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    padding: 14px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    transition: 0.2s;
-}
-
-.sidebar a:hover {
-    background: #1e293b;
-}
-
-.sidebar .active {
-    background: #2563eb;
-}
-
-.sidebar .disabled {
-    color: #475569;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-.sidebar .disabled:hover {
-    background: transparent;
-}
-
-/* ========================= */
 /* MAIN */
 /* ========================= */
 
@@ -146,4 +100,58 @@ body {
     color: #64748b;
     line-height: 1.7;
     font-size: 15px;
+}
+
+/* ========================= */
+/* PANEL USUARIO SIDEBAR */
+/* ========================= */
+
+.user-panel{
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    background: rgba(255,255,255,0.08);
+
+    padding: 15px;
+
+    border-radius: 14px;
+
+    margin-top: 25px;
+    margin-bottom: 35px;
+
+}
+
+.user-avatar{
+
+    width: 50px;
+    height: 50px;
+
+    border-radius: 50%;
+
+    background: #2563eb;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 24px;
+
+}
+
+.user-info h4{
+
+    color: white;
+    font-size: 15px;
+    margin-bottom: 4px;
+
+}
+
+.user-info p{
+
+    color: #9ca3af;
+    font-size: 13px;
+
 }
