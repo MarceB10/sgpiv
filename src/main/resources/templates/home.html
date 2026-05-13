@@ -24,11 +24,9 @@
         </div>
     </div>
 
-    <!-- AVISO PENDIENTE -->
-    <div class="aviso-pendiente">
-
+    <!-- AVISO PENDIENTE — solo ROL_NULO -->
+    <div class="aviso-pendiente" th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'}">
         <div class="aviso-icono">⏳</div>
-
         <div class="aviso-texto">
             <h3>Cuenta pendiente de validación</h3>
             <p>
@@ -37,7 +35,6 @@
                 Una vez validado, tendrás acceso completo al sistema.
             </p>
         </div>
-
     </div>
 
     <!-- INFO USUARIO -->
