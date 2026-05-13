@@ -9,15 +9,33 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
         http
+
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
+                        //Aca abajo habilitas los html como publicos
+                        .requestMatchers(
+                                "/login",
+                                "/registro",
+                                "/css/**"
+                        ).permitAll()
+
+                        .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers
-                        .frameOptions(frame -> frame.disable()) // necesario para H2 console
-                );
+
+                .formLogin(form -> form
+
+                        .loginPage("/login")
+
+                        .defaultSuccessUrl("/empresas", true)
+
+                        .permitAll()
+                )
+
+                .logout(logout -> logout.permitAll());
+
         return http.build();
     }
 }

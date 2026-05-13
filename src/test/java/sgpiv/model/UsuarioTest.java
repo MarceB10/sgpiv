@@ -54,6 +54,7 @@ class UsuarioTest {
         Usuario usuario = new Usuario(
                 "",
                 "Perez",
+                "2000000002",
                 "juan@mail.com",
                 202021L,
                 "1234",
