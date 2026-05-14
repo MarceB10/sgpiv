@@ -57,7 +57,7 @@ public class EmpresaService {
         return new EmpresaResponseDTO(empresa);
     }
     public List<EmpresaResponseDTO> listarPorRazonSocial(String razonSocial) {
-        return empresaRepository.findByRazonSocial(razonSocial)
+        return empresaRepository.findByRazonSocialContainingIgnoreCase(razonSocial)
                 .stream()
                 .map(EmpresaResponseDTO::new)
                 .toList();
@@ -94,4 +94,10 @@ public class EmpresaService {
         );
     }
 
+    public EmpresaResponseDTO buscarEmpresaDelRepresentante(String cuit) {
+        Empresa empresa = empresaRepository.findByCuit(cuit)
+                .orElseThrow(() -> new RuntimeException("No se encontró una empresa asociada a este representante"));
+
+        return new EmpresaResponseDTO(empresa);
+    }
 }

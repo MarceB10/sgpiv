@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/empresas")
 public class EmpresaController {
 
-    private EmpresaService empresaService;
+    private final EmpresaService empresaService;
 
     @GetMapping
     public String listarEmpresas(
@@ -51,15 +51,15 @@ public class EmpresaController {
         }
 
         long interesadas = empresas.stream()
-                .filter(e -> e.getEstadoEmpresa() == EstadoEmpresa.INTERESADA.toString())
+                .filter(e -> EstadoEmpresa.INTERESADA.toString().equals(e.getEstadoEmpresa()))
                 .count();
 
         long radicadas = empresas.stream()
-                .filter(e -> e.getEstadoEmpresa() == EstadoEmpresa.RADICADA.toString())
+                .filter(e -> EstadoEmpresa.RADICADA.toString().equals(e.getEstadoEmpresa()))
                 .count();
 
         long adjudicadas = empresas.stream()
-                .filter(e -> e.getEstadoEmpresa() == EstadoEmpresa.ADJUDICADA.toString())
+                .filter(e -> EstadoEmpresa.ADJUDICADA.toString().equals(e.getEstadoEmpresa()))
                 .count();
 
         model.addAttribute("empresas", empresas);
@@ -87,5 +87,29 @@ public class EmpresaController {
         empresaService.darDeBaja(id);
 
         return "redirect:/empresas";
+    }
+
+    @GetMapping("/mi-empresa")
+    public String miEmpresa(Model model, HttpSession session){
+
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+
+        if (usuario == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pagina", "mi-empresa");
+
+        try {
+            EmpresaResponseDTO empresa = empresaService.buscarEmpresaDelRepresentante(usuario.getCuit());
+            model.addAttribute("empresa", empresa);
+        } catch (Exception e) {
+            // Si no hay empresa, mandamos el atributo como null o un mensaje
+            model.addAttribute("empresa", null);
+            model.addAttribute("mensaje", "Aún no has registrado ninguna empresa en el sistema.");
+        }
+
+        return "mi-empresa";
     }
 }

@@ -51,6 +51,25 @@ public class DataInitializer implements CommandLineRunner {
             usuarioRepository.save(gerente);
         }
 
+        if (!usuarioRepository.existsByCuit("00000000001")) {
+            Rol rolUsuarioNulo = rolRepository.findByNombre(NombreRol.ROL_NULO)
+                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
+
+            Usuario nulo = new Usuario(
+                    "Alan",
+                    "Turing",
+                    "alan@gmail.com",
+                    10001L,
+                    "1234",
+                    "00000000001"
+            );
+
+            nulo.getRoles().clear(); // saca ROL_NULO que agrega el constructor
+            nulo.getRoles().add(rolUsuarioNulo);
+
+            usuarioRepository.save(nulo);
+        }
+
         /// Pruebas
         if (empresaRepository.count() == 0) {
 
@@ -74,5 +93,7 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("Empresas de prueba cargadas");
         }
         ///
+
+
     }
 }

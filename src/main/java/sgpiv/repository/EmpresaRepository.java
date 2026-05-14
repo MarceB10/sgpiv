@@ -13,6 +13,7 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
     boolean existsByCuit(String cuit);
     boolean existsByEmail(String email);
     List<Empresa> findByEstadoEmpresa(EstadoEmpresa estado);
-    List<Empresa> findByRazonSocial(String razonSocial);
+    List<Empresa> findByRazonSocialContainingIgnoreCase(String razonSocial);
+
 
 }
