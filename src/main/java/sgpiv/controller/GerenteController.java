@@ -45,4 +45,10 @@ public class GerenteController {
         return "redirect:/gerente/usuarios";
     }
 
+    @PostMapping("/gerente/usuarios/{cuit}/baja")
+    public String darDeBaja(@PathVariable String cuit) {
+        usuarioService.darDeBajaUsuario(cuit);
+        return "redirect:/gerente/usuarios";
+    }
+
 }

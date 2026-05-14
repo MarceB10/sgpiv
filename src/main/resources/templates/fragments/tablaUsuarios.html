@@ -3,7 +3,7 @@
 
 <body>
 
-<div th:fragment="tablaUsuarios(titulo, usuarios)">
+<div th:fragment="tablaUsuarios(titulo, usuarios, mostrarBaja)">
 
   <div class="table-container">
 
@@ -48,6 +48,12 @@
             </select>
             <button type="submit" class="btn btn-edit">Asignar</button>
           </form>
+
+          <form th:if="${mostrarBaja}"
+                th:action="@{/gerente/usuarios/{cuit}/baja(cuit=${u.cuit})}" method="post">
+            <button type="submit" class="btn btn-delete">Dar de baja</button>
+          </form>
+
         </td>
       </tr>
       </tbody>
