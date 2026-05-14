@@ -25,12 +25,12 @@
     </div>
 
     <!-- TABLA PENDIENTES -->
-    <div th:replace="~{fragments/tablaUsuarios :: tablaUsuarios('Usuarios pendientes de validación', ${pendientes})}"></div>
+    <div th:replace="~{fragments/tablaUsuarios :: tablaUsuarios('Usuarios pendientes de validación', ${pendientes}, false)}"></div>
 
     <div class="separador"></div>
 
     <!-- TABLA TODOS -->
-    <div th:replace="~{fragments/tablaUsuarios :: tablaUsuarios('Todos los usuarios', ${todos})}"></div>
+    <div th:replace="~{fragments/tablaUsuarios :: tablaUsuarios('Todos los usuarios', ${todos}, true)}"></div>
 
 </div>
 
