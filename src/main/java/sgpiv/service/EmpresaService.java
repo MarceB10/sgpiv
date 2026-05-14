@@ -56,8 +56,8 @@ public class EmpresaService {
 
         return new EmpresaResponseDTO(empresa);
     }
-    public List<EmpresaResponseDTO> listarPorNombre(String nombre) {
-        return empresaRepository.findByNombre(nombre)
+    public List<EmpresaResponseDTO> listarPorRazonSocial(String razonSocial) {
+        return empresaRepository.findByRazonSocial(razonSocial)
                 .stream()
                 .map(EmpresaResponseDTO::new)
                 .toList();
