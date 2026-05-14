@@ -40,7 +40,7 @@ public class EmpresaController {
 
         if(buscar != null && !buscar.isBlank()){
 
-            empresas = empresaService.listarPorNombre(buscar);
+            empresas = empresaService.listarPorRazonSocial(buscar);//razon social == nombre
 
         }else if (estado != null ){
             empresas = empresaService.listarPorEstado(estado);
