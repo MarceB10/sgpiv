@@ -112,9 +112,7 @@
         <!-- TABLA -->
 
         <table>
-
             <thead>
-
             <tr>
 
                 <th>ID</th>
@@ -126,39 +124,28 @@
                 <th>Acciones</th>
 
             </tr>
-
             </thead>
-
             <tbody>
-
             <tr th:each="empresa : ${empresas}">
-
                 <td th:text="${empresa.id}"></td>
-
                 <td th:text="${empresa.razonSocial}"></td>
-
                 <td th:text="${empresa.cuit}"></td>
-
                 <td th:text="${empresa.rubro}"></td>
-
                 <td th:text="${empresa.email}"></td>
-
                 <td>
 
                     <span
                             class="estado"
                             th:classappend="
-                            ${empresa.estadoEmpresa.name() == 'INTERESADA'} ? ' interesada' :
-                            (${empresa.estadoEmpresa.name() == 'RADICADA'} ? ' radicada' :
-                            (${empresa.estadoEmpresa.name() == 'ADJUDICADA'} ? ' adjudicada' : ' baja'))
+                            ${empresa.estadoEmpresa == 'INTERESADA'} ? ' interesada' :
+                            (${empresa.estadoEmpresa == 'RADICADA'} ? ' radicada' :
+                            (${empresa.estadoEmpresa == 'ADJUDICADA'} ? ' adjudicada' : ' baja'))
                             "
                             th:text="${empresa.estadoEmpresa}">
                     </span>
-
                 </td>
 
                 <td>
-
                     <button class="btn btn-edit">
                         Editar
                     </button>
@@ -166,17 +153,12 @@
                     <button class="btn btn-delete">
                         Eliminar
                     </button>
-
                 </td>
 
             </tr>
-
             </tbody>
-
         </table>
-
     </div>
-
 </div>
 
 </body>

@@ -28,7 +28,7 @@ public class RepresentanteEmpresa {
 
     @ManyToOne
     @JoinColumn(name = "empresa_id")
-    @NotNull(message = "El representante debe estar asociado a una empresa")
+    //@NotNull(message = "El representante debe estar asociado a una empresa")
     private Empresa empresa;
 
     public RepresentanteEmpresa(Usuario usuario){

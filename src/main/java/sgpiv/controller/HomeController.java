@@ -22,7 +22,7 @@ public class HomeController {
                 (UsuarioResponseDTO) session.getAttribute("usuario");
 
         if (usuario == null){
-            return "redirect:/login";
+            return "redirect:/";
         }
         model.addAttribute("usuario", usuario);
         model.addAttribute("pagina", "home");
