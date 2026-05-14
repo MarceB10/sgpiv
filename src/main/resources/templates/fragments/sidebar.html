@@ -16,7 +16,15 @@
             </div>
             <div class="user-info">
                 <h4 th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></h4>
-                <p th:text="${usuario.roles[0].nombre}"></p>
+
+                <div th:switch="${usuario.roles[0].nombre.name()}">
+                    <p th:case="'ROL_GERENTE'">Gerente</p>
+                    <p th:case="'ROL_REPRESENTANTE_EMPRESA'">Representante</p>
+                    <p th:case="'ROL_PROVEEDOR'">Proveedor</p>
+                    <p th:case="'ROL_ORGANISMO_PUBLICO'">Organismo Público</p>
+                    <p th:case="ROL_NULO">Usuario Nuevo</p>
+                    <p th:case="*" th:text="${usuario.roles[0].nombre}"></p>
+                </div>
             </div>
         </div>
 
@@ -40,7 +48,7 @@
 
         <!-- ROL_REPRESENTANTE_EMPRESA -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">
-            <a th:href="@{/mi-empresa}"
+            <a th:href="@{/empresas/mi-empresa}"
                th:classappend="${pagina == 'mi-empresa'} ? ' active' : ''">
                 Mi Empresa
             </a>

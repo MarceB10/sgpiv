@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Empresa - SGPIV</title>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+    <div class="header">
+        <div>
+            <h1>Mi Empresa</h1>
+            <p>Datos de radicación de tu organización en el Parque Industrial.</p>
+        </div>
+    </div>
+
+    <div class="cards" th:if="${empresa != null}">
+
+        <div class="card">
+            <h3>Razón Social</h3>
+            <h2 th:text="${empresa.razonSocial}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>CUIT</h3>
+            <h2 th:text="${empresa.cuit}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Rubro</h3>
+            <h2 th:text="${empresa.rubro}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Email</h3>
+            <h2 th:text="${empresa.email}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Estado</h3>
+            <h2 th:text="${empresa.estadoEmpresa}"></h2>
+        </div>
+
+    </div>
+
+    <div class="aviso-pendiente" th:unless="${empresa != null}">
+        <div class="aviso-icono">⚠️</div>
+        <div class="aviso-texto">
+            <h3>Sin empresa vinculada</h3>
+            <p th:text="${mensaje}"></p>
+            <p>Actualmente no tienes una empresa asignada en el sistema.</p>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

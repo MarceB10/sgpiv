@@ -48,7 +48,7 @@ public class Empresa {
     @Enumerated(EnumType.STRING) // guarda el enum como string en la bd
     private EstadoEmpresa estadoEmpresa = (EstadoEmpresa.INTERESADA);
 
-    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL) // define la relacion con proyecto de 1 a mucho y lo
-    private List<Proyecto> proyectos = new ArrayList<>();                           //mapea, seria que la relacion esta en la tabla proyecto
-                                                                //y no en empresa, se borraria en cascada asi que hay que ver esto si esta bien o sacarle esta conf
+    @OneToMany(mappedBy = "empresa")
+    private List<Proyecto> proyectos = new ArrayList<>();
+
 }
