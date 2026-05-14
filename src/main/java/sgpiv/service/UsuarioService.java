@@ -10,6 +10,7 @@ import sgpiv.model.Gerente;
 import sgpiv.model.Rol;
 import sgpiv.model.Usuario;
 import sgpiv.repository.GerenteRepository;
+import sgpiv.repository.RolRepository;
 import sgpiv.repository.UsuarioRepository;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class UsuarioService {
     private final GerenteRepository gerenteRepository;
     private final ProveedorService proveedorService;
     private final OrgPublicoService orgPublicoService;
+    private final RolRepository rolRepository;
 
 
     public List<UsuarioResponseDTO> usuariosSinRol(){
@@ -41,6 +43,17 @@ public class UsuarioService {
 
         return usuarioDTOS;
     }
+
+    public List<UsuarioResponseDTO> todosLosUsuarios(){
+        List<Usuario> usuarios = usuarioRepository.findAllConRoles();
+        List<UsuarioResponseDTO> usuariosDTOS = new ArrayList<>();
+        for (Usuario u: usuarios){
+            usuariosDTOS.add(new UsuarioResponseDTO(u));
+        }
+
+        return usuariosDTOS;
+    }
+
 
     public UsuarioResponseDTO iniciarSesion(LoginDTO loginDTO){
         Usuario usuario = usuarioRepository.findByEmailConRoles(loginDTO.getEmail())
@@ -58,7 +71,7 @@ public class UsuarioService {
     }
 
 
-    public void registrarse(UsuarioRequestDTO usuarioRequestDTO){
+    public UsuarioResponseDTO registrarse(UsuarioRequestDTO usuarioRequestDTO){
 
         Usuario nuevoUsuario = new Usuario(
                 usuarioRequestDTO.getNombre(),
@@ -67,9 +80,12 @@ public class UsuarioService {
                 usuarioRequestDTO.getTelefono(),
                 usuarioRequestDTO.getContrasenia(),
                 usuarioRequestDTO.getCuit() );
-        Rol rolDeInicio = new Rol(NombreRol.ROL_NULO);
+        Rol rolDeInicio = rolRepository.findByNombre(NombreRol.ROL_NULO)
+                        .orElseThrow(() -> new RuntimeException("El Rol no fue encontrado"));
         nuevoUsuario.agregarRol(rolDeInicio);
         usuarioRepository.save(nuevoUsuario);
+
+        return new UsuarioResponseDTO(nuevoUsuario);
     }
 
     public UsuarioResponseDTO buscarPorCuit(String cuit){
@@ -81,8 +97,12 @@ public class UsuarioService {
 
 
 
-    public void AsignarRol(Usuario usuario, NombreRol rol){
-        Rol nuevoRol = new Rol(rol);
+    public void asignarRol(String cuit, NombreRol rol){
+        Rol nuevoRol = rolRepository.findByNombre(rol)
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        Usuario usuario = usuarioRepository.findByCuit(cuit)
+                .orElseThrow(() -> new RuntimeException(USUARIO_NO_ENCONTRADO));
 
         usuario.agregarRol(nuevoRol);
 
@@ -94,10 +114,10 @@ public class UsuarioService {
             representanteService.crearPerfil(usuario);
         }
         if (rol == NombreRol.ROL_PROVEEDOR){
-            proveedorService.crearPerfil();
+            proveedorService.crearPerfil(usuario);
         }
-        if (rol == NombreRol.ROL_REPRESENTANTE_EMPRESA){
-            orgPublicoService.crearPerfil();
+        if (rol == NombreRol.ROL_ORGANISMO_PUBLICO){
+            orgPublicoService.crearPerfil(usuario);
         }
 
         usuarioRepository.save(usuario);
