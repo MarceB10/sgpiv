@@ -22,8 +22,8 @@ public class GerenteService {
         gerenteRepository.save(gerente);
     }
 
-    public void asignarRol(Usuario usuario, NombreRol rol){
-        usuarioService.AsignarRol(usuario, rol);
+    public void asignarRol(String cuit, NombreRol rol){
+        usuarioService.asignarRol(cuit, rol);
     }
 
 }
