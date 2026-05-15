@@ -65,7 +65,9 @@
 
     </div>
 
-    <button class="btn btn-regMiEmpresa">
+    <button class="btn btn-regMiEmpresa"
+            onclick="window.location.href='/registrarMiEmpresa'"
+            th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'}">
         Registrar mi empresa
     </button>
 
