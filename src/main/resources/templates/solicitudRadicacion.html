@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva solicitud de radicación</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/solicitudRadicacion.css}">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <h1>Nueva solicitud de radicación</h1>
+        <p>Solicitá la radicación de tu empresa en el Parque Industrial Viedma.</p>
+    </div>
+
+    <!-- ALERTA -->
+    <div class="info-box">
+
+        <div class="info-icon">
+            <i class="fa-solid fa-info"></i>
+        </div>
+
+        <div class="info-text">
+            <h3>Información importante</h3>
+
+            <p>
+                Completá todos los datos solicitados.
+                La información será evaluada por el Comité de Admisión
+                del Parque Industrial.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- FORM -->
+    <div class="form-card">
+
+        <h2>Datos de la solicitud</h2>
+
+        <form>
+
+            <div class="form-grid">
+
+                <!-- TIPO EMPRESA -->
+                <div class="form-group">
+                    <label>Tipo de empresa *</label>
+
+                    <select>
+                        <option>Seleccioná el tipo de empresa</option>
+                        <option>Industrial</option>
+                        <option>Comercial</option>
+                        <option>Servicios</option>
+                    </select>
+                </div>
+
+                <!-- OBJETIVO -->
+                <div class="form-group">
+                    <label>Objetivo del proyecto *</label>
+
+                    <input type="text"
+                           placeholder="Ej: Ampliación de capacidad productiva">
+                </div>
+
+                <!-- ACTIVIDAD -->
+                <div class="form-group">
+                    <label>Actividad principal *</label>
+
+                    <input type="text"
+                           placeholder="Ej: Fabricación de productos metálicos">
+                </div>
+
+                <!-- SECUNDARIA -->
+                <div class="form-group">
+                    <label>Actividad secundaria</label>
+
+                    <input type="text"
+                           placeholder="Ej: Mantenimiento industrial">
+                </div>
+
+                <!-- NECESIDAD -->
+                <div class="form-group">
+                    <label>Necesidad m2 *</label>
+
+                    <input type="number"
+                           placeholder="Ej: 1500.50">
+                </div>
+
+                <!-- SUPERFICIE -->
+                <div class="form-group">
+                    <label>Superficie de trabajo m2 *</label>
+
+                    <input type="number"
+                           placeholder="Ej: 1200.00">
+                </div>
+
+                <!-- DEPOSITO -->
+                <div class="form-group">
+                    <label>Superficie disponible m2 *</label>
+
+                    <input type="number"
+                           placeholder="Ej: 300.00">
+                </div>
+
+                <!-- EXPANSION -->
+                <div class="form-group">
+                    <label>Expansión m2</label>
+
+                    <input type="number"
+                           placeholder="Ej: 500.00">
+                </div>
+
+                <!-- PLANOS -->
+                <div class="form-group">
+                    <label>Tiene planos *</label>
+
+                    <select>
+                        <option>Seleccioná una opción</option>
+                        <option>Sí</option>
+                        <option>No</option>
+                    </select>
+                </div>
+
+                <!-- SUBIR ARCHIVO -->
+                <div class="form-group">
+                    <label>Planos</label>
+
+                    <input type="file">
+                </div>
+
+                <!-- TITULO -->
+                <div class="form-group">
+                    <label>Título</label>
+
+                    <input type="text"
+                           placeholder="Ej: Ingeniero Industrial">
+                </div>
+
+                <!-- DESCRIPCION -->
+                <div class="form-group description-group">
+                    <label>Descripción</label>
+
+                    <textarea
+                            placeholder="Describí brevemente tu proyecto..."></textarea>
+                </div>
+
+                <!-- FECHA -->
+                <div class="form-group">
+                    <label>Tiempo de radicación</label>
+
+                    <input type="date">
+                </div>
+
+                <!-- ESTADO -->
+                <div class="form-group">
+                    <label>Estado solicitud *</label>
+
+                    <select>
+                        <option>Seleccioná el estado</option>
+                        <option>Pendiente</option>
+                        <option>Aprobada</option>
+                        <option>Rechazada</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- BOTONES -->
+            <div class="buttons">
+
+                <button type="submit" class="btn-primary">
+                    <i class="fa-regular fa-paper-plane"></i>
+                    Enviar solicitud
+                </button>
+
+                <button type="button" class="btn-secondary">
+                    Cancelar
+                </button>
+
+            </div>
+
+            <p class="footer-text">
+                Los campos marcados con * son obligatorios
+            </p>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

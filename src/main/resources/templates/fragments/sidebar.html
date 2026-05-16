@@ -76,7 +76,8 @@
 
         <!-- ROL_NULO -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'}">
-            <a href="#" class="disabled">
+            <a th:href="@{/solicitudRadicacion}"
+               th:classappend="${pagina == 'solicitudRadicacion'} ? ' active' : ''">
                 Solicitud de Radicación
             </a>
         </th:block>
