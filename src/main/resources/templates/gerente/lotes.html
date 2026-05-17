@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Gestión de Lotes</title>
+    <link rel="stylesheet" th:href="@{/css/lotes.css}"/>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-text">
+            <h1>Gestión de Lotes</h1>
+            <p>Administrá el estado y la disponibilidad de los lotes</p>
+        </div>
+        <a th:href="@{/gerente/lotes/nuevo-lote}" class="btn-nuevo">
+            + Nuevo Lote
+        </a>
+    </div>
+
+    <!-- Mensaje Creacion Lote -->
+    <div th:if="${mensaje}" class="alert alert-warning" th:text="${mensaje}"></div>
+
+    <!-- CARDS DE RESUMEN -->
+    <div class="cards">
+        <div class="card">
+            <div class="card-icon">🟩</div>
+            <h3>Disponibles</h3>
+            <h2 th:text="${totalDisponibles != null ? totalDisponibles : 0}">0</h2>
+        </div>
+        <div class="card">
+            <div class="card-icon">🔴</div>
+            <h3>En Uso</h3>
+            <h2 th:text="${totalEnUso != null ? totalEnUso : 0}">0</h2>
+        </div>
+        <div class="card">
+            <div class="card-icon">📋</div>
+            <h3>Total de Lotes</h3>
+            <h2 th:text="${totalLotes != null ? totalLotes : 0}">0</h2>
+        </div>
+    </div>
+
+    <!-- TABLA CONTAINER -->
+    <div class="table-container">
+
+        <!-- TOP: título + búsqueda -->
+        <div class="table-top">
+            <h3>Listado de Lotes</h3>
+            <form th:action="@{/gerente/lotes}" method="get" class="search-form">
+                <input
+                        type="text"
+                        name="ubicacion"
+                        th:value="${param.ubicacion}"
+                        placeholder="Buscar por ubicación..."
+                />
+                <select name="estado">
+                    <option value="">Todos los estados</option>
+                    <option value="DISPONIBLE"
+                            th:selected="${param.estado == 'DISPONIBLE'}">Disponible</option>
+                    <option value="EN_USO"
+                            th:selected="${param.estado == 'EN_USO'}">En Uso</option>
+                </select>
+                <button type="submit" class="search-button">Buscar</button>
+            </form>
+        </div>
+
+        <!-- FRAGMENTO DE TABLA -->
+        <div th:replace="~{fragments/tablaLotes :: tablaLotes}"></div>
+
+    </div>
+    <!-- /table-container -->
+
+</div>
+<!-- /main-content -->
+
+</body>
+</html>

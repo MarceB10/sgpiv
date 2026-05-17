@@ -44,6 +44,10 @@
                th:classappend="${pagina == 'usuarios'} ? ' active' : ''">
                 Usuarios
             </a>
+            <a th:href="@{/gerente/lotes}"
+                th:classappend="${pagina == 'lotes'} ? ' active' : ''">
+                Lotes
+            </a>
         </th:block>
 
         <!-- ROL_REPRESENTANTE_EMPRESA -->
