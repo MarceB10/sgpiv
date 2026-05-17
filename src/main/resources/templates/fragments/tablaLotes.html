@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<body>
+
+<div th:fragment="tablaLotes">
+
+  <div th:if="${lotes == null or lotes.isEmpty()}" class="alert alert-warning text-center">
+    No hay lotes registrados.
+  </div>
+
+  <div th:if="${lotes != null and !lotes.isEmpty()}">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-dark">
+      <tr>
+        <th>#</th>
+        <th>Ubicación</th>
+        <th>Superficie (m²)</th>
+        <th>Precio</th>
+        <th>Fecha de Uso</th>
+        <th>Fecha de Adjudicación</th>
+        <th>Restricciones</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="lote : ${lotes}">
+        <td th:text="${lote.id}">1</td>
+        <td th:text="${lote.ubicacion}">Ubicación</td>
+        <td th:text="${lote.superficie}">100</td>
+        <td th:text="'$' + ${lote.precio}">$500</td>
+        <td th:text="${lote.fechaUso != null ? lote.fechaUso : '-'}">-</td>
+        <td th:text="${lote.fechaAdjudicacion != null ? lote.fechaAdjudicacion : '-'}">-</td>
+        <td th:text="${lote.restricciones != null ? lote.restricciones : '-'}">-</td>
+        <td>
+                        <span th:text="${lote.estadoLote}"
+                              th:classappend="${lote.estadoLote.name() == 'DISPONIBLE'} ? 'estado disponible' :
+                                             (${lote.estadoLote.name() == 'EN_USO'} ? 'estado en-uso' : 'estado inactivo')">
+                        </span>
+        </td>
+        <td>
+          <a th:href="@{/gerente/lotes/editar/{id}(id=${lote.id})}"
+             class="btn btn-edit">Editar</a>
+          <a th:href="@{/gerente/lotes/eliminar/{id}(id=${lote.id})}"
+             class="btn btn-delete"
+             onclick="return confirm('¿Seguro que deseas eliminar este lote?')">Eliminar</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nuevo Lote</title>
+  <link rel="stylesheet" th:href="@{/css/formularioLote.css}"/>
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-text">
+      <h1>Nuevo Lote</h1>
+      <p>Completá los datos para registrar un nuevo lote</p>
+    </div>
+    <a th:href="@{/gerente/lotes}" class="btn-volver">← Volver al listado</a>
+  </div>
+
+  <!-- FORMULARIO -->
+  <div class="form-container">
+    <form th:action="@{/gerente/lotes/nuevo-lote}" th:object="${loteRequestDTO}" method="post">
+
+      <div class="form-grid">
+
+        <!-- Ubicación -->
+        <div class="form-group full-width">
+          <label for="ubicacion">Ubicación</label>
+          <input
+                  type="text"
+                  id="ubicacion"
+                  th:field="*{ubicacion}"
+                  placeholder="Ej: Sector A - Parcela 12"
+                  th:classappend="${#fields.hasErrors('ubicacion')} ? 'input-error' : ''"
+          />
+          <span class="error-msg" th:if="${#fields.hasErrors('ubicacion')}"
+                th:errors="*{ubicacion}"></span>
+        </div>
+
+        <!-- Superficie -->
+        <div class="form-group">
+          <label for="superficie">Superficie (m²)</label>
+          <input
+                  type="number"
+                  id="superficie"
+                  th:field="*{superficie}"
+                  placeholder="Ej: 150"
+                  step="0.01"
+                  min="0"
+                  th:classappend="${#fields.hasErrors('superficie')} ? 'input-error' : ''"
+          />
+          <span class="error-msg" th:if="${#fields.hasErrors('superficie')}"
+                th:errors="*{superficie}"></span>
+        </div>
+
+        <!-- Precio -->
+        <div class="form-group">
+          <label for="precio">Precio ($)</label>
+          <input
+                  type="number"
+                  id="precio"
+                  th:field="*{precio}"
+                  placeholder="Ej: 5000"
+                  step="0.01"
+                  min="0"
+                  th:classappend="${#fields.hasErrors('precio')} ? 'input-error' : ''"
+          />
+          <span class="error-msg" th:if="${#fields.hasErrors('precio')}"
+                th:errors="*{precio}"></span>
+        </div>
+
+        <!-- Fecha de Uso -->
+        <div class="form-group">
+          <label for="fechaUso">Fecha de Uso</label>
+          <input
+                  type="date"
+                  id="fechaUso"
+                  th:field="*{fechaUso}"
+          />
+        </div>
+
+        <!-- Fecha de Adjudicación -->
+        <div class="form-group">
+          <label for="fechaAdjudicacion">Fecha de Adjudicación</label>
+          <input
+                  type="date"
+                  id="fechaAdjudicacion"
+                  th:field="*{fechaAdjudicacion}"
+          />
+        </div>
+
+        <!-- Restricciones -->
+        <div class="form-group full-width">
+          <label for="restricciones">Restricciones</label>
+          <textarea
+                  id="restricciones"
+                  th:field="*{restricciones}"
+                  placeholder="Ingresá restricciones o aclaraciones (opcional)"
+                  rows="4"
+          ></textarea>
+        </div>
+
+      </div>
+
+      <!-- ACCIONES -->
+      <div class="form-actions">
+        <a th:href="@{/gerente/lotes}" class="btn-cancelar">Cancelar</a>
+        <button type="submit" class="btn-guardar">Guardar Lote</button>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+
+</body>
+</html>
