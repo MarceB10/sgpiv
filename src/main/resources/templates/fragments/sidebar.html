@@ -12,10 +12,11 @@
         <!-- PANEL USUARIO -->
         <div class="user-panel">
             <div class="user-avatar"
-                 th:text="${#strings.substring(usuario.nombre,0,1) + #strings.substring(usuario.apellido,0,1)}">
+                 th:text="${#strings.substring(usuario.nombre,0,1)
+                 + #strings.substring(usuario.apellido,0,1)}">
             </div>
             <div class="user-info">
-                <h4 th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></h4>
+                <h4 th:text="${usuario.nombre + ' ' + usuario.apellido}"></h4>
 
                 <div th:switch="${usuario.roles[0].nombre.name()}">
                     <p th:case="'ROL_GERENTE'">Gerente</p>
@@ -81,6 +82,15 @@
                 Solicitud de Radicación
             </a>
         </th:block>
+
+        <div th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'}">
+
+            <a th:href="@{/solicitudesGerente}">
+                <i class="fa-regular fa-file-lines"></i>
+                Solicitudes recibidas
+            </a>
+
+        </div>
 
     </div>
 
