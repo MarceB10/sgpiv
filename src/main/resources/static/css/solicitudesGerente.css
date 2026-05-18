@@ -1,0 +1,21 @@
+body{
+    display:flex;
+    background:#f5f7fb;
+    font-family:Arial;
+}
+
+.content{
+    flex:1;
+    padding:40px;
+}
+
+.table-card{
+    background:white;
+    border-radius:16px;
+    padding:25px;
+}
+
+.status{
+    padding:8px 14px;
+    border-radius:12px;
+}
