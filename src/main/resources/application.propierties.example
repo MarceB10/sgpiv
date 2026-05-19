@@ -20,3 +20,21 @@ spring.jpa.hibernate.ddl-auto=create-drop
 #spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
 
 server.port=8080
+
+# ejemplo de boton registrar mi empresa
+#/* TIPO DE BOTONES (general) */
+#.btn{
+#    border:none;
+#    padding:10px 14px;
+#    border-radius:10px;
+#    color:white;
+#    font-weight:bold;
+#    cursor:pointer;
+#    margin-right:8px;
+#    transition:0.2s;
+#}
+
+#/* BOTON Registrar mi empresa */
+#.btn-regMiEmpresa{
+#    background:#2563eb;
+#}

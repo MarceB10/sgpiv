@@ -107,21 +107,6 @@ body{
     border:2px solid #2563eb;
 }
 
-.search-button{
-    background:#2563eb;
-    color:white;
-    border:none;
-    border-radius:12px;
-    padding:12px 20px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.2s;
-}
-
-.search-button:hover{
-    background:#1d4ed8;
-}
-
 /* TABLA */
 
 table{
@@ -171,33 +156,4 @@ tr:hover{
 
 .baja{
     background:#ef4444;
-}
-
-/* BOTONES */
-
-.btn{
-    border:none;
-    padding:10px 14px;
-    border-radius:10px;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    margin-right:8px;
-    transition:0.2s;
-}
-
-.btn-edit{
-    background:#2563eb;
-}
-
-.btn-edit:hover{
-    background:#1d4ed8;
-}
-
-.btn-delete{
-    background:#dc2626;
-}
-
-.btn-delete:hover{
-    background:#b91c1c;
 }

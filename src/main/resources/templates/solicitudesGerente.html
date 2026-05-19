@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Solicitudes - SGPIV</title>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/gerente.css}">
+    <link rel="stylesheet" th:href="@{/css/solicitudesGerente.css}">
+
+    <!-- Aca vinculé el diseño de los botones -->
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+</head>
+
+<body>
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+
+    <!-- CONTENIDO -->
+    <main class="main-content">
+
+        <h1>Solicitudes recibidas</h1>
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="solicitud : ${solicitudes}">
+
+                <td th:text="${solicitud.id}"></td>
+
+                <td th:text="${solicitud.tipo}"></td>
+
+                <td th:text="${solicitud.estado}"></td>
+
+                <td>
+
+                    <a th:href="@{/aprobar/{id}(id=${solicitud.id})}">
+                        Aprobar
+                    </a>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </main>
+
+</div>
+
+</body>
+</html>

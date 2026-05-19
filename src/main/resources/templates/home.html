@@ -6,6 +6,9 @@
     <title>Home - Parque Industrial Viedma</title>
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/home.css}">
+
+    <!-- Aca vinculé el diseño de los botones -->
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
 </head>
 
 <body>
@@ -61,6 +64,13 @@
         </div>
 
     </div>
+
+    <button class="btn btn-regMiEmpresa"
+            onclick="window.location.href='/registrarMiEmpresa'"
+            th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'}">
+        Registrar mi empresa
+    </button>
+
 
 </div>
 
