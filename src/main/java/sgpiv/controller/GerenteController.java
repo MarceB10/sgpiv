@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.enums.NombreRol;
+import sgpiv.model.Solicitud;
+import sgpiv.repository.SolicitudRepository;
 import sgpiv.service.UsuarioService;
 
 import java.util.List;
@@ -51,4 +53,36 @@ public class GerenteController {
         return "redirect:/gerente/usuarios";
     }
 
+    private final SolicitudRepository solicitudRepository;
+
+    @GetMapping("/solicitudesGerente")
+    public String solicitudesGerente(Model model,
+                                     HttpSession session){
+        UsuarioResponseDTO usuario =
+                (UsuarioResponseDTO) session.getAttribute("usuario");
+
+        model.addAttribute("usuario", usuario);
+
+        model.addAttribute(
+                "solicitudes",
+                solicitudRepository.findAll()
+        );
+
+        model.addAttribute("pagina", "solicitudes");
+
+        return "solicitudesGerente";
+    }
+
+    @GetMapping("/aprobar/{id}")
+    public String aprobar(@PathVariable Long id){
+
+        Solicitud solicitud =
+                solicitudRepository.findById(id).get();
+
+        solicitud.setEstado("APROBADA");
+
+        solicitudRepository.save(solicitud);
+
+        return "redirect:/solicitudesGerente";
+    }
 }
