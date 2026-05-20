@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Adjudicar Lote</title>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/adjudicarLote.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-text">
+            <h1>Adjudicar Lote</h1>
+            <p>Lotes disponibles con superficie igual o mayor a
+                <strong th:text="${superficie} + ' m²'"></strong>
+            </p>
+        </div>
+        <a th:href="@{/gerente/lotes}" class="btn-volver">← Volver</a>
+    </div>
+
+    <!-- SIN RESULTADOS -->
+    <div th:if="${lotes == null or lotes.isEmpty()}" class="empty-state">
+        <div class="empty-icon">🏕️</div>
+        <h3>No hay lotes disponibles</h3>
+        <p>No se encontraron lotes con superficie mayor o igual a
+            <strong th:text="${superficie} + ' m²'"></strong>.
+        </p>
+    </div>
+
+    <!-- GRID DE LOTES -->
+    <div th:if="${lotes != null and !lotes.isEmpty()}" class="lotes-grid">
+        <div th:each="lote : ${lotes}" class="lote-card">
+
+            <div class="lote-card-header">
+                <span class="estado disponible">DISPONIBLE</span>
+                <span class="lote-id" th:text="'#' + ${lote.id}"></span>
+            </div>
+
+            <div class="lote-card-body">
+                <h3 th:text="${lote.ubicacion}">Ubicación</h3>
+
+                <div class="lote-datos">
+                    <div class="dato">
+                        <span class="dato-label">Superficie</span>
+                        <span class="dato-valor" th:text="${lote.superficie} + ' m²'"></span>
+                    </div>
+                    <div class="dato">
+                        <span class="dato-label">Precio</span>
+                        <span class="dato-valor" th:text="'$' + ${lote.precio}"></span>
+                    </div>
+                    <div class="dato">
+                        <span class="dato-label">Restricciones</span>
+                        <span class="dato-valor"
+                              th:text="${lote.restricciones != null ? lote.restricciones : '-'}"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lote-card-footer">
+                <a th:href="@{/gerente/lotes/adjudicar/{id}(id=${lote.id})}"
+                   class="btn-adjudicar">
+                    Adjudicar Lote
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
