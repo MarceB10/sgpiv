@@ -31,7 +31,11 @@ public class Empresa {
     @Column(unique = true, nullable = false, length = 13)
     private String cuit;
 
+    private Long telefono;
+
     private String ingresoBrutos;
+
+    private String descripcionBienServicio;
 
     @NotBlank(message = "El rubro no puede estar vacio")
     private String rubro;
@@ -47,6 +51,7 @@ public class Empresa {
 
     @Enumerated(EnumType.STRING) // guarda el enum como string en la bd
     private EstadoEmpresa estadoEmpresa = (EstadoEmpresa.INTERESADA);
+
 
     @OneToMany(mappedBy = "empresa")
     private List<Proyecto> proyectos = new ArrayList<>();

@@ -71,18 +71,20 @@ public class UsuarioService {
     }
 
 
-    public UsuarioResponseDTO registrarse(UsuarioRequestDTO usuarioRequestDTO){
+    public UsuarioResponseDTO registrarse(UsuarioRequestDTO dto){
 
         Usuario nuevoUsuario = new Usuario(
-                usuarioRequestDTO.getNombre(),
-                usuarioRequestDTO.getApellido(),
-                usuarioRequestDTO.getEmail(),
-                usuarioRequestDTO.getTelefono(),
-                usuarioRequestDTO.getContrasenia(),
-                usuarioRequestDTO.getCuit() );
-        Rol rolDeInicio = rolRepository.findByNombre(NombreRol.ROL_NULO)
-                        .orElseThrow(() -> new RuntimeException("El Rol no fue encontrado"));
-        nuevoUsuario.agregarRol(rolDeInicio);
+                dto.getNombre(),
+                dto.getApellido(),
+                dto.getEmail(),
+                dto.getTelefono(),
+                dto.getContrasenia(),
+                dto.getCuit() );
+        Rol rolInicial = rolRepository.findByNombre(NombreRol.ROL_NULO)
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        nuevoUsuario.agregarRol(rolInicial);
+
         usuarioRepository.save(nuevoUsuario);
 
         return new UsuarioResponseDTO(nuevoUsuario);

@@ -57,11 +57,12 @@
                th:classappend="${pagina == 'mi-empresa'} ? ' active' : ''">
                 Mi Empresa
             </a>
-            <a th:href="@{/solicitud-radicacion}"
+            <a th:href="@{/solicitudRadicacion}"
                th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
                 Solicitud de Radicación
             </a>
         </th:block>
+
 
         <!-- ROL_PROVEEDOR -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_PROVEEDOR'}">
@@ -80,11 +81,16 @@
         </th:block>
 
         <!-- ROL_NULO -->
-        <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'}">
+        <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'
+        and solicitudActiva == null}">
+
             <a th:href="@{/solicitudRadicacion}"
                th:classappend="${pagina == 'solicitudRadicacion'} ? ' active' : ''">
+
                 Solicitud de Radicación
+
             </a>
+
         </th:block>
 
         <div th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'}">

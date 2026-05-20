@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import sgpiv.dtos.response.UsuarioResponseDTO;
+import sgpiv.model.SolicitudRadicacion;
+import sgpiv.service.SolicitudService;
 import sgpiv.service.UsuarioService;
 
 @Controller
@@ -13,6 +15,7 @@ import sgpiv.service.UsuarioService;
 public class HomeController {
 
     private final UsuarioService usuarioService;
+    private final SolicitudService solicitudService;
 
     @GetMapping("/home")
     public String home(Model model,
@@ -26,6 +29,12 @@ public class HomeController {
         }
         model.addAttribute("usuario", usuario);
         model.addAttribute("pagina", "home");
+
+        SolicitudRadicacion solicitudActiva =
+                solicitudService.obtenerSolicitudActiva(usuario.getCuit());
+
+        model.addAttribute("solicitudActiva", solicitudActiva);
+
         return "home";
     }
 }
