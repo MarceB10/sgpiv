@@ -16,7 +16,7 @@
 <div class="layout">
 
     <!-- SIDEBAR -->
-    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
     <!-- CONTENIDO -->
     <main class="main-content">
@@ -28,8 +28,11 @@
             <thead>
             <tr>
                 <th>ID</th>
+                <th>Empresa</th>
+                <th>CUIT</th>
                 <th>Tipo</th>
                 <th>Estado</th>
+                <th>Fecha</th>
                 <th>Acciones</th>
             </tr>
             </thead>
@@ -40,15 +43,46 @@
 
                 <td th:text="${solicitud.id}"></td>
 
-                <td th:text="${solicitud.tipo}"></td>
+                <td th:text="${solicitud.razonSocial}"></td>
+
+                <td th:text="${solicitud.cuitEmpresa}"></td>
+
+                <td th:text="${solicitud.tipoEmpresa}"></td>
 
                 <td th:text="${solicitud.estado}"></td>
 
-                <td>
+                <td th:text="${solicitud.fechaEnvio}"></td>
 
-                    <a th:href="@{/aprobar/{id}(id=${solicitud.id})}">
-                        Aprobar
+                <td class="acciones">
+
+                    <a class="btn btn-detalle"
+                       th:href="@{/solicitudesGerente/{id}(id=${solicitud.id})}">
+                        Ver detalle
                     </a>
+
+                    <form th:action="@{/solicitudesGerente/{id}/aprobar(id=${solicitud.id})}"
+                          method="post">
+
+                        <button type="submit"
+                                class="btn btn-aprobar">
+                            Aprobar
+                        </button>
+
+                    </form>
+
+                    <form th:action="@{/solicitudesGerente/{id}/rechazar(id=${solicitud.id})}"
+                          method="post">
+
+                        <input type="text"
+                               name="motivo"
+                               placeholder="Motivo rechazo">
+
+                        <button type="submit"
+                                class="btn btn-rechazar">
+                            Rechazar
+                        </button>
+
+                    </form>
 
                 </td>
 
