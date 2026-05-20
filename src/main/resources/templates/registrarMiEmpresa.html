@@ -41,118 +41,96 @@
 
         <h2>Datos de la empresa</h2>
 
-        <form>
+        <form th:action="@{/empresas/registrarMiEmpresa}"
+              th:object="${empresaDTO}"
+              method="post">
 
             <div class="form-grid">
 
                 <div class="form-group">
-                    <label>Nombre de fantasía *</label>
-                    <input type="text" placeholder="Ej: Mi Empresa SRL">
-                </div>
-
-                <div class="form-group">
                     <label>Razón social *</label>
-                    <input type="text"
-                           placeholder="Ej: Mi Empresa Sociedad de Responsabilidad Limitada">
+                    <input type="text" th:field="*{razonSocial}"
+                           placeholder="Ej: Mi Empresa SRL">
+                    <p th:if="${#fields.hasErrors('razonSocial')}"
+                       th:errors="*{razonSocial}"
+                       class="error-message"></p>
                 </div>
 
                 <div class="form-group">
                     <label>CUIT *</label>
-                    <input type="text" placeholder="Ej: 30-12345678-9">
+                    <input type="text" th:field="*{cuit}"
+                           placeholder="Ej: 30-12345678-9">
+                    <p th:if="${#fields.hasErrors('cuit')}"
+                       th:errors="*{cuit}"
+                       class="error-message"></p>
                 </div>
 
                 <div class="form-group">
-                    <label>Ingresos brutos *</label>
-                    <input type="text" placeholder="Ej: 901-123456-7">
+                    <label>Ingresos brutos</label>
+                    <input type="text" th:field="*{ingresoBrutos}"
+                           placeholder="Ej: 901-123456-7">
                 </div>
 
                 <div class="form-group">
-                    <label>Rubro / Actividad principal *</label>
-
-                    <select>
-                        <option>Seleccioná el rubro</option>
-                        <option>Tecnología</option>
-                        <option>Alimentos</option>
-                        <option>Metalúrgica</option>
-                        <option>Logística</option>
-                    </select>
+                    <label>Rubro *</label>
+                    <input type="text" th:field="*{rubro}"
+                           placeholder="Ej: Tecnología">
+                    <p th:if="${#fields.hasErrors('rubro')}"
+                       th:errors="*{rubro}"
+                       class="error-message"></p>
                 </div>
 
                 <div class="form-group">
-                    <label>Tipo de industria *</label>
-
-                    <select>
-                        <option>Seleccioná el tipo de industria</option>
-                        <option>Industrial</option>
-                        <option>Comercial</option>
-                        <option>Servicios</option>
-                    </select>
+                    <label>Tipo de industria</label>
+                    <input type="text" th:field="*{tipoIndustria}"
+                           placeholder="Ej: Industrial">
                 </div>
-
-            </div>
-
-            <!-- DESCRIPCION -->
-            <div class="form-group full-width">
-                <label>Descripción de bienes / servicios *</label>
-
-                <textarea
-                        placeholder="Contá brevemente qué bienes producís o qué servicios ofrecés..."></textarea>
-            </div>
-
-            <!-- CONTACTO -->
-            <div class="contact-grid">
 
                 <div class="form-group">
                     <label>Email de contacto *</label>
-
-                    <div class="input-icon">
-                        <i class="fa-regular fa-envelope"></i>
-                        <input type="email"
-                               placeholder="Ej: contacto@miempresa.com">
-                    </div>
+                    <input type="email" th:field="*{email}"
+                           placeholder="Ej: contacto@miempresa.com">
+                    <p th:if="${#fields.hasErrors('email')}"
+                       th:errors="*{email}"
+                       class="error-message"></p>
                 </div>
 
                 <div class="form-group">
                     <label>Teléfono de contacto</label>
+                    <input type="text" th:field="*{telefono}"
+                           placeholder="Ej: 2920 12-3456">
+                </div>
 
-                    <div class="input-icon">
-                        <i class="fa-solid fa-phone"></i>
-                        <input type="text"
-                               placeholder="Ej: 2920 12-3456">
-                    </div>
+                <div class="form-group">
+                    <label>Dirección *</label>
+                    <input type="text" th:field="*{direccion}"
+                           placeholder="Ej: Calle 123 N° 456, Viedma">
                 </div>
 
             </div>
 
-            <!-- DIRECCION -->
             <div class="form-group full-width">
-                <label>Dirección del local / planta *</label>
-
-                <div class="input-icon">
-                    <i class="fa-solid fa-location-dot"></i>
-
-                    <input type="text"
-                           placeholder="Ej: Calle 123 N° 456, Viedma, Río Negro">
-                </div>
+                <label>Descripción de bienes / servicios *</label>
+                <textarea th:field="*{descripcionBienServicio}"
+                          placeholder="Contá brevemente qué bienes producís o qué servicios ofrecés..."></textarea>
+                <p th:if="${#fields.hasErrors('descripcionBienServicio')}"
+                   th:errors="*{descripcionBienServicio}"
+                   class="error-message"></p>
             </div>
 
-            <!-- BOTONES -->
-            <div class="buttons">
+            <!-- error general -->
+            <p th:if="${error}" th:text="${error}" class="error-message"></p>
 
+            <div class="buttons">
                 <button class="btn-primary" type="submit">
                     <i class="fa-regular fa-floppy-disk"></i>
                     Guardar y enviar
                 </button>
-
-                <button class="btn-secondary" type="button">
+                <button class="btn-secondary" type="button"
+                        onclick="window.history.back()">
                     Cancelar
                 </button>
-
             </div>
-
-            <p class="footer-text">
-                Los campos marcados con * son obligatorios
-            </p>
 
         </form>
 

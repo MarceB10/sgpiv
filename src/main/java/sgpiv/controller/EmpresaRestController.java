@@ -18,12 +18,12 @@ public class EmpresaRestController {
 
     private final EmpresaService empresaService;
 
-    @PostMapping
-    public EmpresaResponseDTO registrar(
-            @RequestBody @Valid EmpresaRequestDTO dto) {
-
-        return empresaService.registrar(dto);
-    }
+//    @PostMapping
+//    public EmpresaResponseDTO registrar(
+//            @RequestBody @Valid EmpresaRequestDTO dto) {
+//
+//        return empresaService.registrar(dto);
+//    }
 
     @GetMapping
     public List<EmpresaResponseDTO> listarTodas() {

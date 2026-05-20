@@ -1,15 +1,20 @@
 package sgpiv.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import sgpiv.dtos.request.EmpresaRequestDTO;
 import sgpiv.dtos.response.EmpresaResponseDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
+import sgpiv.model.RepresentanteEmpresa;
 import sgpiv.service.EmpresaService;
+import sgpiv.service.RepresentanteService;
 
 import java.util.List;
 
@@ -19,6 +24,7 @@ import java.util.List;
 public class EmpresaController {
 
     private final EmpresaService empresaService;
+    private final RepresentanteService representanteService;
 
     @GetMapping
     public String listarEmpresas(
@@ -111,5 +117,41 @@ public class EmpresaController {
         }
 
         return "mi-empresa";
+    }
+
+    @GetMapping("/registrarMiEmpresa")
+    public String mostrarFormulario(Model model, HttpSession session) {
+        UsuarioResponseDTO usuario =
+                (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/login";
+
+        model.addAttribute("empresaDTO", new EmpresaRequestDTO());
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pagina", "mi-empresa");
+        return "registrarMiEmpresa";
+    }
+
+    @PostMapping("/registrarMiEmpresa")
+    public String registrarEmpresa(@Valid @ModelAttribute("empresaDTO") EmpresaRequestDTO dto,
+                                   BindingResult result,
+                                   HttpSession session,
+                                   Model model) {
+        if (result.hasErrors()) {
+            return "registrarMiEmpresa";
+        }
+        try {
+            UsuarioResponseDTO usuarioDTO =
+                    (UsuarioResponseDTO) session.getAttribute("usuario");
+
+            RepresentanteEmpresa representante = representanteService
+                    .buscarPorCuit(usuarioDTO.getCuit());
+
+            empresaService.registrar(dto, representante);
+            return "redirect:/empresas/mi-empresa";
+
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            return "registrarMiEmpresa";
+        }
     }
 }

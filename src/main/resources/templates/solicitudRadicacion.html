@@ -34,8 +34,9 @@
 
             <p>
                 Completá todos los datos solicitados.
-                La información será evaluada por el Comité de Admisión
-                del Parque Industrial.
+                La solicitud será evaluada por el gerente del Parque Industrial.
+                Si es aprobada, se creará automáticamente tu empresa y se te asignará
+                como representante.
             </p>
         </div>
 
@@ -47,20 +48,133 @@
         <h2>Datos de la solicitud</h2>
 
         <form th:action="@{/solicitudRadicacion}"
+              th:object="${solicitudDTO}"
               method="post">
 
+            <!-- DATOS EMPRESA -->
+            <h2>Datos de la empresa</h2>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Razón social *</label>
+
+                    <input type="text"
+                           th:field="*{razonSocial}"
+                           placeholder="Ej: Mi Empresa SRL">
+
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('razonSocial')}"
+                       th:errors="*{razonSocial}">
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label>CUIT *</label>
+
+                    <input type="text"
+                           th:field="*{cuitEmpresa}"
+                           placeholder="Ej: 30-12345678-9">
+
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('cuitEmpresa')}"
+                       th:errors="*{cuitEmpresa}">
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label>Rubro *</label>
+
+                    <input type="text"
+                           th:field="*{rubro}"
+                           placeholder="Ej: Metalúrgica">
+
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('rubro')}"
+                       th:errors="*{rubro}">
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de industria</label>
+
+                    <input type="text"
+                           th:field="*{tipoIndustria}"
+                           placeholder="Ej: Industrial">
+                </div>
+
+                <div class="form-group">
+                    <label>Email *</label>
+
+                    <input type="email"
+                           th:field="*{emailEmpresa}"
+                           placeholder="Ej: contacto@empresa.com">
+
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('emailEmpresa')}"
+                       th:errors="*{emailEmpresa}">
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono</label>
+
+                    <input type="text"
+                           th:field="*{telefonoEmpresa}"
+                           placeholder="Ej: 2920123456">
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Dirección *</label>
+
+                    <input type="text"
+                           th:field="*{direccion}"
+                           placeholder="Ej: Calle 123">
+
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('direccion')}"
+                       th:errors="*{direccion}">
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label>Ingresos Brutos</label>
+
+                    <input type="text"
+                           th:field="*{ingresoBrutos}"
+                           placeholder="Ej: 901-123456-7">
+                </div>
+
+            </div>
+
+            <div class="form-group full-width">
+                <label>Descripción de bienes y servicios *</label>
+
+                <textarea th:field="*{descripcionBienServicio}"
+                          placeholder="Describí brevemente qué hace la empresa"></textarea>
+
+                <p class="error-message"
+                   th:if="${#fields.hasErrors('descripcionBienServicio')}"
+                   th:errors="*{descripcionBienServicio}">
+                </p>
+            </div>
+            <!-- DATOS DEL PROYECTO -->
+            <h2>Datos del proyecto</h2>
             <div class="form-grid">
 
                 <!-- TIPO EMPRESA -->
                 <div class="form-group">
                     <label>Tipo de empresa *</label>
 
-                    <select>
-                        <option>Seleccioná el tipo de empresa</option>
-                        <option>Industrial</option>
-                        <option>Comercial</option>
-                        <option>Servicios</option>
+                    <select th:field="*{tipoEmpresa}">
+                        <option value="">Seleccioná una opcion</option>
+                        <option value="Existente">Existente</option>
+                        <option value="Nueva">Nueva</option>
                     </select>
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('tipoEmpresa')}"
+                       th:errors="*{tipoEmpresa}">
+                    </p>
                 </div>
 
                 <!-- OBJETIVO -->
@@ -68,7 +182,14 @@
                     <label>Objetivo del proyecto *</label>
 
                     <input type="text"
-                           placeholder="Ej: Ampliación de capacidad productiva">
+                           th:field="*{objetivoProyecto}"
+                           placeholder="Ej: Expansión de planta">
+
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('objetivoProyecto')}"
+                       th:errors="*{objetivoProyecto}">
+                    </p>
+
                 </div>
 
                 <!-- ACTIVIDAD -->
@@ -76,7 +197,13 @@
                     <label>Actividad principal *</label>
 
                     <input type="text"
-                           placeholder="Ej: Fabricación de productos metálicos">
+                           th:field="*{actividadPrincipal}"
+                           placeholder="Ej: Fabricación metálica">
+
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('actividadPrincipal')}"
+                       th:errors="*{actividadPrincipal}">
+                    </p>
                 </div>
 
                 <!-- SECUNDARIA -->
@@ -84,15 +211,23 @@
                     <label>Actividad secundaria</label>
 
                     <input type="text"
-                           placeholder="Ej: Mantenimiento industrial">
+                           th:field="*{actividadSecundaria}"
+                           placeholder="Opcional">
                 </div>
 
                 <!-- NECESIDAD -->
                 <div class="form-group">
                     <label>Necesidad m2 *</label>
 
-                    <input type="number"
-                           placeholder="Ej: 1500.50">
+                    <select th:field="*{necesidadM2}">
+                        <option value="">Seleccioná una opcion</option>
+                        <option value="1200">1200</option>
+                        <option value="1800">1800</option>
+                        <option value="2500">2500</option>
+                        <option value="3000">3000</option>
+                        <option value="5000">5000</option>
+                        <option value="6000">6000</option>
+                    </select>
                 </div>
 
                 <!-- SUPERFICIE -->
@@ -100,6 +235,8 @@
                     <label>Superficie de trabajo m2 *</label>
 
                     <input type="number"
+                           step="0.01"
+                           th:field="*{supCubiertaTrabajoM2}"
                            placeholder="Ej: 1200.00">
                 </div>
 
@@ -108,7 +245,9 @@
                     <label>Superficie disponible m2 *</label>
 
                     <input type="number"
-                           placeholder="Ej: 300.00">
+                            step="0.01"
+                            th:field="*{supCubiertaDepositoM2}"
+                            placeholder="Ej: 300.00">
                 </div>
 
                 <!-- EXPANSION -->
@@ -116,63 +255,93 @@
                     <label>Expansión m2</label>
 
                     <input type="number"
+                           step="0.01"
+                           th:field="*{supExpansionM2}"
                            placeholder="Ej: 500.00">
+                </div>
+
+                <div class="form-group">
+                    <label>Personal a ocupar *</label>
+
+                    <input type="number"
+                           th:field="*{personalAOcupar}">
+
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('personalAOcupar')}"
+                       th:errors="*{personalAOcupar}">
+                    </p>
                 </div>
 
                 <!-- PLANOS -->
                 <div class="form-group">
                     <label>Tiene planos *</label>
 
-                    <select>
-                        <option>Seleccioná una opción</option>
-                        <option>Sí</option>
-                        <option>No</option>
+                    <select th:field="*{tienePlanos}">
+                        <option value="">Seleccioná una opción</option>
+                        <option th:value="true">Sí</option>
+                        <option th:value="false">No</option>
                     </select>
+
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('tienePlanos')}"
+                       th:errors="*{tienePlanos}">
+                    </p>
                 </div>
 
-                <!-- SUBIR ARCHIVO -->
-                <div class="form-group">
-                    <label>Planos</label>
+<!--                &lt;!&ndash; SUBIR ARCHIVO &ndash;&gt;-->
+<!--                <div class="form-group">-->
+<!--                    <label>Planos</label>-->
 
-                    <input type="file">
-                </div>
+<!--                    <input type="file">-->
+<!--                </div>-->
 
-                <!-- TITULO -->
-                <div class="form-group">
-                    <label>Título</label>
+<!--                &lt;!&ndash; TITULO &ndash;&gt;-->
+<!--                <div class="form-group">-->
+<!--                    <label>Título</label>-->
 
-                    <input type="text"
-                           placeholder="Ej: Ingeniero Industrial">
-                </div>
+<!--                    <input type="text"-->
+<!--                           placeholder="Ej: Ingeniero Industrial">-->
+<!--                </div>-->
 
-                <!-- DESCRIPCION -->
-                <div class="form-group description-group">
-                    <label>Descripción</label>
+<!--                &lt;!&ndash; DESCRIPCION &ndash;&gt;-->
+<!--                <div class="form-group description-group">-->
+<!--                    <label>Descripción</label>-->
 
-                    <textarea
-                            placeholder="Describí brevemente tu proyecto..."></textarea>
-                </div>
+<!--                    <textarea-->
+<!--                            placeholder="Describí brevemente tu proyecto..."></textarea>-->
+<!--                </div>-->
 
                 <!-- FECHA -->
                 <div class="form-group">
-                    <label>Tiempo de radicación</label>
+                    <label>Tiempo de radicación (meses) *</label>
 
-                    <input type="date">
-                </div>
-
-                <!-- ESTADO -->
-                <div class="form-group">
-                    <label>Estado solicitud *</label>
-
-                    <select>
-                        <option>Seleccioná el estado</option>
-                        <option>Pendiente</option>
-                        <option>Aprobada</option>
-                        <option>Rechazada</option>
+                    <select th:field="*{tiempoDeRadicacion}">
+                        <option value="">Seleccioná una opción</option>
+                        <option value="6">6</option>
+                        <option value="12">12</option>
+                        <option value="24">24</option>
+                        <option value="36">36 o más</option>
                     </select>
                 </div>
 
+<!--                &lt;!&ndash; ESTADO &ndash;&gt;-->
+<!--                <div class="form-group">-->
+<!--                    <label>Estado solicitud *</label>-->
+
+<!--                    <select>-->
+<!--                        <option>Seleccioná el estado</option>-->
+<!--                        <option>Pendiente</option>-->
+<!--                        <option>Aprobada</option>-->
+<!--                        <option>Rechazada</option>-->
+<!--                    </select>-->
+<!--                </div>-->
+
             </div>
+
+            <p th:if="${error}"
+               th:text="${error}"
+               class="error-message">
+            </p>
 
             <!-- BOTONES -->
             <div class="buttons">
@@ -182,7 +351,9 @@
                     Enviar solicitud
                 </button>
 
-                <button type="button" class="btn-secondary">
+                <button type="button"
+                        class="btn-secondary"
+                        onclick="window.history.back()">
                     Cancelar
                 </button>
 

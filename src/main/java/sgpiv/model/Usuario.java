@@ -73,8 +73,6 @@ public class Usuario {
     public Usuario(String nombre, String apellido, String email,
                    Long telefono, String contrasenia, String cuit) {
 
-
-
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;

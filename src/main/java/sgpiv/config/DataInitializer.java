@@ -4,10 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import sgpiv.enums.EstadoEmpresa;
+import sgpiv.enums.EstadoSolicitud;
 import sgpiv.enums.NombreRol;
 import sgpiv.model.Empresa;
 import sgpiv.model.Rol;
-import sgpiv.model.Solicitud;
+import sgpiv.model.SolicitudRadicacion;
 import sgpiv.model.Usuario;
 import sgpiv.repository.EmpresaRepository;
 import sgpiv.repository.RolRepository;
@@ -24,7 +25,7 @@ public class DataInitializer implements CommandLineRunner {
     private final UsuarioRepository usuarioRepository;
 /// Pruebas
     private final EmpresaRepository empresaRepository;
-    private final SolicitudRepository solicitudRepository;
+//    private final SolicitudRepository solicitudRepository;
 /// /
     @Override
     public void run(String... args) throws Exception {
@@ -129,31 +130,31 @@ public class DataInitializer implements CommandLineRunner {
         }
         ///
 
-        if (solicitudRepository.count() == 0) {
-
-            Solicitud s1 = new Solicitud();
-            s1.setTipo("Solicitud de radicación");
-            s1.setEstado("PENDIENTE");
-
-            Solicitud s2 = new Solicitud();
-            s2.setTipo("Ampliación de nave");
-            s2.setEstado("APROBADA");
-
-            Solicitud s3 = new Solicitud();
-            s3.setTipo("Instalación eléctrica");
-            s3.setEstado("EN REVISION");
-
-            Solicitud s4 = new Solicitud();
-            s4.setTipo("Conexión eléctrica");
-            s4.setEstado("RECHAZADA");
-
-            solicitudRepository.save(s1);
-            solicitudRepository.save(s2);
-            solicitudRepository.save(s3);
-            solicitudRepository.save(s4);
-
-            System.out.println("Solicitudes de prueba cargadas");
-        }
+//        if (solicitudRepository.count() == 0) {
+//
+//            SolicitudRadicacion s1 = new SolicitudRadicacion();
+//            s1.setTipoEmpresa("Solicitud de radicación");
+//            s1.setEstado(EstadoSolicitud.PENDIENTE);
+//
+//            SolicitudRadicacion s2 = new SolicitudRadicacion();
+//            s2.setTipoEmpresa("Ampliación de nave");
+//            s2.setEstado(EstadoSolicitud.APROBADA);
+//
+//            SolicitudRadicacion s3 = new SolicitudRadicacion();
+//            s3.setTipoEmpresa("Instalación eléctrica");
+//            s3.setEstado(EstadoSolicitud.EN_REVISION);
+//
+//            SolicitudRadicacion s4 = new SolicitudRadicacion();
+//            s4.setTipoEmpresa("Conexión eléctrica");
+//            s4.setEstado(EstadoSolicitud.RECHAZADA);
+//
+//            solicitudRepository.save(s1);
+//            solicitudRepository.save(s2);
+//            solicitudRepository.save(s3);
+//            solicitudRepository.save(s4);
+//
+//            System.out.println("Solicitudes de prueba cargadas");
+//        }
 
     }
 }
