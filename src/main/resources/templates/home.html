@@ -27,18 +27,19 @@
         </div>
     </div>
 
-    <!-- AVISO PENDIENTE — solo ROL_NULO -->
-    <div class="aviso-pendiente" th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'}">
-        <div class="aviso-icono">⏳</div>
-        <div class="aviso-texto">
-            <h3>Cuenta pendiente de validación</h3>
-            <p>
-                Tu cuenta fue registrada correctamente. El Gerente del Parque Industrial
-                revisará tu solicitud y te asignará un rol a la brevedad.
-                Una vez validado, tendrás acceso completo al sistema.
-            </p>
-        </div>
-    </div>
+<!--    &lt;!&ndash; AVISO PENDIENTE — solo ROL_NULO &ndash;&gt;-->
+<!--    <div class="aviso-pendiente" th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'}">-->
+<!--        <div class="aviso-icono">⏳</div>-->
+<!--        <div class="aviso-texto">-->
+<!--            <h3>Cuenta pendiente de validación</h3>-->
+<!--            <p>-->
+<!--                Tu cuenta fue registrada correctamente. El Gerente del Parque Industrial-->
+<!--                revisará tu solicitud y te asignará un rol a la brevedad.-->
+<!--                Una vez validado, tendrás acceso completo al sistema.-->
+<!--            </p>-->
+<!--        </div>-->
+<!--    </div>-->
+
 
     <!-- INFO USUARIO -->
     <div class="cards">
@@ -66,8 +67,8 @@
     </div>
 
     <button class="btn btn-regMiEmpresa"
-            onclick="window.location.href='/registrarMiEmpresa'"
-            th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'}">
+            onclick="window.location.href='/empresas/registrarMiEmpresa'"
+            th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">
         Registrar mi empresa
     </button>
 

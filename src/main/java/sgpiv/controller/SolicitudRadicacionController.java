@@ -1,56 +1,61 @@
 package sgpiv.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import sgpiv.dtos.request.SolicitudRequestDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
-import sgpiv.model.Solicitud;
-import sgpiv.model.Usuario;
-import sgpiv.repository.SolicitudRepository;
-import sgpiv.repository.UsuarioRepository;
-
-import java.time.LocalDate;
+import sgpiv.model.SolicitudRadicacion;
+import sgpiv.service.SolicitudService;
 
 @Controller
 @RequiredArgsConstructor
 public class SolicitudRadicacionController {
 
-    private final SolicitudRepository solicitudRepository;
-    private final UsuarioRepository usuarioRepository;
+    private final SolicitudService solicitudService;
 
     @GetMapping("/solicitudRadicacion")
-    public String mostrarFormulario(Model model){
+    public String mostrarFormulario(Model model, HttpSession session) {
+        UsuarioResponseDTO usuario =
+                (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/login";
+        SolicitudRadicacion solicitudActiva =
+                solicitudService.obtenerSolicitudActiva(usuario.getCuit());
 
-        model.addAttribute("solicitud", new Solicitud());
+        if (solicitudActiva != null){
+            return "redirect:/home";
+        }
 
+        model.addAttribute("solicitudDTO", new SolicitudRequestDTO());
+        model.addAttribute("usuario", usuario);
         return "solicitudRadicacion";
     }
 
     @PostMapping("/solicitudRadicacion")
-    public String guardarSolicitud(HttpSession session) {
+    public String guardarSolicitud(@Valid @ModelAttribute("solicitudDTO") SolicitudRequestDTO dto,
+                                   BindingResult result,
+                                   HttpSession session,
+                                   Model model) {
+        if (result.hasErrors()) {
+            return "solicitudRadicacion";
+        }
 
-        UsuarioResponseDTO usuarioDTO =
-                (UsuarioResponseDTO) session.getAttribute("usuario");
+        try {
+            UsuarioResponseDTO usuarioDTO =
+                    (UsuarioResponseDTO) session.getAttribute("usuario");
 
-        Usuario usuario = usuarioRepository
-                .findByCuit(usuarioDTO.getCuit())
-                .orElseThrow();
+            solicitudService.enviarSolicitud(dto, usuarioDTO.getCuit());
+            return "redirect:/home";
 
-        Solicitud solicitud = new Solicitud();
-
-        solicitud.setTipo("Solicitud de radicación");
-        solicitud.setEstado("EN_REVISION");
-        solicitud.setFechaEnvio(LocalDate.now());
-
-        solicitud.setUsuario(usuario);
-
-        solicitudRepository.save(solicitud);
-
-//        return "redirect:/misSolicitudes";
-        return "redirect:/home";
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            return "solicitudRadicacion";
+        }
     }
-
 }

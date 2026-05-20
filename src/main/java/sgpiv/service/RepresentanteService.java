@@ -23,4 +23,10 @@ public class RepresentanteService {
        representanteRepository.save(representante);
     }
 
+    public RepresentanteEmpresa buscarPorCuit(String cuit){
+        return representanteRepository
+                .findByUsuario_Cuit(cuit)
+                .orElseThrow(() -> new RuntimeException("Representante no encontrado"));
+    }
+
 }

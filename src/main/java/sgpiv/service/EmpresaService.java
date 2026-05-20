@@ -6,6 +6,7 @@ import sgpiv.dtos.request.EmpresaRequestDTO;
 import sgpiv.dtos.response.EmpresaResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
 import sgpiv.model.Empresa;
+import sgpiv.model.RepresentanteEmpresa;
 import sgpiv.repository.EmpresaRepository;
 
 import java.util.List;
@@ -16,28 +17,33 @@ import java.util.List;
 public class EmpresaService {
 
     private final EmpresaRepository empresaRepository; //para acceso a la bd
+    private final RepresentanteService representanteService;
 
-    public EmpresaResponseDTO registrar(EmpresaRequestDTO dto){
+    public EmpresaResponseDTO registrar(EmpresaRequestDTO dto, RepresentanteEmpresa representanteEmpresa){
         if( empresaRepository.existsByCuit(dto.getCuit())){
             throw new RuntimeException("Ya existe una dto con ese CUIT");
         }
 
         if(empresaRepository.existsByEmail(dto.getEmail())){
-            throw new RuntimeException("Ya existe una dto con ese mail");
+            throw new RuntimeException("Ya existe una empresa con ese CUIT");
         }
 
         Empresa empresa = new Empresa();
-
         empresa.setRazonSocial(dto.getRazonSocial());
         empresa.setCuit(dto.getCuit());
+        empresa.setTelefono(dto.getTelefono());
+        empresa.setIngresoBrutos(dto.getIngresoBrutos());
+        empresa.setDescripcionBienServicio(dto.getDescripcionBienServicio());
         empresa.setRubro(dto.getRubro());
+        empresa.setTipoIndustria(dto.getTipoIndustria());
         empresa.setEmail(dto.getEmail());
         empresa.setDireccion(dto.getDireccion());
-        empresa.setIngresoBrutos(dto.getIngresoBrutos());
-        empresa.setTipoIndustria(dto.getTipoIndustria());
+
         empresa.setEstadoEmpresa(EstadoEmpresa.INTERESADA);
 
         Empresa guardada = empresaRepository.save(empresa);
+
+        representanteService.asignarEmpresa(representanteEmpresa,empresa);//vinculamos la empresa al representante
 
         return new EmpresaResponseDTO(guardada);
 
