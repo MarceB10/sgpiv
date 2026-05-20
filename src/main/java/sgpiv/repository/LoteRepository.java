@@ -7,6 +7,7 @@ import sgpiv.enums.EstadoLote;
 import sgpiv.model.Lote;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LoteRepository extends JpaRepository<Lote, Long> {
 
@@ -18,6 +19,9 @@ public interface LoteRepository extends JpaRepository<Lote, Long> {
     default List<Lote> findDisponibles() {
         return findByEstadoLote(EstadoLote.DISPONIBLE);
     }
+
+    @Query("SELECT l FROM Lote l WHERE l.superficie >= :superficie AND l.estadoLote = EstadoLote.DISPONIBLE")
+    Optional<List<Lote>> findLotesDisponiblesConSuperficieMinima(@Param("superficie") Float superficie);
 
     // Buscar por ubicación (contiene, ignorando mayúsculas)
     List<Lote> findByUbicacionContainingIgnoreCase(String ubicacion);

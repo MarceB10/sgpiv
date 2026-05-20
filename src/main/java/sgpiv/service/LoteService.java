@@ -8,6 +8,8 @@ import sgpiv.model.Lote;
 import sgpiv.repository.LoteRepository;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -23,6 +25,21 @@ public class LoteService {
 
         loteRepository.save(loteNuevo);
     }
+
+
+    public List<LoteResponseDTO> obtenerLotesParaSolicitud(Float superficie){
+        List<Lote> lotes = loteRepository
+                .findLotesDisponiblesConSuperficieMinima(superficie)
+                .orElse(Collections.emptyList()); //devuelvo lista vacia para mostrar un mensaje en front
+        List<LoteResponseDTO> lotesDTOS = new ArrayList<>();
+
+        for (Lote lote: lotes){
+            lotesDTOS.add(new LoteResponseDTO(lote));
+        }
+
+        return lotesDTOS;
+    }
+
 
     public List<LoteResponseDTO> obtenerTodosLosLotes(){
         List<LoteResponseDTO> lotesResponseDTO = new ArrayList<>();

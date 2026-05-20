@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sgpiv.dtos.request.LoteRequestDTO;
 import sgpiv.dtos.response.LoteResponseDTO;
@@ -67,6 +68,24 @@ public class LoteController {
         redirectAttributes.addFlashAttribute("mensaje", "Lote creado correctamente.");
         return "redirect:/gerente/lotes";
     }
+
+    //SOLICITUD DE RADICACION----------------------------------------------------
+    @GetMapping("/disponibles")
+    public String lotesDisponibles(@RequestParam Float superficie,
+                                   Model model,
+                                   HttpSession session) {
+
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/";
+
+        List<LoteResponseDTO> lotes = loteService.obtenerLotesParaSolicitud(superficie);
+        model.addAttribute("lotes", lotes);
+        model.addAttribute("superficie", superficie);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pagina", "lotes");
+        return "gerente/adjudicarLote";
+    }
+    //------------------------------------------------------------------------------
 
 
 }
