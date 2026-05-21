@@ -70,7 +70,7 @@ public class LoteController {
     }
 
     //SOLICITUD DE RADICACION----------------------------------------------------
-    @GetMapping("/disponibles")
+    @GetMapping("gerente/lotes/disponibles")
     public String lotesDisponibles(@RequestParam Float superficie,
                                    Model model,
                                    HttpSession session) {

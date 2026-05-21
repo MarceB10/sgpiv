@@ -88,4 +88,28 @@ public class GerenteController {
 
         return "redirect:/solicitudesGerente";
     }
+
+    @GetMapping("/solicitudesGerente/{id}")
+    public String detalleSolicitud(@PathVariable Long id,
+                                   Model model,
+                                   HttpSession session) {
+
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/login";
+
+        model.addAttribute("solicitud", solicitudService.obtenerPorId(id));
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pagina", "solicitudes");
+
+        return "gerente/detalleSolicitud";
+    }
+
+    @PostMapping("/solicitudesGerente/{id}/rechazar")
+    public String rechazar(@PathVariable Long id,
+                           @RequestParam String motivo) {
+
+        solicitudService.rechazar(id, motivo);
+        return "redirect:/solicitudesGerente";
+    }
+
 }

@@ -1,21 +1,167 @@
-body{
-    display:flex;
-    background:#f5f7fb;
-    font-family:Arial;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-.content{
-    flex:1;
-    padding:40px;
+body {
+    background: #f4f6f9;
+    display: flex;
 }
 
-.table-card{
-    background:white;
-    border-radius:16px;
-    padding:25px;
+.main-content {
+    margin-left: 250px;
+    width: 100%;
+    padding: 35px;
 }
 
-.status{
-    padding:8px 14px;
-    border-radius:12px;
+/* HEADER */
+
+h1 {
+    font-size: 32px;
+    color: #0f172a;
+    margin-bottom: 30px;
+}
+
+/* TABLA CONTAINER */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+thead {
+    background: #0f172a;
+}
+
+th {
+    text-align: left;
+    padding: 15px 18px;
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+td {
+    padding: 18px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover td {
+    background: #f8fafc;
+}
+
+/* ESTADO */
+
+.status {
+    padding: 7px 14px;
+    border-radius: 20px;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.status-pendiente {
+    background: #f59e0b;
+}
+
+.status-aprobada {
+    background: #10b981;
+}
+
+.status-rechazada {
+    background: #ef4444;
+}
+
+/* ACCIONES */
+
+.acciones {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.acciones form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.acciones input[type="text"] {
+    padding: 9px 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 13px;
+    outline: none;
+    background: #f8fafc;
+    color: #0f172a;
+    transition: border 0.2s;
+    width: 160px;
+}
+
+.acciones input[type="text"]:focus {
+    border-color: #2563eb;
+    background: white;
+}
+
+/* BOTONES */
+
+.btn {
+    border: none;
+    padding: 9px 16px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.btn-detalle {
+    background: #64748b;
+}
+
+.btn-detalle:hover {
+    background: #475569;
+}
+
+.btn-aprobar {
+    background: #10b981;
+}
+
+.btn-aprobar:hover {
+    background: #059669;
+}
+
+.btn-rechazar {
+    background: #ef4444;
+}
+
+.btn-rechazar:hover {
+    background: #dc2626;
+}
+
+
+.layout {
+    display: flex;
+    width: 100%;
 }

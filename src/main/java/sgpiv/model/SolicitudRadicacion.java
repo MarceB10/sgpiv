@@ -51,7 +51,7 @@ public class SolicitudRadicacion {
     private Double supCubiertaTrabajoM2;
     @NotNull(message = "La superficie de deposito no puede estar vacia")
     private Double supCubiertaDepositoM2;
-//    private supExpansionM2; //opcional
+    private Double supExpansionM2; //opcional
 
     @NotNull(message = "Indique si tiene planos")
     private Boolean tienePlanos;//ver el manejo de planos porque el capaz elos puede cargar, por ahora solo boolean
