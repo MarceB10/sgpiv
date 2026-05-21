@@ -5,6 +5,7 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sgpiv.dtos.request.SolicitudRequestDTO;
+import sgpiv.dtos.response.SolicitudResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
 import sgpiv.enums.EstadoSolicitud;
 import sgpiv.enums.NombreRol;
@@ -17,6 +18,7 @@ import sgpiv.repository.SolicitudRepository;
 import sgpiv.repository.UsuarioRepository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -69,8 +71,16 @@ public class SolicitudService {
         solicitudRepository.save(solicitud);
     }
 
-    public List<SolicitudRadicacion> listarTodas() {
-        return solicitudRepository.findAll();
+    public List<SolicitudResponseDTO> listarTodas() {
+        List<SolicitudRadicacion> solicitudes = solicitudRepository.findAll();
+        List<SolicitudResponseDTO> solicitudesDTOS = new ArrayList<>();
+        for (SolicitudRadicacion solicitud: solicitudes){
+            solicitudesDTOS.add(
+                    new SolicitudResponseDTO(solicitud)
+            );
+        }
+
+        return solicitudesDTOS;
     }
 
     @Transactional
@@ -141,4 +151,13 @@ public class SolicitudService {
         return solicitudRepository
                 .findByEstado(EstadoSolicitud.PENDIENTE);
     }
+
+    public SolicitudResponseDTO obtenerPorId(Long id) {
+        SolicitudRadicacion solicitud = solicitudRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+
+        return new SolicitudResponseDTO(solicitud);
+    }
+
+
 }
