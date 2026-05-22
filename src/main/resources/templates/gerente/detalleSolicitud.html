@@ -141,6 +141,14 @@
         <span class="dato-valor" th:text="${solicitud.tiempoDeRadicacion} + ' meses'">-</span>
       </div>
 
+      <!-- LOTE SELECCIONADO -->
+      <div th:if="${session.idLoteSeleccionado != null}" class="lote-badge">
+        ✅ Lote #<span th:text="${session.idLoteSeleccionado}"></span> seleccionado
+      </div>
+      <div th:if="${session.idLoteSeleccionado == null}" class="lote-badge sin-lote">
+        ⚠️ No hay lote seleccionado — adjudicá uno antes de aceptar
+      </div>
+
     </div>
   </div>
 
@@ -156,11 +164,18 @@
       <button type="submit" class="btn-rechazar">Rechazar</button>
     </form>
 
-    <form th:action="@{/solicitudesGerente/{id}/aprobar(id=${solicitud.id})}" method="post">
+    <!-- Aceptar solo si hay lote seleccionado -->
+    <form th:if="${session.idLoteSeleccionado != null}"
+          th:action="@{/solicitudesGerente/{id}/aprobar(id=${solicitud.id})}" method="post">
       <button type="submit" class="btn-aprobar">Aceptar</button>
     </form>
+    <button th:if="${session.idLoteSeleccionado == null}"
+            class="btn-aprobar deshabilitado" disabled>
+      Aceptar
+    </button>
+<!-------------------------------------------------------------------->
 
-    <a th:href="@{/gerente/lotes/disponibles(superficie=${solicitud.necesidadM2})}"
+    <a th:href="@{/gerente/lotes/disponibles(superficie=${solicitud.necesidadM2}, idSolicitud=${solicitud.id})}"
        class="btn-adjudicar">
       Adjudicar Lote
     </a>

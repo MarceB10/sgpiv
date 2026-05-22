@@ -12,7 +12,7 @@ class OcupacionLoteTest {
     public void testEstaActivaCuandoFechaFinEsNula(){
         OcupacionLote ocupacion = new OcupacionLote();
         ocupacion.setFechaInicio(LocalDate.now());
-        assertTrue(ocupacion.estaActica());
+        assertTrue(ocupacion.estaActiva());
     }
 
     @Test
@@ -20,7 +20,7 @@ class OcupacionLoteTest {
         OcupacionLote ocupacion = new OcupacionLote();
         ocupacion.setFechaInicio(LocalDate.now().minusMonths(6));
         ocupacion.setFechaFin(LocalDate.now());
-        assertFalse(ocupacion.estaActica());
+        assertFalse(ocupacion.estaActiva());
     }
 
     @Test

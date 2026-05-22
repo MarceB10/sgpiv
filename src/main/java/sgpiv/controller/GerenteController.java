@@ -82,10 +82,16 @@ public class GerenteController {
     }
 
     @PostMapping("/solicitudesGerente/{id}/aprobar")
-    public String aprobar(@PathVariable Long id){
+    public String aprobar(@PathVariable Long id,
+                          HttpSession session){
+        Long idLote = (Long) session.getAttribute("idLoteSeleccionado");
+        if (idLote == null){
+            return "redirect:/solicitudesGerente/" + id;
+        }
 
-        solicitudService.aprobar(id);
 
+        solicitudService.aprobar(id, idLote);
+        session.removeAttribute("idLoteSeleccionado");
         return "redirect:/solicitudesGerente";
     }
 

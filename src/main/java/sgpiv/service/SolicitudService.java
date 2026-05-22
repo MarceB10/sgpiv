@@ -9,10 +9,7 @@ import sgpiv.dtos.response.SolicitudResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
 import sgpiv.enums.EstadoSolicitud;
 import sgpiv.enums.NombreRol;
-import sgpiv.model.Empresa;
-import sgpiv.model.RepresentanteEmpresa;
-import sgpiv.model.SolicitudRadicacion;
-import sgpiv.model.Usuario;
+import sgpiv.model.*;
 import sgpiv.repository.EmpresaRepository;
 import sgpiv.repository.SolicitudRepository;
 import sgpiv.repository.UsuarioRepository;
@@ -28,9 +25,13 @@ public class SolicitudService {
     private final SolicitudRepository solicitudRepository;
     private final UsuarioRepository usuarioRepository;
 
+    private final OcupacionLoteService ocupacionLoteService;
+
     private final EmpresaRepository empresaRepository;
     private final UsuarioService usuarioService;
     private final RepresentanteService representanteService;
+    private final LoteService loteService;
+
 
     public void enviarSolicitud(SolicitudRequestDTO dto, String cuitUsuario) {
         Usuario usuario = usuarioRepository.findByCuit(cuitUsuario)
@@ -84,9 +85,11 @@ public class SolicitudService {
     }
 
     @Transactional
-    public void aprobar(Long id) {
+    public void aprobar(Long id, Long idLote) {
         SolicitudRadicacion solicitud = solicitudRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+
+        Lote lote = loteService.obtenerPorId(idLote);
 
         //creacion de empresa
         Empresa empresa = new Empresa();
@@ -100,7 +103,7 @@ public class SolicitudService {
         empresa.setDescripcionBienServicio(solicitud.getDescripcionBienServicio());
         empresa.setTipoIndustria(solicitud.getTipoIndustria());
 
-        empresa.setEstadoEmpresa(EstadoEmpresa.INTERESADA);//por ahora interesada hasta que tenga la adjudicacion
+        empresa.setEstadoEmpresa(EstadoEmpresa.ADJUDICADA);//por ahora interesada hasta que tenga la adjudicacion
 
         empresaRepository.save(empresa);
 
@@ -121,6 +124,10 @@ public class SolicitudService {
         solicitud.setEstado(EstadoSolicitud.APROBADA);
 
         solicitudRepository.save(solicitud);
+
+        //OcupacionLote
+        ocupacionLoteService.ocuparLote(lote, empresa);
+
     }
 
     public void rechazar(Long id, String motivo) {
