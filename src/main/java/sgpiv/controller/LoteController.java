@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sgpiv.dtos.request.LoteRequestDTO;
 import sgpiv.dtos.response.LoteResponseDTO;
@@ -72,6 +69,7 @@ public class LoteController {
     //SOLICITUD DE RADICACION----------------------------------------------------
     @GetMapping("gerente/lotes/disponibles")
     public String lotesDisponibles(@RequestParam Float superficie,
+                                   @RequestParam Long idSolicitud,
                                    Model model,
                                    HttpSession session) {
 
@@ -81,11 +79,20 @@ public class LoteController {
         List<LoteResponseDTO> lotes = loteService.obtenerLotesParaSolicitud(superficie);
         model.addAttribute("lotes", lotes);
         model.addAttribute("superficie", superficie);
+        model.addAttribute("idSolicitud", idSolicitud);
         model.addAttribute("usuario", usuario);
         model.addAttribute("pagina", "lotes");
         return "gerente/adjudicarLote";
     }
-    //------------------------------------------------------------------------------
+    //-------------------Adjudicar Lote A La Solicitud-----------------------------------------------------------
+    @GetMapping("gerente/lotes/seleccionar/{idLote}")
+    public String seleccionarLote(@PathVariable Long idLote,
+                                  @RequestParam Long idSolicitud,
+                                  HttpSession session) {
+
+        session.setAttribute("idLoteSeleccionado", idLote);
+        return "redirect:/solicitudesGerente/" + idSolicitud;
+    }
 
 
 }

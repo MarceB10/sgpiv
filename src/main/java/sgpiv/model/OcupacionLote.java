@@ -34,8 +34,15 @@ public class OcupacionLote {
     @JoinColumn(name = "lote_id")
     private Lote lote;
 
-    public boolean estaActica() {
+    public OcupacionLote(Empresa empresa, Lote lote, LocalDate fechaInicio){
+        this.empresa = empresa;
+        this.lote = lote;
+        this.fechaInicio = fechaInicio;
+    }
+
+    public boolean estaActiva() {
         return this.fechaFin == null;
     }
+
 
 }

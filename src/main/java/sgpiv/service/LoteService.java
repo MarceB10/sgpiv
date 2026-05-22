@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LoteService {
 
+    private final String LOTE_NOT_FOUND = "El Lote no fue encontrado";
     private final LoteRepository loteRepository;
 
 
@@ -38,6 +39,13 @@ public class LoteService {
         }
 
         return lotesDTOS;
+    }
+
+    public Lote obtenerPorId(Long id){
+        return loteRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException(LOTE_NOT_FOUND));
+
     }
 
 

@@ -63,7 +63,7 @@
             </div>
 
             <div class="lote-card-footer">
-                <a th:href="@{/gerente/lotes/adjudicar/{id}(id=${lote.id})}"
+                <a th:href="@{/gerente/lotes/seleccionar/{idLote}(idLote=${lote.id}, idSolicitud=${idSolicitud})}"
                    class="btn-adjudicar">
                     Adjudicar Lote
                 </a>
