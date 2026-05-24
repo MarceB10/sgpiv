@@ -75,8 +75,41 @@
         <!-- FRAGMENTO DE TABLA -->
         <div th:replace="~{fragments/tablaLotes :: tablaLotes}"></div>
 
+
     </div>
     <!-- /table-container -->
+
+    <!-- TABLA CONTAINER -->
+    <div class="table-container">
+
+        <!-- TOP: título + búsqueda -->
+        <div class="table-top">
+            <h3>Listado de Lotes Ocupados</h3>
+            <form th:action="@{/gerente/lotes}" method="get" class="search-form">
+                <input
+                        type="text"
+                        name="ubicacion"
+                        th:value="${param.ubicacion}"
+                        placeholder="Buscar por ubicación..."
+                />
+                <select name="estado">
+                    <option value="">Todos los estados</option>
+                    <option value="DISPONIBLE"
+                            th:selected="${param.estado == 'DISPONIBLE'}">Disponible</option>
+                    <option value="EN_USO"
+                            th:selected="${param.estado == 'EN_USO'}">En Uso</option>
+                </select>
+                <button type="submit" class="search-button">Buscar</button>
+            </form>
+        </div>
+
+        <!-- FRAGMENTO DE TABLA -->
+
+        <div th:replace="~{fragments/tablaOcupaciones :: tablaOcupaciones}"></div>
+
+    </div>
+    <!-- /table-container -->
+
 
 </div>
 <!-- /main-content -->
