@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <body>
 
 <div th:fragment="sidebar">
@@ -12,8 +11,7 @@
         <!-- PANEL USUARIO -->
         <div class="user-panel">
             <div class="user-avatar"
-                 th:text="${#strings.substring(usuario.nombre,0,1)
-                 + #strings.substring(usuario.apellido,0,1)}">
+                 th:text="${#strings.substring(usuario.nombre,0,1) + #strings.substring(usuario.apellido,0,1)}">
             </div>
             <div class="user-info">
                 <h4 th:text="${usuario.nombre + ' ' + usuario.apellido}"></h4>
@@ -32,22 +30,27 @@
         <!-- DASHBOARD — todos los roles -->
         <a th:href="@{/home}"
            th:classappend="${pagina == 'home'} ? ' active' : ''">
-            Dashboard
+            <i class="fa-solid fa-chart-pie"></i> Inicio
         </a>
 
         <!-- ROL_GERENTE -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'}">
             <a th:href="@{/empresas}"
                th:classappend="${pagina == 'empresas'} ? ' active' : ''">
-                Empresas
+                <i class="fa-solid fa-building"></i> Empresas
             </a>
             <a th:href="@{/gerente/usuarios}"
                th:classappend="${pagina == 'usuarios'} ? ' active' : ''">
-                Usuarios
+                <i class="fa-solid fa-users"></i> Usuarios
             </a>
             <a th:href="@{/gerente/lotes}"
-                th:classappend="${pagina == 'lotes'} ? ' active' : ''">
-                Lotes
+               th:classappend="${pagina == 'lotes'} ? ' active' : ''">
+                <i class="fa-solid fa-map-location-dot"></i> Lotes
+            </a>
+            <!-- Corregido: removimos el div repetido y agregamos el active check -->
+            <a th:href="@{/solicitudesGerente}"
+               th:classappend="${pagina == 'solicitudes-gerente'} ? ' active' : ''">
+                <i class="fa-regular fa-file-lines"></i> Solicitudes recibidas
             </a>
         </th:block>
 
@@ -55,20 +58,19 @@
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">
             <a th:href="@{/empresas/mi-empresa}"
                th:classappend="${pagina == 'mi-empresa'} ? ' active' : ''">
-                Mi Empresa
+                <i class="fa-solid fa-industry"></i> Mi Empresa
             </a>
             <a th:href="@{/solicitudRadicacion}"
                th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
-                Solicitud de Radicación
+                <i class="fa-solid fa-file-signature"></i> Solicitud de Radicación
             </a>
         </th:block>
-
 
         <!-- ROL_PROVEEDOR -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_PROVEEDOR'}">
             <a th:href="@{/mi-perfil}"
                th:classappend="${pagina == 'mi-perfil'} ? ' active' : ''">
-                Mi Perfil
+                <i class="fa-solid fa-user"></i> Mi Perfil
             </a>
         </th:block>
 
@@ -76,31 +78,46 @@
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_ORGANISMO_PUBLICO'}">
             <a th:href="@{/mi-perfil}"
                th:classappend="${pagina == 'mi-perfil'} ? ' active' : ''">
-                Mi Perfil
+                <i class="fa-solid fa-building-shield"></i> Mi Perfil
             </a>
         </th:block>
 
         <!-- ROL_NULO -->
-        <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'
-        and solicitudActiva == null}">
+        <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'}">
 
-            <a th:href="@{/solicitudRadicacion}"
-               th:classappend="${pagina == 'solicitudRadicacion'} ? ' active' : ''">
+            <!-- SIN SOLICITUD -->
+            <a th:if="${solicitudActiva == null}"
+               th:href="@{/solicitudRadicacion}"
+               th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
 
+                <i class="fa-solid fa-file-signature"></i>
                 Solicitud de Radicación
 
             </a>
 
-        </th:block>
+            <!-- SOLICITUD NORMAL -->
+            <a th:if="${solicitudActiva != null
+            and solicitudActiva.estado.name() != 'REQUIERE_MODIFICACION'}"
+               th:href="@{/miSolicitud}"
+               th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
 
-        <div th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'}">
+                <i class="fa-solid fa-clock"></i>
+                Ver mi solicitud
 
-            <a th:href="@{/solicitudesGerente}">
-                <i class="fa-regular fa-file-lines"></i>
-                Solicitudes recibidas
             </a>
 
-        </div>
+            <!-- REQUIERE MODIFICACION -->
+            <a th:if="${solicitudActiva != null
+            and solicitudActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
+               th:href="@{/solicitudRadicacion}"
+               th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
+
+                <i class="fa-solid fa-pen-to-square"></i>
+                Modificar solicitud
+
+            </a>
+
+        </th:block>
 
     </div>
 
