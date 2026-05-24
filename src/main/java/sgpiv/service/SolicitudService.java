@@ -168,7 +168,8 @@ public class SolicitudService {
                                 EstadoSolicitud.PENDIENTE,
                                 EstadoSolicitud.EN_REVISION,
                                 EstadoSolicitud.APROBADA,
-                                EstadoSolicitud.REQUIERE_MODIFICACION
+                                EstadoSolicitud.REQUIERE_MODIFICACION,
+                                EstadoSolicitud.RECHAZADA
                         )
                 );
     }
