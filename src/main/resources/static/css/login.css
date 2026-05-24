@@ -166,20 +166,6 @@ body{
     font-size: 14px;
 }
 
-/* ========================= */
-/* RESPONSIVE */
-/* ========================= */
-
-@media(max-width: 900px){
-
-    .left-panel{
-        display: none;
-    }
-
-    .right-panel{
-        width: 100%;
-        padding: 40px;
-    }
 
 /* ========================= */
 /* ERRORES */
@@ -194,5 +180,18 @@ body{
     border: 1px solid #fecaca;
     border-radius: 8px;
 }
+    /* ========================= */
+    /* RESPONSIVE */
+    /* ========================= */
 
+    @media(max-width: 900px){
+
+        .left-panel{
+            display: none;
+        }
+
+        .right-panel{
+            width: 100%;
+            padding: 40px;
+        }
 }

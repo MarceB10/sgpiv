@@ -6,6 +6,8 @@
   <title>Detalle de Solicitud</title>
   <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
   <link rel="stylesheet" th:href="@{/css/detalleSolicitud.css}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 </head>
 <body>
 
@@ -159,25 +161,72 @@
       Cerrar
     </button>
 
-    <form th:action="@{/solicitudesGerente/{id}/rechazar(id=${solicitud.id})}" method="post">
-      <input type="text" name="motivo" placeholder="Motivo de rechazo" class="input-motivo"/>
-      <button type="submit" class="btn-rechazar">Rechazar</button>
-    </form>
+    <div class="accion-grupo">
+
+      <h3 class="accion-titulo">
+        <i class="fa-solid fa-xmark"></i>
+        Rechazar solicitud
+      </h3>
+
+      <form th:action="@{/solicitudesGerente/{id}/rechazar(id=${solicitud.id})}"
+            method="post">
+
+        <textarea name="motivo"
+                  placeholder="Motivo de rechazo (obligatorio)"
+                  class="input-motivo"
+                  required></textarea>
+
+        <button type="submit" class="btn-rechazar">
+          <i class="fa-solid fa-xmark"></i>
+          Rechazar
+        </button>
+
+      </form>
+
+    </div>
+
+    <!-- REQUIERE MODIFICACION con motivo -->
+    <div class="accion-grupo">
+
+      <h3 class="accion-titulo">
+        <i class="fa-solid fa-pen"></i>
+        Solicitar modificaciones
+      </h3>
+
+      <form th:action="@{/solicitudesGerente/{id}/requiereModificacion(id=${solicitud.id})}"
+            method="post">
+
+        <textarea name="motivo"
+                  placeholder="Indicá qué debe modificar"
+                  class="input-motivo"
+                  required></textarea>
+
+        <button type="submit" class="btn-modificar">
+          <i class="fa-solid fa-pen"></i>
+          Requiere modificación
+        </button>
+
+      </form>
+
+    </div>
 
     <!-- Aceptar solo si hay lote seleccionado -->
     <form th:if="${session.idLoteSeleccionado != null}"
-          th:action="@{/solicitudesGerente/{id}/aprobar(id=${solicitud.id})}" method="post">
-      <button type="submit" class="btn-aprobar">Aceptar</button>
+          th:action="@{/solicitudesGerente/{id}/aprobar(id=${solicitud.id})}"
+          method="post">
+      <button type="submit" class="btn-aprobar">
+        <i class="fa-solid fa-check"></i>Aceptar
+      </button>
     </form>
     <button th:if="${session.idLoteSeleccionado == null}"
             class="btn-aprobar deshabilitado" disabled>
-      Aceptar
+      Aceptar (Seleccioná un lote primero)
     </button>
 <!-------------------------------------------------------------------->
 
     <a th:href="@{/gerente/lotes/disponibles(superficie=${solicitud.necesidadM2}, idSolicitud=${solicitud.id})}"
        class="btn-adjudicar">
-      Adjudicar Lote
+        <i class="fa-solid fa-map-pin"></i>Adjudicar Lote
     </a>
 
   </div>

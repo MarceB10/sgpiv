@@ -76,7 +76,7 @@ public class GerenteController {
                 solicitudService.listarPendientes()
         );
 
-        model.addAttribute("pagina", "solicitudes");
+        model.addAttribute("pagina", "solicitudes-gerente");
 
         return "solicitudesGerente";
     }
@@ -105,7 +105,7 @@ public class GerenteController {
 
         model.addAttribute("solicitud", solicitudService.obtenerPorId(id));
         model.addAttribute("usuario", usuario);
-        model.addAttribute("pagina", "solicitudes");
+        model.addAttribute("pagina", "solicitud-radicacion");
 
         return "gerente/detalleSolicitud";
     }
@@ -118,4 +118,10 @@ public class GerenteController {
         return "redirect:/solicitudesGerente";
     }
 
+    @PostMapping("/solicitudesGerente/{id}/requiereModificacion")
+    public String requiereModificacion(@PathVariable Long id,
+                                       @RequestParam String motivo) {
+        solicitudService.requiereModificacion(id, motivo);
+        return "redirect:/solicitudesGerente";
+    }
 }
