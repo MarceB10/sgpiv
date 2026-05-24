@@ -165,6 +165,26 @@ input[type="file"]{
     padding:14px;
 }
 
+/* ERROR MESSAGE */
+
+.error-message{
+    margin-top:10px;
+
+    background:#fdecea;
+
+    border:1px solid #ef9a9a;
+    border-radius:12px;
+
+    padding:10px 14px;
+
+    color:#c62828;
+
+    font-size:14px;
+    font-weight:600;
+
+    display:block;
+}
+
 /* BUTTONS */
 
 .buttons{
