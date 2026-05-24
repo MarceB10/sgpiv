@@ -6,6 +6,7 @@ import sgpiv.model.Lote;
 import sgpiv.model.OcupacionLote;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface OcupacionLoteRepository extends JpaRepository<OcupacionLote, Long> {
@@ -17,5 +18,8 @@ public interface OcupacionLoteRepository extends JpaRepository<OcupacionLote, Lo
     Optional<OcupacionLote> findByEmpresaAndLote(Empresa empresa, Lote lote);
 
     Optional<OcupacionLote> findByFechaInicioAndLote(LocalDate fechaInicio, Lote lote);
+
+
+    List<OcupacionLote> findAll();
 
 }
