@@ -4,5 +4,6 @@ public enum EstadoSolicitud {
     PENDIENTE,
     APROBADA,
     EN_REVISION,
-    RECHAZADA
+    RECHAZADA,
+    REQUIERE_MODIFICACION
 }
