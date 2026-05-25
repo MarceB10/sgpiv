@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Parque Industrial Viedma</title>
+    <title>Iniciar sesión - Parque Industrial Viedma</title>
 
     <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
@@ -21,19 +21,24 @@
             <h1>Parque Industrial VIEDMA</h1>
 
             <p>
-                A professional kit that comes with ready-to-use
-                MUI components developed with one common goal in mind,
-                help you build faster & beautiful applications.
+                El parque Industrial se encuentra sobre la Ruta Provincial Nº 1, camino a El Cóndor.
+
+                Actualmente existen 52 empresas activas o en vías de iniciar sus actividades en el Parque Industrial.
+
+                Dentro de las actividades que se desarrollan se destacan empresas constructoras, cementeras, secaderos y
+                empaques de frutas secas, fábrica de aberturas, fábricas de amueblamientos, talleres mecánicos, galpones
+                de almacenamiento y logística, fábrica de hielo, aserraderos y el principal frigorífico de carnes de la
+                Patagonia.
             </p>
 
             <div class="companies">
 
-                <span>SAMSUNG</span>
-                <span>VISA</span>
-                <span>Bolt</span>
-                <span>AWS</span>
-                <span>accenture</span>
-                <span>AT&T</span>
+                <span>FRIDEVI</span>
+                <span>Daluar</span>
+                <span>Cementos del Sur</span>
+                <span>Sur Forestal</span>
+                <span>Hupulus Viedma</span>
+                <span>Allhue</span>
 
             </div>
 
@@ -46,13 +51,13 @@
 
         <div class="login-box">
 
-            <a href="#" class="back-link">← Dashboard</a>
+<!--            <a href="#" class="back-link">← Dashboard</a>-->
 
-            <h2>Log in</h2>
+            <h2>Iniciar sesión</h2>
 
             <p class="register-text">
-                Don't have an account?
-                <a th:href="@{/registro}">Register</a>
+                No tienes una cuenta?
+                <a th:href="@{/registro}">Registrarse</a>
             </p>
 
             <!-- error del service — email no existe, contraseña incorrecta -->
@@ -66,7 +71,7 @@
                             type="email"
                             name="email"
                             th:field="*{email}"
-                            placeholder="Email Address">
+                            placeholder="Email">
 
                     <!-- error de validación del campo email -->
                     <p th:if="${#fields.hasErrors('email')}"
@@ -81,7 +86,7 @@
                             type="password"
                             name="password"
                             th:field="*{contrasenia}"
-                            placeholder="Password">
+                            placeholder="Contraseña">
 
                     <!-- error de validación del campo contraseña -->
                     <p th:if="${#fields.hasErrors('contrasenia')}"
@@ -91,13 +96,13 @@
                 </div>
 
                 <button type="submit" class="login-btn">
-                    Continue
+                    Continuar
                 </button>
 
             </form>
 
             <a href="#" class="forgot-password">
-                Forgot password?
+                ¿Has olvidado tu contraseña?
             </a>
 
         </div>

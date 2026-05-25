@@ -1,5 +1,5 @@
 /* ========================= */
-/* SIDEBAR */
+/* SIDEBAR BASE */
 /* ========================= */
 
 .sidebar {
@@ -14,16 +14,29 @@
 .sidebar h2 {
     margin-bottom: 40px;
     text-align: center;
+    font-weight: 700;
+    letter-spacing: 1px;
 }
 
 .sidebar a {
-    display: block;
+    display: flex;       /* Cambiado a flex para alinear iconos y texto */
+    align-items: center;
     color: white;
     text-decoration: none;
     padding: 14px;
     border-radius: 10px;
     margin-bottom: 10px;
     transition: 0.2s;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+/* Espaciado del ícono con el texto */
+.sidebar a i {
+    margin-right: 12px;
+    width: 20px;         /* Ancho fijo para que los textos arranquen alineados */
+    text-align: center;
+    font-size: 16px;
 }
 
 .sidebar a:hover {
@@ -48,52 +61,36 @@
 /* PANEL USUARIO SIDEBAR */
 /* ========================= */
 
-.user-panel{
-
+.user-panel {
     display: flex;
     align-items: center;
-
     gap: 12px;
-
-    background: rgba(255,255,255,0.08);
-
+    background: rgba(255, 255, 255, 0.08);
     padding: 15px;
-
     border-radius: 14px;
-
     margin-top: 25px;
     margin-bottom: 35px;
-
 }
 
-.user-avatar{
-
+.user-avatar {
     width: 50px;
     height: 50px;
-
     border-radius: 50%;
-
     background: #2563eb;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
-    font-size: 24px;
-
+    font-size: 20px;
+    font-weight: bold;
 }
 
-.user-info h4{
-
+.user-info h4 {
     color: white;
     font-size: 15px;
     margin-bottom: 4px;
-
 }
 
-.user-info p{
-
+.user-info p {
     color: #9ca3af;
     font-size: 13px;
-
 }
