@@ -63,7 +63,7 @@ public class EmpresaService {
         return new EmpresaResponseDTO(empresa);
     }
     public List<EmpresaResponseDTO> listarPorRazonSocial(String razonSocial) {
-        return empresaRepository.findByRazonSocialContainingIgnoreCase(razonSocial)
+        return empresaRepository.findByRazonSocialStartingWithIgnoreCase(razonSocial)
                 .stream()
                 .map(EmpresaResponseDTO::new)
                 .toList();
