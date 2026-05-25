@@ -61,7 +61,7 @@ public class SolicitudService {
         solicitud.setNecesidadM2(dto.getNecesidadM2());
         solicitud.setSupCubiertaTrabajoM2(dto.getSupCubiertaTrabajoM2());
         solicitud.setSupCubiertaDepositoM2(dto.getSupCubiertaDepositoM2());
-//        solicitud.setSupExpansionM2(dto.getSupExpansionM2());
+        solicitud.setSupExpansionM2(dto.getSupExpansionM2());
         solicitud.setTienePlanos(dto.getTienePlanos());
         solicitud.setPersonalAOcupar(dto.getPersonalAOcupar());
         solicitud.setTiempoDeRadicacion(dto.getTiempoDeRadicacion());
