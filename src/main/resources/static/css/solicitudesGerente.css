@@ -10,6 +10,7 @@ body {
     display: flex;
 }
 
+/* MAIN */
 .main-content {
     margin-left: 250px;
     width: 100%;
@@ -17,57 +18,113 @@ body {
 }
 
 /* HEADER */
-
-h1 {
-    font-size: 32px;
-    color: #0f172a;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 30px;
 }
 
-/* TABLA CONTAINER */
+.header-text h1 {
+    font-size: 32px;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
 
-table {
-    width: 100%;
-    border-collapse: collapse;
+.header-text p {
+    color: #64748b;
+}
+
+/* TABLA CONTAINER */
+.table-container {
     background: white;
     border-radius: 18px;
-    overflow: hidden;
+    padding: 25px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
-thead {
-    background: #0f172a;
+/* TOP TABLA */
+.table-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.table-top h3 {
+    color: #0f172a;
+    font-size: 18px;
+}
+
+/* SEARCH & FILTROS */
+.search-form {
+    display: flex;
+    gap: 12px;
+}
+
+.search-form input,
+.search-form select {
+    padding: 12px 14px;
+    border: none;
+    border-radius: 12px;
+    background: #f1f5f9;
+    outline: none;
+    font-size: 14px;
+    color: #0f172a;
+}
+
+.search-form input {
+    width: 260px;
+}
+
+.search-form input:focus,
+.search-form select:focus {
+    border: 2px solid #2563eb;
+}
+
+.search-button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-button:hover {
+    background: #1d4ed8;
+}
+
+/* TABLA STYLES */
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
 th {
     text-align: left;
-    padding: 15px 18px;
-    color: #94a3b8;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    padding: 15px;
+    color: #64748b;
+    font-size: 14px;
+    border-bottom: 2px solid #e2e8f0;
 }
 
 td {
-    padding: 18px;
+    padding: 18px 15px;
     border-bottom: 1px solid #e2e8f0;
     color: #0f172a;
     font-size: 14px;
     vertical-align: middle;
 }
 
-tr:last-child td {
-    border-bottom: none;
-}
-
-tr:hover td {
+tr:hover {
     background: #f8fafc;
 }
 
-/* ESTADO */
-
-.status {
+/* ESTADOS (Píldoras con la misma onda que Lotes) */
+.estado {
     padding: 7px 14px;
     border-radius: 20px;
     color: white;
@@ -76,92 +133,39 @@ tr:hover td {
     display: inline-block;
 }
 
-.status-pendiente {
-    background: #f59e0b;
+.pendiente {
+    background: #f59e0b; /* Mismo tono naranja que "Reservado" */
 }
 
-.status-aprobada {
-    background: #10b981;
+.aprobada {
+    background: #10b981; /* Mismo tono verde que "Disponible" */
 }
 
-.status-rechazada {
-    background: #ef4444;
-}
-
-/* ACCIONES */
-
-.acciones {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.acciones form {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.acciones input[type="text"] {
-    padding: 9px 12px;
-    border: 2px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 13px;
-    outline: none;
-    background: #f8fafc;
-    color: #0f172a;
-    transition: border 0.2s;
-    width: 160px;
-}
-
-.acciones input[type="text"]:focus {
-    border-color: #2563eb;
-    background: white;
+.rechazada {
+    background: #ef4444; /* Mismo tono rojo que "En Uso" */
 }
 
 /* BOTONES */
-
 .btn {
     border: none;
-    padding: 9px 16px;
+    padding: 9px 14px;
     border-radius: 10px;
     color: white;
     font-weight: bold;
     font-size: 13px;
     cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
+    margin-right: 6px;
     transition: background 0.2s;
-    white-space: nowrap;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.btn-detalle {
-    background: #64748b;
+.btn-edit {
+    background: #2563eb;
 }
 
-.btn-detalle:hover {
-    background: #475569;
-}
-
-.btn-aprobar {
-    background: #10b981;
-}
-
-.btn-aprobar:hover {
-    background: #059669;
-}
-
-.btn-rechazar {
-    background: #ef4444;
-}
-
-.btn-rechazar:hover {
-    background: #dc2626;
-}
-
-
-.layout {
-    display: flex;
-    width: 100%;
+.btn-edit:hover {
+    background: #1d4ed8;
 }

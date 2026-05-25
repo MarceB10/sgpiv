@@ -107,125 +107,237 @@ body {
     font-weight: 500;
 }
 
+/* ========================= */
 /* ACCIONES */
+/* ========================= */
 
-.acciones {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 12px;
-    padding-bottom: 20px;
-    flex-wrap: wrap;
+.acciones{
+
+    display:flex;
+    flex-direction:column;
+
+    gap:24px;
+
+    margin-top:10px;
+    margin-bottom:30px;
+
 }
 
-.acciones form {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+/* CADA BLOQUE */
+
+.accion-grupo{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:24px;
+
+    box-shadow:0 4px 12px rgba(0,0,0,0.06);
+
 }
 
-.input-motivo {
-    padding: 10px 14px;
-    border: 2px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 13px;
-    outline: none;
-    background: #f8fafc;
-    color: #0f172a;
-    width: 180px;
-    transition: border 0.2s;
+/* FORMULARIOS */
+
+.accion-grupo form{
+
+    display:flex;
+    flex-direction:column;
+
+    gap:16px;
+
 }
 
-.input-motivo:focus {
-    border-color: #2563eb;
-    background: white;
+/* TEXTAREA */
+
+.input-motivo{
+
+    width:100%;
+    min-height:130px;
+
+    resize:vertical;
+
+    padding:18px;
+
+    border:2px solid #e2e8f0;
+
+    border-radius:14px;
+
+    font-size:15px;
+
+    line-height:1.6;
+
+    outline:none;
+
+    background:#f8fafc;
+
+    transition:0.2s;
+
 }
 
-.btn-cerrar {
-    background: #f1f5f9;
-    color: #0f172a;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s;
+.input-motivo:focus{
+
+    border-color:#2563eb;
+
+    background:white;
+
 }
 
-.btn-cerrar:hover {
-    background: #e2e8f0;
+/* BOTONES BASE */
+
+.btn-aprobar,
+.btn-rechazar,
+.btn-modificar,
+.btn-adjudicar,
+.btn-cerrar{
+
+    border:none;
+
+    border-radius:14px;
+
+    padding:14px 22px;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.2s ease;
+
+    text-decoration:none;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    width:fit-content;
+
 }
 
-.btn-rechazar {
-    background: #ef4444;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s;
+/* HOVER GENERAL */
+
+.btn-aprobar:hover,
+.btn-rechazar:hover,
+.btn-modificar:hover,
+.btn-adjudicar:hover,
+.btn-cerrar:hover{
+
+    transform:translateY(-2px);
+
 }
 
-.btn-rechazar:hover {
-    background: #dc2626;
+/* BOTONES */
+
+.btn-aprobar{
+
+    background:#10b981;
+    color:white;
+
 }
 
-.btn-aprobar {
-    background: #10b981;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s;
+.btn-aprobar:hover{
+
+    background:#059669;
+
 }
 
-.btn-aprobar:hover {
-    background: #059669;
+.btn-rechazar{
+
+    background:#ef4444;
+    color:white;
+
 }
 
-.btn-adjudicar {
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 12px 20px;
-    font-weight: bold;
-    font-size: 14px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.2s;
-    display: inline-block;
+.btn-rechazar:hover{
+
+    background:#dc2626;
+
 }
 
-.btn-adjudicar:hover {
-    background: #1d4ed8;
+.btn-modificar{
+
+    background:#8b5cf6;
+    color:white;
+
 }
 
-.lote-badge {
-    background: #f0fdf4;
-    border: 1px solid #10b981;
-    color: #065f46;
-    padding: 12px 18px;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 8px;
+.btn-modificar:hover{
+
+    background:#7c3aed;
+
 }
 
-.lote-badge.sin-lote {
-    background: #fef9c3;
-    border-color: #f59e0b;
-    color: #854d0e;
+.btn-adjudicar{
+
+    background:#2563eb;
+    color:white;
+
 }
 
-.btn-aprobar.deshabilitado {
-    background: #94a3b8;
-    cursor: not-allowed;
-    opacity: 0.6;
+.btn-adjudicar:hover{
+
+    background:#1d4ed8;
+
+}
+
+.btn-cerrar{
+
+    background:#e2e8f0;
+    color:#0f172a;
+
+}
+
+.btn-cerrar:hover{
+
+    background:#cbd5e1;
+
+}
+
+/* LOTE */
+
+.lote-badge{
+
+    background:#f0fdf4;
+
+    border:1px solid #10b981;
+
+    color:#065f46;
+
+    padding:16px 18px;
+
+    border-radius:14px;
+
+    font-size:15px;
+
+    font-weight:600;
+
+    margin-top:10px;
+
+}
+
+.lote-badge.sin-lote{
+
+    background:#fef9c3;
+
+    border-color:#f59e0b;
+
+    color:#854d0e;
+
+}
+
+/* BOTON DESHABILITADO */
+
+.btn-aprobar.deshabilitado{
+
+    background:#94a3b8;
+
+    opacity:0.7;
+
+    cursor:not-allowed;
+
 }

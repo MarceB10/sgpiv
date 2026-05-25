@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nueva solicitud de radicación</title>
 
     <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
     <link rel="stylesheet" th:href="@{/css/solicitudRadicacion.css}">
 
     <!-- FONT AWESOME -->
@@ -14,12 +16,30 @@
 </head>
 <body>
 
+<!-- SIDEBAR -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
 <div class="main-content">
 
     <!-- HEADER -->
     <div class="page-header">
-        <h1>Nueva solicitud de radicación</h1>
-        <p>Solicitá la radicación de tu empresa en el Parque Industrial Viedma.</p>
+        <h1 th:text="${editando} ? 'Modificar solicitud' : 'Nueva solicitud de radicación'"></h1>
+
+        <p th:text="${editando}
+        ? 'Realizá las modificaciones solicitadas por el gerente.'
+        : 'Solicitá la radicación de tu empresa en el Parque Industrial Viedma.'">
+        </p>
+
+    </div>
+
+    <!-- MOTIVO MODIFICACION -->
+    <div class="motivo-box"
+         th:if="${editando}">
+
+        <h3>Motivo de la modificación</h3>
+
+        <p th:text="${motivo}"></p>
+
     </div>
 
     <!-- ALERTA -->
@@ -324,18 +344,6 @@
                     </select>
                 </div>
 
-<!--                &lt;!&ndash; ESTADO &ndash;&gt;-->
-<!--                <div class="form-group">-->
-<!--                    <label>Estado solicitud *</label>-->
-
-<!--                    <select>-->
-<!--                        <option>Seleccioná el estado</option>-->
-<!--                        <option>Pendiente</option>-->
-<!--                        <option>Aprobada</option>-->
-<!--                        <option>Rechazada</option>-->
-<!--                    </select>-->
-<!--                </div>-->
-
             </div>
 
             <p th:if="${error}"
@@ -347,8 +355,14 @@
             <div class="buttons">
 
                 <button type="submit" class="btn-primary">
+
                     <i class="fa-regular fa-paper-plane"></i>
-                    Enviar solicitud
+
+                    <span th:text="${editando}
+                    ? 'Guardar cambios'
+                    : 'Enviar solicitud'">
+                    </span>
+
                 </button>
 
                 <button type="button"

@@ -34,17 +34,38 @@ public class SolicitudService {
 
 
     public void enviarSolicitud(SolicitudRequestDTO dto, String cuitUsuario) {
+
         Usuario usuario = usuarioRepository.findByCuit(cuitUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         SolicitudRadicacion solicitudActiva =
                 obtenerSolicitudActiva(cuitUsuario);
 
-        if (solicitudActiva != null){
+        SolicitudRadicacion solicitud;
+
+        // SI ESTA EN MODIFICACION → EDITAR LA EXISTENTE
+        if (solicitudActiva != null &&
+                solicitudActiva.getEstado() == EstadoSolicitud.REQUIERE_MODIFICACION) {
+
+            solicitud = solicitudActiva;
+
+        }
+        // SI YA TIENE OTRA ACTIVA → BLOQUEAR
+        else if (solicitudActiva != null) {
+
             throw new RuntimeException("Ya tenés una solicitud activa.");
+
+        }
+        // SI NO EXISTE → CREAR NUEVA
+        else {
+
+            solicitud = new SolicitudRadicacion();
+            solicitud.setUsuario(usuario);
+            solicitud.setFechaEnvio(LocalDate.now());
+
         }
 
-        SolicitudRadicacion solicitud = new SolicitudRadicacion();
+        // DATOS EMPRESA
         solicitud.setRazonSocial(dto.getRazonSocial());
         solicitud.setCuitEmpresa(dto.getCuitEmpresa());
         solicitud.setRubro(dto.getRubro());
@@ -54,6 +75,8 @@ public class SolicitudService {
         solicitud.setIngresoBrutos(dto.getIngresoBrutos());
         solicitud.setDescripcionBienServicio(dto.getDescripcionBienServicio());
         solicitud.setTipoIndustria(dto.getTipoIndustria());
+
+        // DATOS PROYECTO
         solicitud.setTipoEmpresa(dto.getTipoEmpresa());
         solicitud.setObjetivoProyecto(dto.getObjetivoProyecto());
         solicitud.setActividadPrincipal(dto.getActividadPrincipal());
@@ -65,23 +88,14 @@ public class SolicitudService {
         solicitud.setTienePlanos(dto.getTienePlanos());
         solicitud.setPersonalAOcupar(dto.getPersonalAOcupar());
         solicitud.setTiempoDeRadicacion(dto.getTiempoDeRadicacion());
-        solicitud.setFechaEnvio(LocalDate.now());
+
+        // RESETEAR ESTADO
         solicitud.setEstado(EstadoSolicitud.PENDIENTE);
-        solicitud.setUsuario(usuario);
+
+        // LIMPIAR MOTIVO ANTERIOR
+        solicitud.setMotivoRechazo(null);
 
         solicitudRepository.save(solicitud);
-    }
-
-    public List<SolicitudResponseDTO> listarTodas() {
-        List<SolicitudRadicacion> solicitudes = solicitudRepository.findAll();
-        List<SolicitudResponseDTO> solicitudesDTOS = new ArrayList<>();
-        for (SolicitudRadicacion solicitud: solicitudes){
-            solicitudesDTOS.add(
-                    new SolicitudResponseDTO(solicitud)
-            );
-        }
-
-        return solicitudesDTOS;
     }
 
     @Transactional
@@ -136,6 +150,10 @@ public class SolicitudService {
         solicitud.setEstado(EstadoSolicitud.RECHAZADA);
         solicitud.setMotivoRechazo(motivo);
         solicitudRepository.save(solicitud);
+        // Si se rechaza se puede desactivar el usuario
+//        Usuario usuario = solicitud.getUsuario();
+//        usuario.desactivar();
+//        usuarioRepository.save(usuario);
     }
 
     public SolicitudRadicacion obtenerSolicitudActiva(String cuit){
@@ -149,7 +167,9 @@ public class SolicitudService {
                         List.of(
                                 EstadoSolicitud.PENDIENTE,
                                 EstadoSolicitud.EN_REVISION,
-                                EstadoSolicitud.APROBADA
+                                EstadoSolicitud.APROBADA,
+                                EstadoSolicitud.REQUIERE_MODIFICACION,
+                                EstadoSolicitud.RECHAZADA
                         )
                 );
     }
@@ -165,6 +185,45 @@ public class SolicitudService {
 
         return new SolicitudResponseDTO(solicitud);
     }
+
+    public void requiereModificacion(Long id, String motivo) {
+        SolicitudRadicacion solicitud = solicitudRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+        solicitud.setEstado(EstadoSolicitud.REQUIERE_MODIFICACION);
+        solicitud.setMotivoRechazo(motivo);
+        solicitudRepository.save(solicitud);
+    }
+
+    public SolicitudRequestDTO toRequestDTO(SolicitudRadicacion solicitud) {
+        SolicitudRequestDTO dto = new SolicitudRequestDTO();
+
+        // Datos empresa
+        dto.setRazonSocial(solicitud.getRazonSocial());
+        dto.setCuitEmpresa(solicitud.getCuitEmpresa());
+        dto.setIngresoBrutos(solicitud.getIngresoBrutos());
+        dto.setRubro(solicitud.getRubro());
+        dto.setTipoIndustria(solicitud.getTipoIndustria());
+        dto.setEmailEmpresa(solicitud.getEmailEmpresa());
+        dto.setTelefonoEmpresa(solicitud.getTelefonoEmpresa());
+        dto.setDireccion(solicitud.getDireccion());
+        dto.setDescripcionBienServicio(solicitud.getDescripcionBienServicio());
+
+        // Datos proyecto
+        dto.setTipoEmpresa(solicitud.getTipoEmpresa());
+        dto.setObjetivoProyecto(solicitud.getObjetivoProyecto());
+        dto.setActividadPrincipal(solicitud.getActividadPrincipal());
+        dto.setActividadSecundaria(solicitud.getActividadSecundaria());
+        dto.setNecesidadM2(solicitud.getNecesidadM2());
+        dto.setSupCubiertaTrabajoM2(solicitud.getSupCubiertaTrabajoM2());
+        dto.setSupCubiertaDepositoM2(solicitud.getSupCubiertaDepositoM2());
+        dto.setSupExpansionM2(solicitud.getSupExpansionM2());
+        dto.setTienePlanos(solicitud.getTienePlanos());
+        dto.setPersonalAOcupar(solicitud.getPersonalAOcupar());
+        dto.setTiempoDeRadicacion(solicitud.getTiempoDeRadicacion());
+
+        return dto;
+    }
+
 
 
 }
