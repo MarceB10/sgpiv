@@ -7,8 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import sgpiv.enums.ServicioLote;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -31,5 +34,9 @@ public class LoteRequestDTO {
     private LocalDate fechaAdjudicacion;
 
     private String restricciones;
+
+    private Set<ServicioLote> servicios =
+            new HashSet<>();
+
 
 }

@@ -18,6 +18,7 @@
         <th>Precio</th>
         <th>Fecha de Uso</th>
         <th>Fecha de Adjudicación</th>
+        <th>Servicios</th>
         <th>Restricciones</th>
         <th>Estado</th>
         <th>Acciones</th>
@@ -31,6 +32,17 @@
         <td th:text="'$' + ${lote.precio}">$500</td>
         <td th:text="${lote.fechaUso != null ? lote.fechaUso : '-'}">-</td>
         <td th:text="${lote.fechaAdjudicacion != null ? lote.fechaAdjudicacion : '-'}">-</td>
+        <!-- td servicios-->
+        <td>
+          <div class="services-list">
+        <span
+                class="service-badge"
+                th:each="servicio : ${lote.servicios}"
+                th:text="${servicio}">
+        </span>
+          </div>
+        </td>
+        <!-- /td servicios-->
         <td th:text="${lote.restricciones != null ? lote.restricciones : '-'}">-</td>
         <td>
                         <span th:text="${lote.estadoLote}"

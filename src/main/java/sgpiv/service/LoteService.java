@@ -23,7 +23,9 @@ public class LoteService {
     public void definirLote(LoteRequestDTO loteDTO){
 
         Lote loteNuevo = new Lote(loteDTO.getSuperficie(), loteDTO.getUbicacion(), loteDTO.getPrecio(), loteDTO.getRestricciones());
-
+        loteNuevo.setServicios(
+                loteDTO.getServicios()
+        );
         loteRepository.save(loteNuevo);
     }
 
@@ -57,6 +59,7 @@ public class LoteService {
             lotesResponseDTO.add(
                     new LoteResponseDTO(lote)
             );
+
         }
 
         return lotesResponseDTO;
