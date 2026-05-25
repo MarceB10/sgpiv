@@ -144,10 +144,13 @@
       </div>
 
       <!-- LOTE SELECCIONADO -->
-      <div th:if="${session.idLoteSeleccionado != null}" class="lote-badge">
-        ✅ Lote #<span th:text="${session.idLoteSeleccionado}"></span> seleccionado
+      <div th:if="${session.loteSeleccionado != null}" class="lote-badge">
+        ✅ Lote #<span th:text="${session.loteSeleccionado.id}"></span>
+        <span th:text="${session.loteSeleccionado.ubicacion}"></span>
+        <span th:text="${session.loteSeleccionado.superficie}"></span> m²
+        seleccionado
       </div>
-      <div th:if="${session.idLoteSeleccionado == null}" class="lote-badge sin-lote">
+      <div th:if="${session.loteSeleccionado == null}" class="lote-badge sin-lote">
         ⚠️ No hay lote seleccionado — adjudicá uno antes de aceptar
       </div>
 
@@ -211,14 +214,14 @@
     </div>
 
     <!-- Aceptar solo si hay lote seleccionado -->
-    <form th:if="${session.idLoteSeleccionado != null}"
+    <form th:if="${session.loteSeleccionado != null}"
           th:action="@{/solicitudesGerente/{id}/aprobar(id=${solicitud.id})}"
           method="post">
       <button type="submit" class="btn-aprobar">
         <i class="fa-solid fa-check"></i>Aceptar
       </button>
     </form>
-    <button th:if="${session.idLoteSeleccionado == null}"
+    <button th:if="${session.loteSeleccionado == null}"
             class="btn-aprobar deshabilitado" disabled>
       Aceptar (Seleccioná un lote primero)
     </button>
