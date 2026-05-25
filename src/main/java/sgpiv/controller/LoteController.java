@@ -95,7 +95,8 @@ public class LoteController {
                                   @RequestParam Long idSolicitud,
                                   HttpSession session) {
 
-        session.setAttribute("idLoteSeleccionado", idLote);
+        LoteResponseDTO lote = loteService.obtenerLoteParaAdjudicar(idLote);
+        session.setAttribute("loteSeleccionado", lote);
         return "redirect:/solicitudesGerente/" + idSolicitud;
     }
 

@@ -27,6 +27,12 @@ public class LoteService {
         loteRepository.save(loteNuevo);
     }
 
+    public  LoteResponseDTO obtenerLoteParaAdjudicar(Long idLote){
+        Lote lote = loteRepository.findById(idLote)
+                .orElseThrow(() -> new RuntimeException(LOTE_NOT_FOUND));
+
+        return new LoteResponseDTO(lote);
+    }
 
     public List<LoteResponseDTO> obtenerLotesParaSolicitud(Float superficie){
         List<Lote> lotes = loteRepository

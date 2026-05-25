@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import sgpiv.dtos.response.LoteResponseDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.enums.EstadoSolicitud;
 import sgpiv.enums.NombreRol;
@@ -84,14 +85,14 @@ public class GerenteController {
     @PostMapping("/solicitudesGerente/{id}/aprobar")
     public String aprobar(@PathVariable Long id,
                           HttpSession session){
-        Long idLote = (Long) session.getAttribute("idLoteSeleccionado");
-        if (idLote == null){
+        LoteResponseDTO lote = (LoteResponseDTO) session.getAttribute("loteSeleccionado");
+        if (lote == null){
             return "redirect:/solicitudesGerente/" + id;
         }
 
 
-        solicitudService.aprobar(id, idLote);
-        session.removeAttribute("idLoteSeleccionado");
+        solicitudService.aprobar(id, lote.getId());
+        session.removeAttribute("loteSeleccionado");
         return "redirect:/solicitudesGerente";
     }
 
