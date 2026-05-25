@@ -6,6 +6,8 @@
   <title>Nuevo Lote</title>
   <link rel="stylesheet" th:href="@{/css/formularioLote.css}"/>
   <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
@@ -25,7 +27,10 @@
 
   <!-- FORMULARIO -->
   <div class="form-container">
-    <form th:action="@{/gerente/lotes/nuevo-lote}" th:object="${loteRequestDTO}" method="post">
+    <form th:action="@{/gerente/lotes/nuevo-lote}"
+          th:object="${loteRequestDTO}"
+          method="post"
+    >
 
       <div class="form-grid">
 
@@ -95,6 +100,87 @@
           />
         </div>
 
+        <!-- Servicios -->
+
+        <div class="form-group full-width">
+          <label>Servicios disponibles</label>
+
+          <div class="services-grid">
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="AGUA">
+              <i class="fa-solid fa-droplet"></i>
+              Agua
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="ELECTRICIDAD">
+              <i class="fa-solid fa-bolt"></i>
+              Electricidad
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="INTERNET">
+              <i class="fa-solid fa-wifi"></i>
+              Internet
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="GAS_NATURAL">
+              <i class="fa-solid fa-fire"></i>
+              Gas natural
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="CLOACAS">
+              <i class="fa-solid fa-toilet"></i>
+              Cloacas
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="DESAGUE_PLUVIAL">
+              <i class="fa-solid fa-cloud-rain"></i>
+              Desagüe pluvial
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="SEGURIDAD_24HS">
+              <i class="fa-solid fa-shield-halved"></i>
+              Seguridad 24hs
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="CALLES_PAVIMENTADAS">
+              <i class="fa-solid fa-road"></i>
+              Calles pavimentadas
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="ALUMBRADO_PUBLICO">
+              <i class="fa-solid fa-lightbulb"></i>
+              Alumbrado público
+            </label>
+
+          </div>
+
+        </div>
         <!-- Restricciones -->
         <div class="form-group full-width">
           <label for="restricciones">Restricciones</label>

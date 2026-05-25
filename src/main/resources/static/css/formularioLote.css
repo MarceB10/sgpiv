@@ -172,3 +172,43 @@ textarea {
 .btn-guardar:hover {
     background: #1d4ed8;
 }
+
+/* SERVICIOS */
+.services-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:14px;
+    margin-top:12px;
+}
+
+.service-item{
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    padding:16px;
+
+    border:2px solid #e4e7ec;
+    border-radius:14px;
+
+    cursor:pointer;
+    background:white;
+
+    transition:0.2s;
+}
+
+.service-item:hover{
+    border-color:#2f6df5;
+    background:#f5f8ff;
+}
+
+.service-item input{
+    width:auto;
+    margin:0;
+}
+
+.service-item i{
+    color:#2f6df5;
+    font-size:18px;
+}

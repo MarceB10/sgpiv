@@ -283,3 +283,25 @@ tr:hover {
     background: #2563eb;
     color: white;
 }
+
+/* iconos de servicios */
+.services-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.service-badge{
+
+    background:#eef4ff;
+    color:#2f6df5;
+
+    padding:6px 10px;
+
+    border-radius:999px;
+
+    font-size:12px;
+    font-weight:600;
+
+    border:1px solid #cddcff;
+}
