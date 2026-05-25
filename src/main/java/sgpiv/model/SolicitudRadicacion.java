@@ -45,7 +45,7 @@ public class SolicitudRadicacion {
     private String actividadPrincipal;
     private String actividadSecundaria;
 
-    @NotNull(message = "La necesidad de m2 no puede estar vacia")
+    @NotNull(message = "Indicar la superficie necesaria en m2")
     private Double necesidadM2; // 1200, 1800, 2500, 3000, 5000, 6000
     @NotNull(message = "La superficie de trabajo no puede estar vacia")
     private Double supCubiertaTrabajoM2;
@@ -60,7 +60,7 @@ public class SolicitudRadicacion {
     @Min(value = 1,message = "Debe haber al menos 1 persona")
     private Long personalAOcupar;
 
-    @NotNull(message = "El tiempo de radicacion no puede estar vacio")
+    @NotNull(message = "Indicar el tiempo de radicacion")
     private Integer tiempoDeRadicacion;// 6, 12, 24, 36 o mas meses
 
 

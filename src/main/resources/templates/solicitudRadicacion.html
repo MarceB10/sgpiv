@@ -248,6 +248,11 @@
                         <option value="5000">5000</option>
                         <option value="6000">6000</option>
                     </select>
+
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('necesidadM2')}"
+                       th:errors="*{necesidadM2}">
+                    </p>
                 </div>
 
                 <!-- SUPERFICIE -->
@@ -258,6 +263,10 @@
                            step="0.01"
                            th:field="*{supCubiertaTrabajoM2}"
                            placeholder="Ej: 1200.00">
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('supCubiertaTrabajoM2')}"
+                       th:errors="*{supCubiertaTrabajoM2}">
+                    </p>
                 </div>
 
                 <!-- DEPOSITO -->
@@ -268,6 +277,10 @@
                             step="0.01"
                             th:field="*{supCubiertaDepositoM2}"
                             placeholder="Ej: 300.00">
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('supCubiertaDepositoM2')}"
+                       th:errors="*{supCubiertaDepositoM2}">
+                    </p>
                 </div>
 
                 <!-- EXPANSION -->
@@ -342,6 +355,11 @@
                         <option value="24">24</option>
                         <option value="36">36 o más</option>
                     </select>
+
+                    <p class="error-message"
+                       th:if="${#fields.hasErrors('tiempoDeRadicacion')}"
+                       th:errors="*{tiempoDeRadicacion}">
+                    </p>
                 </div>
 
             </div>
