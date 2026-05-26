@@ -36,6 +36,7 @@ public class Lote {
     private LocalDate fechaAdjudicacion;
 
     private String restricciones;
+    
 
     @Enumerated(EnumType.STRING)
     private EstadoLote estadoLote= EstadoLote.DISPONIBLE;
