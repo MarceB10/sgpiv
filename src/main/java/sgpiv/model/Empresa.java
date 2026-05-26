@@ -56,4 +56,8 @@ public class Empresa {
     @OneToMany(mappedBy = "empresa")
     private List<Proyecto> proyectos = new ArrayList<>();
 
+    public void agregarProyecto(Proyecto proyecto){
+        this.proyectos.add(proyecto);
+    }
+
 }

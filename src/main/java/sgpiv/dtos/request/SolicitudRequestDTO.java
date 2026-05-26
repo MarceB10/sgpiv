@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -66,6 +68,9 @@ public class SolicitudRequestDTO {
 
     private Double supExpansionM2;
 
+    @NotNull
+    private List<TareaSoliDTORequest> tareas;
+
     @NotNull(message = "Indique si tiene planos")
     private Boolean tienePlanos;
 
@@ -75,4 +80,6 @@ public class SolicitudRequestDTO {
 
     @NotNull(message = "Indicar el tiempo de radicacion")
     private Integer tiempoDeRadicacion;
+
+
 }

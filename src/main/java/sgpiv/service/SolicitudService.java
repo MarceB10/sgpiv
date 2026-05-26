@@ -1,10 +1,10 @@
 package sgpiv.service;
 
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sgpiv.dtos.request.SolicitudRequestDTO;
+import sgpiv.dtos.request.TareaSoliDTORequest;
 import sgpiv.dtos.response.SolicitudResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
 import sgpiv.enums.EstadoSolicitud;
@@ -88,12 +88,24 @@ public class SolicitudService {
         solicitud.setTienePlanos(dto.getTienePlanos());
         solicitud.setPersonalAOcupar(dto.getPersonalAOcupar());
         solicitud.setTiempoDeRadicacion(dto.getTiempoDeRadicacion());
+        List<TareaSolicitud> tareas = new ArrayList<>();
+        for (TareaSoliDTORequest tareaDTO : dto.getTareas()){
+            tareas.add(new TareaSolicitud(
+                    tareaDTO.getTitulo(),
+                    tareaDTO.getDescripcion(),
+                    solicitud
+            ));
+        }
+        solicitud.setTareas(tareas);
+        /// NOTA: Las Tareas se guardan al guardar la Solicitud
 
         // RESETEAR ESTADO
         solicitud.setEstado(EstadoSolicitud.PENDIENTE);
 
         // LIMPIAR MOTIVO ANTERIOR
         solicitud.setMotivoRechazo(null);
+
+        System.out.println("Cant Tareas: " + tareas.size());
 
         solicitudRepository.save(solicitud);
     }
@@ -104,6 +116,28 @@ public class SolicitudService {
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
         Lote lote = loteService.obtenerPorId(idLote);
+
+        List<Tarea> tareasProyecto = new ArrayList<>();
+
+        for (TareaSolicitud tareaSolicitud: solicitud.getTareas()){
+            tareasProyecto.add(new Tarea(
+                    tareaSolicitud.getTitulo(),
+                    tareaSolicitud.getDescripcion()
+            ));
+        }
+
+        //Creacion de Proyecto
+        Proyecto proyecto = new Proyecto(
+                solicitud.getActividadPrincipal(),
+                solicitud.getObjetivoProyecto(),
+                LocalDate.now(),
+                solicitud.getPersonalAOcupar()
+        );
+
+        proyecto.agregarTareas(tareasProyecto);
+
+
+        //proyecto.setFechaFin(LocalDate.now().plus(solicitud.getTiempoDeRadicacion()));
 
         //creacion de empresa
         Empresa empresa = new Empresa();
@@ -116,6 +150,9 @@ public class SolicitudService {
         empresa.setIngresoBrutos(solicitud.getIngresoBrutos());
         empresa.setDescripcionBienServicio(solicitud.getDescripcionBienServicio());
         empresa.setTipoIndustria(solicitud.getTipoIndustria());
+
+        //asociar Proyecto a empresa
+        empresa.agregarProyecto(proyecto);
 
         empresa.setEstadoEmpresa(EstadoEmpresa.ADJUDICADA);//por ahora interesada hasta que tenga la adjudicacion
 

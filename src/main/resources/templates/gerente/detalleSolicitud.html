@@ -141,6 +141,28 @@
         <span class="dato-valor" th:text="${solicitud.tiempoDeRadicacion} + ' meses'">-</span>
       </div>
 
+      <!-- SECCION: TAREAS -->
+      <div class="seccion">
+        <h2 class="seccion-titulo">📌 Tareas del proyecto</h2>
+
+        <div th:if="${#lists.isEmpty(solicitud.tareas)}" class="dato-valor">
+          No hay tareas cargadas
+        </div>
+
+        <div th:each="tarea : ${solicitud.tareas}" class="tarea-item">
+          <div class="dato-item">
+            <span class="dato-label">Título</span>
+            <span class="dato-valor" th:text="${tarea.titulo}">-</span>
+          </div>
+          <div class="dato-item full-width">
+            <span class="dato-label">Descripción</span>
+            <span class="dato-valor" th:text="${tarea.descripcion}">-</span>
+          </div>
+        </div>
+
+      </div>
+
+
       <!-- LOTE SELECCIONADO -->
       <div th:if="${session.loteSeleccionado != null}" class="lote-badge">
         ✅ Lote #<span th:text="${session.loteSeleccionado.id}"></span>
