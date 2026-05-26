@@ -55,7 +55,7 @@ public class SolicitudRequestDTO {
 
     private String actividadSecundaria;
 
-    @NotNull(message = "La necesidad de m2 no puede estar vacia")
+    @NotNull(message = "Indicar la superficie necesaria en m2")
     private Double necesidadM2;
 
     @NotNull(message = "La superficie de trabajo no puede estar vacia")
@@ -69,10 +69,10 @@ public class SolicitudRequestDTO {
     @NotNull(message = "Indique si tiene planos")
     private Boolean tienePlanos;
 
-    @NotNull(message = "El personal a ocupar no puede estar vacio")
+    @NotNull(message = "Indique el personal a ocupar")
     @Min(value = 1, message = "Debe haber al menos 1 persona")
     private Long personalAOcupar;
 
-    @NotNull(message = "El tiempo de radicacion no puede estar vacio")
+    @NotNull(message = "Indicar el tiempo de radicacion")
     private Integer tiempoDeRadicacion;
 }
