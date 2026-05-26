@@ -117,6 +117,7 @@ body {
 .search-form {
     display: flex;
     gap: 12px;
+    align-items:center;
 }
 
 .search-form input,
@@ -131,7 +132,7 @@ body {
 }
 
 .search-form input {
-    width: 260px;
+    min-width:280px;
 }
 
 .search-form input:focus,
