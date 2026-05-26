@@ -12,6 +12,7 @@ import sgpiv.dtos.request.LoteRequestDTO;
 import sgpiv.dtos.response.LoteResponseDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.service.LoteService;
+import sgpiv.service.OcupacionLoteService;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ import java.util.List;
 public class LoteController {
 
     private final LoteService loteService;
+    private final OcupacionLoteService ocupacionLoteService;
 
     @GetMapping("/gerente/lotes")
     public String listarLotes(Model model, HttpSession session) {
@@ -34,6 +36,9 @@ public class LoteController {
                 lotes.stream().filter(l -> "DISPONIBLE".equals(l.getEstadoLote().name())).count());
         model.addAttribute("totalEnUso",
                 lotes.stream().filter(l -> "EN_USO".equals(l.getEstadoLote().name())).count());
+        //Agregue Esto -------------------------------------------------------------------
+        model.addAttribute("ocupaciones", ocupacionLoteService.obtenerTodas());
+        /// ----------------------------------------------------------------------------
         model.addAttribute("usuario", usuario);
         model.addAttribute("pagina", "lotes");
         return "gerente/lotes";
@@ -102,5 +107,17 @@ public class LoteController {
         return "redirect:/solicitudesGerente/" + idSolicitud;
     }
 
+    //--------------Ocupacion Lotes-----------------------------------------
+    @GetMapping("/ocupaciones")
+    public String listarOcupaciones(Model model, HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/";
+
+        model.addAttribute("ocupaciones", ocupacionLoteService.obtenerTodas());
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pagina", "lotes");
+        return "gerente/tablaOcupaciones";
+    }
+    //-----------------------------------------------------------------------
 
 }
