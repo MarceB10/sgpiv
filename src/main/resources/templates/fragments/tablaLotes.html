@@ -25,9 +25,11 @@
       </tr>
       </thead>
       <tbody>
-      <tr th:each="lote : ${lotes}">
+      <tr th:each="lote : ${lotes}"
+      class="fila-lote">
         <td th:text="${lote.id}">1</td>
-        <td th:text="${lote.ubicacion}">Ubicación</td>
+        <td class="col-ubicacion"
+            th:text="${lote.ubicacion}">
         <td th:text="${lote.superficie}">100</td>
         <td th:text="'$' + ${lote.precio}">$500</td>
         <td th:text="${lote.fechaUso != null ? lote.fechaUso : '-'}">-</td>
@@ -45,7 +47,8 @@
         <!-- /td servicios-->
         <td th:text="${lote.restricciones != null ? lote.restricciones : '-'}">-</td>
         <td>
-                        <span th:text="${lote.estadoLote}"
+                        <span class="col-estado"
+                              th:text="${lote.estadoLote}"
                               th:classappend="${lote.estadoLote.name() == 'DISPONIBLE'} ? 'estado disponible' :
                                              (${lote.estadoLote.name() == 'EN_USO'} ? 'estado en-uso' : 'estado inactivo')">
                         </span>
