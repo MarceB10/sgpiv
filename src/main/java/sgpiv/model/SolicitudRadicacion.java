@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import sgpiv.enums.EstadoSolicitud;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -52,6 +53,8 @@ public class SolicitudRadicacion {
     @NotNull(message = "La superficie de deposito no puede estar vacia")
     private Double supCubiertaDepositoM2;
     private Double supExpansionM2; //opcional
+
+    private List<Tarea> tareasDelProyecto;
 
     @NotNull(message = "Indique si tiene planos")
     private Boolean tienePlanos;//ver el manejo de planos porque el capaz elos puede cargar, por ahora solo boolean
