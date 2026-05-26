@@ -60,9 +60,17 @@ public class LoteController {
     public String crearLote(
             @Valid @ModelAttribute LoteRequestDTO loteRequestDTO,
             BindingResult result,
-            RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes,
+            HttpSession session,
+            Model model) {
+
+        UsuarioResponseDTO usuario =
+                (UsuarioResponseDTO) session.getAttribute("usuario");
 
         if (result.hasErrors()) {
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("pagina", "lotes");
+
             return "formularioLote";
         }
 

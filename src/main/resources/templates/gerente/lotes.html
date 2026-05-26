@@ -11,10 +11,7 @@
 
 <!-- SIDEBAR -->
 <div th:replace="~{fragments/sidebar :: sidebar}"></div>
-
-
 <div class="main-content">
-
     <!-- HEADER -->
     <div class="header">
         <div class="header-text">
@@ -25,7 +22,6 @@
             + Nuevo Lote
         </a>
     </div>
-
     <!-- Mensaje Creacion Lote -->
     <div th:if="${mensaje}" class="alert alert-warning" th:text="${mensaje}"></div>
 
@@ -54,6 +50,7 @@
         <!-- TOP: título + búsqueda -->
         <div class="table-top">
             <h3>Listado de Lotes</h3>
+            <!--
             <form th:action="@{/gerente/lotes}" method="get" class="search-form">
                 <input
                         type="text"
@@ -70,6 +67,19 @@
                 </select>
                 <button type="submit" class="search-button">Buscar</button>
             </form>
+            -->
+            <div class="search-form">
+                <input
+                        type="text"
+                        id="buscadorLote"
+                        placeholder="Buscar por ubicación..."
+                />
+                <select id="filtroEstado">
+                    <option value="">Todos los estados</option>
+                    <option value="DISPONIBLE">Disponible</option>
+                    <option value="EN_USO">En Uso</option>
+                </select>
+            </div>
         </div>
 
         <!-- FRAGMENTO DE TABLA -->
@@ -114,5 +124,64 @@
 </div>
 <!-- /main-content -->
 
+<script>
+
+    const buscador =
+        document.getElementById("buscadorLote");
+
+    const filtroEstado =
+        document.getElementById("filtroEstado");
+
+    function filtrarLotes() {
+
+        let texto =
+            buscador.value.toLowerCase().trim();
+
+        let estado =
+            filtroEstado.value.toLowerCase();
+
+        let filas =
+            document.querySelectorAll(".fila-lote");
+
+        filas.forEach(fila => {
+
+            let ubicacion =
+                fila.querySelector(".col-ubicacion")
+                    .innerText
+                    .toLowerCase();
+
+            let estadoFila =
+                fila.querySelector(".col-estado")
+                    .innerText
+                    .toLowerCase();
+
+            let coincideTexto =
+                ubicacion.startsWith(texto);
+
+            let coincideEstado =
+                estado === "" ||
+                estadoFila === estado;
+
+            if (coincideTexto && coincideEstado) {
+                fila.style.display = "";
+            }
+            else {
+                fila.style.display = "none";
+            }
+
+        });
+    }
+
+    buscador.addEventListener(
+        "input",
+        filtrarLotes
+    );
+
+    filtroEstado.addEventListener(
+        "change",
+        filtrarLotes
+    );
+
+</script>
 </body>
 </html>

@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sgpiv.enums.EstadoLote;
+import sgpiv.enums.ServicioLote;
 import sgpiv.model.Lote;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -14,20 +16,14 @@ import java.time.LocalDate;
 public class LoteResponseDTO {
 
     private Long id;
-
     private Float superficie;
-
     private String ubicacion;
-
     private Float precio;
-
     private LocalDate fechaUso;
-
     private LocalDate fechaAdjudicacion;
-
     private String restricciones;
-
     private EstadoLote estadoLote;
+    private Set<ServicioLote> servicios;
 
     public LoteResponseDTO(Lote lote) {
         this.id               = lote.getId();
@@ -38,6 +34,7 @@ public class LoteResponseDTO {
         this.fechaAdjudicacion = lote.getFechaAdjudicacion();
         this.restricciones    = lote.getRestricciones();
         this.estadoLote       = lote.getEstadoLote();
+        this.servicios        = lote.getServicios();
     }
 
 }
