@@ -43,13 +43,16 @@ public class Proyecto {
     @Min(value = 1, message = "minimo 1 persona debe trabajar en el proyecto")
     private Long personalAOcupar;
 
-    @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Tarea> tareas = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "empresa_id")
     private Empresa empresa;
 
+    @ManyToOne
+    @JoinColumn(name = "representante_id")
+    private RepresentanteEmpresa representanteEmpresa;
 
     public Proyecto(String titulo, String descripcion, LocalDate fechaInicio, Long personalAOcupar){
 

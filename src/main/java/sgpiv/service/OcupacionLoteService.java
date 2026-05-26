@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import sgpiv.dtos.response.OcupacionLoteResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
 import sgpiv.enums.EstadoLote;
-import sgpiv.model.Empresa;
-import sgpiv.model.Lote;
-import sgpiv.model.OcupacionLote;
-import sgpiv.model.RepresentanteEmpresa;
+import sgpiv.model.*;
 import sgpiv.repository.EmpresaRepository;
 import sgpiv.repository.LoteRepository;
 import sgpiv.repository.OcupacionLoteRepository;
@@ -34,27 +31,27 @@ public class OcupacionLoteService {
         List<OcupacionLoteResponseDTO> resultado = new ArrayList<>();
 
         for (OcupacionLote ocupacion : ocupaciones) {
-            RepresentanteEmpresa rep = representanteRepository
-                    .findByEmpresa(ocupacion.getEmpresa())
-                    .orElse(null);
+//            RepresentanteEmpresa rep = representanteRepository
+//                    .findByEmpresa(ocupacion.getProyecto().getEmpresa())
+//                    .orElse(null);
+//
+//            String nombre   = rep != null ? rep.getUsuario().getNombre()   : "-";
+//            String apellido = rep != null ? rep.getUsuario().getApellido() : "-";
+//            String cuit     = rep != null ? rep.getUsuario().getCuit()     : "-";
 
-            String nombre   = rep != null ? rep.getUsuario().getNombre()   : "-";
-            String apellido = rep != null ? rep.getUsuario().getApellido() : "-";
-            String cuit     = rep != null ? rep.getUsuario().getCuit()     : "-";
-
-            resultado.add(new OcupacionLoteResponseDTO(ocupacion, nombre, apellido, cuit));
+            resultado.add(new OcupacionLoteResponseDTO(ocupacion));
         }
 
         return resultado;
     }
 
 
-    public void ocuparLote(Lote lote, Empresa empresa){
+    public void ocuparLote(Lote lote, Proyecto proyecto){
         lote.setEstadoLote(EstadoLote.EN_USO);
         loteRepository.save(lote);
-        empresa.setEstadoEmpresa(EstadoEmpresa.RADICADA);
-        empresaRepository.save(empresa);
-        OcupacionLote ocupacionLote = new OcupacionLote(empresa, lote, LocalDate.now());
+        proyecto.getEmpresa().setEstadoEmpresa(EstadoEmpresa.RADICADA);
+        empresaRepository.save(proyecto.getEmpresa());
+        OcupacionLote ocupacionLote = new OcupacionLote(proyecto, lote, LocalDate.now());
         ocupacionLoteRepository.save(ocupacionLote);
     }
 
