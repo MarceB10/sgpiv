@@ -53,11 +53,12 @@ public class Empresa {
     private EstadoEmpresa estadoEmpresa = (EstadoEmpresa.INTERESADA);
 
 
-    @OneToMany(mappedBy = "empresa")
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
     private List<Proyecto> proyectos = new ArrayList<>();
 
     public void agregarProyecto(Proyecto proyecto){
         this.proyectos.add(proyecto);
+        proyecto.setEmpresa(this);
     }
 
 }

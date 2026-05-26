@@ -11,6 +11,7 @@ import sgpiv.enums.EstadoSolicitud;
 import sgpiv.enums.NombreRol;
 import sgpiv.model.*;
 import sgpiv.repository.EmpresaRepository;
+import sgpiv.repository.ProyectoRepository;
 import sgpiv.repository.SolicitudRepository;
 import sgpiv.repository.UsuarioRepository;
 
@@ -27,6 +28,7 @@ public class SolicitudService {
 
     private final OcupacionLoteService ocupacionLoteService;
 
+    private final ProyectoRepository proyectoRepository;
     private final EmpresaRepository empresaRepository;
     private final UsuarioService usuarioService;
     private final RepresentanteService representanteService;
@@ -135,9 +137,9 @@ public class SolicitudService {
         );
 
         proyecto.agregarTareas(tareasProyecto);
-
-
         //proyecto.setFechaFin(LocalDate.now().plus(solicitud.getTiempoDeRadicacion()));
+
+
 
         //creacion de empresa
         Empresa empresa = new Empresa();
@@ -156,7 +158,6 @@ public class SolicitudService {
 
         empresa.setEstadoEmpresa(EstadoEmpresa.ADJUDICADA);//por ahora interesada hasta que tenga la adjudicacion
 
-        empresaRepository.save(empresa);
 
         Usuario usuario = solicitud.getUsuario();
 
@@ -169,7 +170,10 @@ public class SolicitudService {
         RepresentanteEmpresa representante =
                 representanteService.buscarPorCuit(usuario.getCuit());
 
+        proyecto.setRepresentanteEmpresa(representante);
         representanteService.asignarEmpresa(representante, empresa);
+        empresaRepository.saveAndFlush(empresa);
+
 
         //cambio de estado de la solicitud
         solicitud.setEstado(EstadoSolicitud.APROBADA);
@@ -177,7 +181,7 @@ public class SolicitudService {
         solicitudRepository.save(solicitud);
 
         //OcupacionLote
-        ocupacionLoteService.ocuparLote(lote, empresa);
+        ocupacionLoteService.ocuparLote(lote, proyecto);
 
     }
 

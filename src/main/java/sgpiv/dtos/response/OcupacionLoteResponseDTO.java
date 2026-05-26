@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sgpiv.model.OcupacionLote;
+import sgpiv.model.Proyecto;
 
 import java.time.LocalDate;
 
@@ -13,33 +14,48 @@ import java.time.LocalDate;
 public class OcupacionLoteResponseDTO {
 
     private Long id;
+
+    // Lote
     private Long idLote;
     private String ubicacionLote;
     private Float superficieLote;
-    private Float precioLote;
+
+    // Empresa (via proyecto)
     private String razonSocialEmpresa;
     private String cuitEmpresa;
+
+    // Representante (via proyecto -> usuario)
     private String nombreRepresentante;
     private String apellidoRepresentante;
     private String cuitRepresentante;
+
+    // Proyecto
+    private String tituloProyecto;  // por si lo necesitás mostrar
+
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
-    private boolean activa;
 
-    public OcupacionLoteResponseDTO(OcupacionLote ocupacion, String nombreRep,
-                                    String apellidoRep, String cuitRep) {
-        this.id                   = ocupacion.getId();
-        this.idLote               = ocupacion.getLote().getId();
-        this.ubicacionLote        = ocupacion.getLote().getUbicacion();
-        this.superficieLote       = ocupacion.getLote().getSuperficie();
-        this.precioLote           = ocupacion.getLote().getPrecio();
-        this.razonSocialEmpresa   = ocupacion.getEmpresa().getRazonSocial();
-        this.cuitEmpresa          = ocupacion.getEmpresa().getCuit();
-        this.nombreRepresentante  = nombreRep;
-        this.apellidoRepresentante = apellidoRep;
-        this.cuitRepresentante    = cuitRep;
-        this.fechaInicio          = ocupacion.getFechaInicio();
-        this.fechaFin             = ocupacion.getFechaFin();
-        this.activa               = ocupacion.estaActiva();
+    public OcupacionLoteResponseDTO(OcupacionLote ocupacion) {
+        this.id               = ocupacion.getId();
+        this.idLote           = ocupacion.getLote().getId();
+        this.ubicacionLote    = ocupacion.getLote().getUbicacion();
+        this.superficieLote   = ocupacion.getLote().getSuperficie();
+        this.fechaInicio      = ocupacion.getFechaInicio();
+        this.fechaFin         = ocupacion.getFechaFin();
+
+        // via proyecto
+        Proyecto proyecto = ocupacion.getProyecto();
+        if (proyecto != null) {
+            this.tituloProyecto = proyecto.getTitulo();
+            this.razonSocialEmpresa = proyecto.getEmpresa().getRazonSocial();
+            this.cuitEmpresa       = proyecto.getEmpresa().getCuit();
+
+            // via proyecto -> usuario (representante)
+            if (proyecto.getRepresentanteEmpresa() != null) {
+                this.nombreRepresentante   = proyecto.getRepresentanteEmpresa().getUsuario().getNombre();
+                this.apellidoRepresentante = proyecto.getRepresentanteEmpresa().getUsuario().getApellido();
+                this.cuitRepresentante     = proyecto.getRepresentanteEmpresa().getUsuario().getCuit();
+            }
+        }
     }
 }
