@@ -1,12 +1,17 @@
 package sgpiv.dtos.response;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sgpiv.enums.EstadoSolicitud;
 import sgpiv.model.SolicitudRadicacion;
+import sgpiv.model.Tarea;
+import sgpiv.model.TareaSolicitud;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -37,6 +42,7 @@ public class SolicitudResponseDTO {
     private Boolean tienePlanos;
     private Long personalAOcupar;
     private Integer tiempoDeRadicacion;
+    private List<TareaSoliDTOResponse> tareas = new ArrayList<>();
 
     // ESTADO
     private EstadoSolicitud estado;
@@ -79,6 +85,12 @@ public class SolicitudResponseDTO {
             this.apellidoUsuario = solicitud.getUsuario().getApellido();
             this.cuitUsuario     = solicitud.getUsuario().getCuit();
         }
+
+        for (TareaSolicitud tarea : solicitud.getTareas()){
+            this.tareas.add(new TareaSoliDTOResponse(tarea));
+        }
+
+
     }
 
 }

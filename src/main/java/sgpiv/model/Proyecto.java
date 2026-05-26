@@ -41,7 +41,7 @@ public class Proyecto {
     private LocalDate fechaFin; // sino no hay fecha fin entonces no termino
 
     @Min(value = 1, message = "minimo 1 persona debe trabajar en el proyecto")
-    private int personalAOcupar;
+    private Long personalAOcupar;
 
     @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL)
     private List<Tarea> tareas = new ArrayList<>();
@@ -51,7 +51,7 @@ public class Proyecto {
     private Empresa empresa;
 
 
-    public Proyecto(String titulo, String descripcion, LocalDate fechaInicio, int personalAOcupar){
+    public Proyecto(String titulo, String descripcion, LocalDate fechaInicio, Long personalAOcupar){
 
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -111,9 +111,12 @@ public class Proyecto {
 
 
 
-    public void modificarCantPersonal(int personalAOcupar){
+    public void modificarCantPersonal(Long personalAOcupar){
         this.personalAOcupar = personalAOcupar;
     }
 
 
+    public void agregarTareas(List<Tarea> tareasProyecto) {
+        this.tareas.addAll(tareasProyecto);
+    }
 }

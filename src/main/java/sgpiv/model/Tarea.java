@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Tarea {
 
     @Id
@@ -30,6 +29,13 @@ public class Tarea {
     @ManyToOne
     @JoinColumn(name = "proyecto_id")
     private Proyecto proyecto;
+
+    public Tarea(String titulo, String descripcion){
+
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+    }
+
 
     public void completarTarea(){
         this.completa = true;

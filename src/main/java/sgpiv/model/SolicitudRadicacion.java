@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import sgpiv.enums.EstadoSolicitud;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -54,7 +55,11 @@ public class SolicitudRadicacion {
     private Double supCubiertaDepositoM2;
     private Double supExpansionM2; //opcional
 
-    private List<Tarea> tareasDelProyecto;
+    //'TareaSolicitud' es una clase puente antes de crear las tareas definitivas
+    //ESTA CLASE NO SE RELACIONA A PROYECTO, ESTAN RELACIONADAS CON LA SOLICITUD
+    //EN CAMBIO LA CLASE 'TAREA' SI ESTA RELACIONADA A PROYECTO
+    @OneToMany(mappedBy = "solicitud", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<TareaSolicitud> tareas = new ArrayList<>();
 
     @NotNull(message = "Indique si tiene planos")
     private Boolean tienePlanos;//ver el manejo de planos porque el capaz elos puede cargar, por ahora solo boolean
