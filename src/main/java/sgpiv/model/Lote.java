@@ -8,15 +8,27 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import sgpiv.enums.EstadoLote;
+import sgpiv.enums.ServicioLote;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Lote {
+
+    @ElementCollection(targetClass = ServicioLote.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(
+            name = "lote_servicios",
+            joinColumns = @JoinColumn(name = "lote_id")
+    )
+    @Column(name = "servicio")
+    private Set<ServicioLote> servicios = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
