@@ -354,6 +354,7 @@
                         <option value="12">12</option>
                         <option value="24">24</option>
                         <option value="36">36 o más</option>
+                        <option value="36">36 o más</option>
                     </select>
 
                     <p class="error-message"
@@ -363,6 +364,24 @@
                 </div>
 
             </div>
+                    <!-- TAREAS DEL PROYECTO -->
+                <h2>Tareas del proyecto</h2>
+                <p class="info-text">Agregá las tareas que forman parte de tu proyecto</p>
+
+                <div id="tareas-container">
+                    <div class="tareas-list" id="tareas-list">
+                        <!-- Tareas se agregarán aquí dinámicamente -->
+                    </div>
+                </div>
+
+                <button type="button" class="btn-add-tarea" onclick="agregarTarea()">
+                    <i class="fa-solid fa-plus"></i> Agregar tarea
+                </button>
+
+                <p th:if="${error}"
+                   th:text="${error}"
+                   class="error-message">
+                </p>
 
             <p th:if="${error}"
                th:text="${error}"
@@ -400,6 +419,85 @@
     </div>
 
 </div>
+
+<!-- javascript para cargar dinamicamente las tareas -->
+<script>
+    let tareaIndex = 0;
+
+    // Inicializar tareas existentes si es edición
+    document.addEventListener('DOMContentLoaded', function() {
+        inicializarTareas();
+    });
+
+    function inicializarTareas() {
+        // Obtener tareas existentes del formulario si es edición
+        const form = document.querySelector('form');
+        const data = new FormData(form);
+
+        let indice = 0;
+        while (data.has(`tareas[${indice}].titulo`)) {
+            const titulo = data.get(`tareas[${indice}].titulo`);
+            const descripcion = data.get(`tareas[${indice}].descripcion`);
+
+            if (titulo && descripcion) {
+                agregarTareaUI(titulo, descripcion, indice);
+                tareaIndex = indice + 1;
+            }
+            indice++;
+        }
+    }
+
+    function agregarTarea() {
+        agregarTareaUI('', '', tareaIndex);
+        tareaIndex++;
+    }
+
+    function agregarTareaUI(titulo = '', descripcion = '', index = null) {
+        if (index === null) {
+            index = tareaIndex;
+        }
+
+        const tareasList = document.getElementById('tareas-list');
+
+        const tareaDiv = document.createElement('div');
+        tareaDiv.className = 'tarea-item';
+        tareaDiv.id = `tarea-${index}`;
+        tareaDiv.innerHTML = `
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Título de la tarea *</label>
+                <input type="text"
+                       name="tareas[${index}].titulo"
+                       class="tarea-titulo"
+                       value="${titulo}"
+                       placeholder="Ej: Instalación de maquinaria"
+                       required>
+            </div>
+
+            <div class="form-group full-width">
+                <label>Descripción de la tarea *</label>
+                <textarea name="tareas[${index}].descripcion"
+                          class="tarea-descripcion"
+                          placeholder="Describe brevemente la tarea"
+                          required>${descripcion}</textarea>
+            </div>
+        </div>
+
+        <button type="button" class="btn-danger" onclick="eliminarTarea(${index})">
+            <i class="fa-solid fa-trash"></i> Eliminar tarea
+        </button>
+    `;
+
+        tareasList.appendChild(tareaDiv);
+    }
+
+    function eliminarTarea(index) {
+        const tareaDiv = document.getElementById(`tarea-${index}`);
+        if (tareaDiv) {
+            tareaDiv.remove();
+        }
+    }
+</script>
 
 </body>
 </html>

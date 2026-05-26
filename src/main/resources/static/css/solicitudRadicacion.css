@@ -276,3 +276,102 @@ input[type="file"]{
 
 
 }
+/* ESTILOS PARA TAREAS */
+
+#tareas-container {
+    margin-top: 30px;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+}
+
+.tareas-list {
+    margin-bottom: 20px;
+}
+
+.tarea-item {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-left: 4px solid #2f6df5;
+}
+
+.tarea-item .form-grid {
+    gap: 15px;
+}
+
+.tarea-item label {
+    font-weight: 600;
+    color: #0f172a;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.tarea-item input[type="text"],
+.tarea-item textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}
+
+.tarea-item textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.tarea-item input[type="text"]:focus,
+.tarea-item textarea:focus {
+    outline: none;
+    border-color: #2f6df5;
+    box-shadow: 0 0 0 3px rgba(47, 109, 245, 0.1);
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.btn-add-tarea {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s ease;
+    margin-bottom: 30px;
+}
+
+.btn-add-tarea:hover {
+    background: #059669;
+}
+
+.info-text {
+    color: #667085;
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
