@@ -11,6 +11,7 @@ import sgpiv.model.*;
 import sgpiv.repository.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class DataInitializer implements CommandLineRunner {
 /// Pruebas
     private final EmpresaRepository empresaRepository;
     private final LoteRepository loteRepository;
-//    private final SolicitudRepository solicitudRepository;
+//    private final SolicitudRepository solicitudRadicacionRepository;
 /// /
     @Override
     public void run(String... args) throws Exception {
@@ -38,82 +39,31 @@ public class DataInitializer implements CommandLineRunner {
         precargarUsuarioNulo();
 
         /// Pruebas
-        precargarEmpresas();
+        var empresas = precargarEmpresas();
         precargarLotes();
+//        precargarSolicitudes(empresas);
         ///
+    }
 
-
-//        if (solicitudRepository.count() == 0) {
+//    private void precargarSolicitudes(List<Empresa> empresas) {
+//        if(solicitudRadicacionRepository.count() == 0){
 //
+//            Empresa empresa1 = empresas.get(0);
 //            SolicitudRadicacion s1 = new SolicitudRadicacion();
-//            s1.setTipoEmpresa("Solicitud de radicación");
-//            s1.setEstado(EstadoSolicitud.PENDIENTE);
 //
-//            SolicitudRadicacion s2 = new SolicitudRadicacion();
-//            s2.setTipoEmpresa("Ampliación de nave");
-//            s2.setEstado(EstadoSolicitud.APROBADA);
+//            s1.setRazonSocial(empresa1.getRazonSocial());
+//            s1.setCuitEmpresa(empresa1.getCuit());
+//            s1.setRubro(empresa1.getRubro());
+//            s1.setTipoIndustria(empresa1.getTipoIndustria());
+//            s1.setEmailEmpresa(empresa1.getEmail());
+//            s1.setDireccion(empresa1.getDireccion());
+//            s1.setDescripcionBienServicio(empresa1.getDescripcionBienServicio());
 //
-//            SolicitudRadicacion s3 = new SolicitudRadicacion();
-//            s3.setTipoEmpresa("Instalación eléctrica");
-//            s3.setEstado(EstadoSolicitud.EN_REVISION);
-//
-//            SolicitudRadicacion s4 = new SolicitudRadicacion();
-//            s4.setTipoEmpresa("Conexión eléctrica");
-//            s4.setEstado(EstadoSolicitud.RECHAZADA);
-//
-//            solicitudRepository.save(s1);
-//            solicitudRepository.save(s2);
-//            solicitudRepository.save(s3);
-//            solicitudRepository.save(s4);
-//
-//            System.out.println("Solicitudes de prueba cargadas");
+//            solicitudRadicacionRepository.save(s1);
 //        }
+//    }
 
-    }
-
-    private void precargarUsuarioNulo() {
-        if (!usuarioRepository.existsByCuit("00000000001")) {
-            Rol rolUsuarioNulo = rolRepository.findByNombre(NombreRol.ROL_NULO)
-                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
-
-            Usuario nulo = new Usuario(
-                    "Alan",
-                    "Turing",
-                    "alan@gmail.com",
-                    10001L,
-                    "1234",
-                    "00000000001"
-            );
-
-            nulo.getRoles().clear(); // saca ROL_NULO que agrega el constructor
-            nulo.getRoles().add(rolUsuarioNulo);
-
-            usuarioRepository.save(nulo);
-        }
-    }
-
-    private void precargarGerente() {
-        if (!usuarioRepository.existsByCuit("00000000000")) {
-            Rol rolGerente = rolRepository.findByNombre(NombreRol.ROL_GERENTE)
-                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
-
-            Usuario gerente = new Usuario(
-                    "Martin",
-                    "Lemos",
-                    "gerenteSGPIV@gmail.com",
-                    10000L,
-                    "sgpiv1234",
-                    "00000000000"
-            );
-
-            gerente.getRoles().clear(); // saca ROL_NULO que agrega el constructor
-            gerente.getRoles().add(rolGerente);
-
-            usuarioRepository.save(gerente);
-        }
-    }
-
-    private void precargarEmpresas() {
+    private List<Empresa> precargarEmpresas() {
         if (empresaRepository.count() == 0) {
 
             Empresa empresa1 = new Empresa();
@@ -166,6 +116,67 @@ public class DataInitializer implements CommandLineRunner {
             empresaRepository.save(empresa6);
 
             System.out.println("Empresas de prueba cargadas");
+        }
+        return empresaRepository.findAll();
+    }
+
+    private void precargarUsuarioNulo() {
+        if (!usuarioRepository.existsByCuit("00000000001")) {
+            Rol rolUsuarioNulo = rolRepository.findByNombre(NombreRol.ROL_NULO)
+                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
+
+            Usuario nulo = new Usuario(
+                    "Alan",
+                    "Turing",
+                    "alan@gmail.com",
+                    10001L,
+                    "1234",
+                    "00000000001"
+            );
+
+            nulo.getRoles().clear(); // saca ROL_NULO que agrega el constructor
+            nulo.getRoles().add(rolUsuarioNulo);
+
+            usuarioRepository.save(nulo);
+        }
+        if (!usuarioRepository.existsByCuit("00000000002")) {
+            Rol rolUsuarioNulo = rolRepository.findByNombre(NombreRol.ROL_NULO)
+                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
+
+            Usuario nulo = new Usuario(
+                    "Rodrigo",
+                    "Quichan",
+                    "ro@gmail.com",
+                    10002L,
+                    "1234",
+                    "00000000002"
+            );
+
+            nulo.getRoles().clear(); // saca ROL_NULO que agrega el constructor
+            nulo.getRoles().add(rolUsuarioNulo);
+
+            usuarioRepository.save(nulo);
+        }
+    }
+
+    private void precargarGerente() {
+        if (!usuarioRepository.existsByCuit("00000000000")) {
+            Rol rolGerente = rolRepository.findByNombre(NombreRol.ROL_GERENTE)
+                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
+
+            Usuario gerente = new Usuario(
+                    "Martin",
+                    "Lemos",
+                    "gerenteSGPIV@gmail.com",
+                    10000L,
+                    "sgpiv1234",
+                    "00000000000"
+            );
+
+            gerente.getRoles().clear(); // saca ROL_NULO que agrega el constructor
+            gerente.getRoles().add(rolGerente);
+
+            usuarioRepository.save(gerente);
         }
     }
 
