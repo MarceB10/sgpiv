@@ -188,7 +188,28 @@
 
     </div>
 
-</div>
+    <!-- TAREAS DEL PROYECTO -->
+    <div class="section-title">
+        <i class="fa-solid fa-tasks"></i>
+        <h2>Tareas del proyecto</h2>
+    </div>
 
-</body>
-</html>
+    <div th:if="${solicitud.tareas != null and solicitud.tareas.size() > 0}" class="tareas-container">
+        <div th:each="tarea : ${solicitud.tareas}" class="tarea-card">
+            <div class="tarea-header">
+                <div class="tarea-icon">
+                    <i class="fa-solid fa-check-circle"></i>
+                </div>
+                <h3 th:text="${tarea.titulo}"></h3>
+            </div>
+            <p class="tarea-descripcion" th:text="${tarea.descripcion}"></p>
+        </div>
+    </div>
+
+    <div th:if="${solicitud.tareas == null or solicitud.tareas.size() == 0}" class="card empty-state">
+        <i class="fa-solid fa-inbox"></i>
+        <p>No hay tareas agregadas para este proyecto.</p>
+    </div>
+
+</div>
+</body></html>
