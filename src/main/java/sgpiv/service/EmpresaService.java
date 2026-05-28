@@ -101,8 +101,15 @@ public class EmpresaService {
     }
 
     public EmpresaResponseDTO buscarEmpresaDelRepresentante(String cuit) {
-        Empresa empresa = empresaRepository.findByCuit(cuit)
-                .orElseThrow(() -> new RuntimeException("No se encontró una empresa asociada a este representante"));
+        RepresentanteEmpresa representante = representanteService.buscarPorCuit(cuit);
+
+        //El error estaba en que se buscaba el representante por Empresa, y empresa no tiene al representante
+        //primero hay que traer al representante, y desde ahi traer la empresa
+        Empresa empresa = representante.miEmpresaEs();
+
+        if (empresa == null) {
+            throw new RuntimeException("El representante no tiene una empresa asignada");
+        }
 
         return new EmpresaResponseDTO(empresa);
     }

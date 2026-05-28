@@ -112,6 +112,7 @@ public class EmpresaController {
             model.addAttribute("empresa", empresa);
         } catch (Exception e) {
             // Si no hay empresa, mandamos el atributo como null o un mensaje
+            System.out.println("Error al buscar empresa: " + e.getMessage()); // temporal
             model.addAttribute("empresa", null);
             model.addAttribute("mensaje", "Aún no has registrado ninguna empresa en el sistema.");
         }
