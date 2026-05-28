@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -69,7 +70,7 @@ public class SolicitudRequestDTO {
     private Double supExpansionM2;
 
     @NotNull
-    private List<TareaSoliDTORequest> tareas;
+    private List<TareaSoliDTORequest> tareas = new ArrayList<>();
 
     @NotNull(message = "Indique si tiene planos")
     private Boolean tienePlanos;

@@ -18,6 +18,7 @@ import sgpiv.repository.UsuarioRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -90,15 +91,22 @@ public class SolicitudService {
         solicitud.setTienePlanos(dto.getTienePlanos());
         solicitud.setPersonalAOcupar(dto.getPersonalAOcupar());
         solicitud.setTiempoDeRadicacion(dto.getTiempoDeRadicacion());
-        List<TareaSolicitud> tareas = new ArrayList<>();
-        for (TareaSoliDTORequest tareaDTO : dto.getTareas()){
-            tareas.add(new TareaSolicitud(
-                    tareaDTO.getTitulo(),
-                    tareaDTO.getDescripcion(),
-                    solicitud
-            ));
+
+// TAREAS - Limpiar y recrear
+        solicitud.getTareas().clear();
+
+        if (dto.getTareas() != null && !dto.getTareas().isEmpty()) {
+            for (TareaSoliDTORequest tareaDTO : dto.getTareas()) {
+                TareaSolicitud tarea = new TareaSolicitud(
+                        tareaDTO.getTitulo(),
+                        tareaDTO.getDescripcion(),
+                        solicitud
+                );
+                solicitud.getTareas().add(tarea);
+            }
         }
-        solicitud.setTareas(tareas);
+
+        System.out.println("Cant Tareas guardadas: " + solicitud.getTareas().size());
         /// NOTA: Las Tareas se guardan al guardar la Solicitud
 
         // RESETEAR ESTADO
@@ -106,8 +114,6 @@ public class SolicitudService {
 
         // LIMPIAR MOTIVO ANTERIOR
         solicitud.setMotivoRechazo(null);
-
-        System.out.println("Cant Tareas: " + tareas.size());
 
         solicitudRepository.save(solicitud);
     }
@@ -261,6 +267,17 @@ public class SolicitudService {
         dto.setTienePlanos(solicitud.getTienePlanos());
         dto.setPersonalAOcupar(solicitud.getPersonalAOcupar());
         dto.setTiempoDeRadicacion(solicitud.getTiempoDeRadicacion());
+
+        // MAPEAR TAREAS - ESTA ERA LA PARTE FALTANTE
+        if (solicitud.getTareas() != null && !solicitud.getTareas().isEmpty()) {
+            List<TareaSoliDTORequest> tareasDTO = solicitud.getTareas().stream()
+                    .map(tarea -> new TareaSoliDTORequest(
+                            tarea.getTitulo(),
+                            tarea.getDescripcion()
+                    ))
+                    .collect(Collectors.toList());
+            dto.setTareas(tareasDTO);
+        }
 
         return dto;
     }
