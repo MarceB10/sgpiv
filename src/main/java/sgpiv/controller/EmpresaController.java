@@ -38,7 +38,7 @@ public class EmpresaController {
                 (UsuarioResponseDTO) session.getAttribute("usuario");
 
         if(usuario == null){
-            return "redirect:/login";
+            return "redirect:/";
         }
         model.addAttribute("usuario", usuario);
 
@@ -101,7 +101,7 @@ public class EmpresaController {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
 
         if (usuario == null) {
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         model.addAttribute("usuario", usuario);
@@ -123,7 +123,7 @@ public class EmpresaController {
     public String mostrarFormulario(Model model, HttpSession session) {
         UsuarioResponseDTO usuario =
                 (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         model.addAttribute("empresaDTO", new EmpresaRequestDTO());
         model.addAttribute("usuario", usuario);
