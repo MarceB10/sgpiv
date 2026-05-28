@@ -24,7 +24,7 @@ public class Tarea {
     @NotBlank(message = "La descripcion de la tarea no puede estar vacia")
     private String descripcion;
 
-    private boolean completa;
+    private boolean completa = false;
 
     @ManyToOne
     @JoinColumn(name = "proyecto_id")
@@ -46,7 +46,7 @@ public class Tarea {
     }
 
     public boolean isCompleta() {
-        return completa;
+        return this.completa;
     }
 
 
