@@ -354,7 +354,6 @@
                         <option value="12">12</option>
                         <option value="24">24</option>
                         <option value="36">36 o más</option>
-                        <option value="36">36 o más</option>
                     </select>
 
                     <p class="error-message"
@@ -371,6 +370,17 @@
                 <div id="tareas-container">
                     <div class="tareas-list" id="tareas-list">
                         <!-- Tareas se agregarán aquí dinámicamente -->
+                    </div>
+                    <!-- Tareas pre-renderizadas para edición -->
+                    <div th:if="${solicitudDTO != null and solicitudDTO.getTareas() != null}">
+                        <th:block th:each="tarea, iterStat : ${solicitudDTO.getTareas()}">
+                            <input type="hidden"
+                                   th:name="|tareas[${iterStat.index}].titulo|"
+                                   th:value="${tarea.titulo}">
+                            <input type="hidden"
+                                   th:name="|tareas[${iterStat.index}].descripcion|"
+                                   th:value="${tarea.descripcion}">
+                        </th:block>
                     </div>
                 </div>
 
@@ -430,20 +440,35 @@
     });
 
     function inicializarTareas() {
-        // Obtener tareas existentes del formulario si es edición
-        const form = document.querySelector('form');
-        const data = new FormData(form);
+        // Debug: ver qué hay en el DOM
+        const allInputs = document.querySelectorAll('input[type="hidden"][name^="tareas"]');
+        console.log('Inputs hidden encontrados:', allInputs.length);
+        allInputs.forEach((inp, idx) => {
+            console.log(`[${idx}] name=${inp.name}, value=${inp.value}`);
+        });
 
-        let indice = 0;
-        while (data.has(`tareas[${indice}].titulo`)) {
-            const titulo = data.get(`tareas[${indice}].titulo`);
-            const descripcion = data.get(`tareas[${indice}].descripcion`);
+        // Obtener todos los inputs hidden de titulo
+        const inputsTitulo = document.querySelectorAll('input[type="hidden"][name*="].titulo"]');
+        console.log('Inputs titulo encontrados:', inputsTitulo.length);
 
-            if (titulo && descripcion) {
-                agregarTareaUI(titulo, descripcion, indice);
-                tareaIndex = indice + 1;
-            }
-            indice++;
+        if (inputsTitulo.length > 0) {
+            inputsTitulo.forEach((input) => {
+                // Extraer el índice del name: "tareas[0].titulo" -> "0"
+                const match = input.name.match(/tareas\[(\d+)\]/);
+                if (match) {
+                    const indice = match[1];
+                    const titulo = input.value;
+                    const descripcionInput = document.querySelector(`input[type="hidden"][name="tareas[${indice}].descripcion"]`);
+                    const descripcion = descripcionInput ? descripcionInput.value : '';
+
+                    console.log(`Tarea ${indice}: titulo="${titulo}", descripcion="${descripcion}"`);
+
+                    if (!document.getElementById(`tarea-${indice}`)) {
+                        agregarTareaUI(titulo, descripcion, indice);
+                        tareaIndex = Math.max(tareaIndex, parseInt(indice) + 1);
+                    }
+                }
+            });
         }
     }
 
