@@ -44,6 +44,9 @@
     <div class="right-panel">
         <div class="login-box">
 <!--            <a href="#" class="back-link">← Dashboard</a>-->
+            <!-- LOGO -->
+            <img src="https://i.ibb.co/mC8BgNX4/logobien.png" alt="Logo Parque Industrial" class="logo">
+
             <h2>Iniciar sesión</h2>
 
             <p class="register-text">
@@ -56,13 +59,13 @@
 
             <form th:action="@{/login}" th:object="${loginDTO}" method="post">
 
-                <div class="input-group clearable-input">
+                <div class="input-group">
+
                     <input
                             type="email"
                             name="email"
                             th:field="*{email}"
-                            placeholder="Email"
-                            id="emailInput">
+                            placeholder="Email">
 
                     <!-- boton X -->
                     <button type="button"
