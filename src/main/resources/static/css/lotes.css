@@ -306,3 +306,7 @@ tr:hover {
 
     border:1px solid #cddcff;
 }
+/*COLOR DE ICONOS*/
+.card i {
+    color: #2563EB;
+}
