@@ -67,7 +67,7 @@ public class GerenteController {
                 (UsuarioResponseDTO) session.getAttribute("usuario");
 
         if (usuario == null){
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         model.addAttribute("usuario", usuario);
@@ -102,7 +102,7 @@ public class GerenteController {
                                    HttpSession session) {
 
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         model.addAttribute("solicitud", solicitudService.obtenerPorId(id));
         model.addAttribute("usuario", usuario);

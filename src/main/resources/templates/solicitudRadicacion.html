@@ -94,7 +94,9 @@
 
                     <input type="text"
                            th:field="*{cuitEmpresa}"
-                           placeholder="Ej: 30-12345678-9">
+                           placeholder="Ej: 30-12345678-9"
+                           maxlength="13"
+                           inputmode="numeric">
 
                     <p class="error-message"
                        th:if="${#fields.hasErrors('cuitEmpresa')}"
@@ -522,6 +524,59 @@
             tareaDiv.remove();
         }
     }
+</script>
+
+<!-- Escritura de CUIT -->
+<script>
+
+    const cuitInput =
+        document.getElementById(
+            "cuitEmpresa"
+        );
+
+    cuitInput.addEventListener(
+        "input",
+        function() {
+
+            let valor =
+                this.value.replace(
+                    /\D/g,
+                    ""
+                );
+
+            if(
+                valor.length > 11
+            ){
+                valor =
+                    valor.substring(
+                        0,
+                        11
+                    );
+            }
+
+            if(
+                valor.length > 2
+            ){
+                valor =
+                    valor.substring(0,2)
+                    + "-"
+                    + valor.substring(2);
+            }
+
+            if(
+                valor.length > 11
+            ){
+                valor =
+                    valor.substring(0,11)
+                    + "-"
+                    + valor.substring(11);
+            }
+
+            this.value =
+                valor;
+        }
+    );
+
 </script>
 
 </body>

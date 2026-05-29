@@ -25,7 +25,7 @@ public class SolicitudRadicacionController {
     public String mostrarFormulario(Model model, HttpSession session) {
         UsuarioResponseDTO usuario =
                 (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
         SolicitudRadicacion solicitudActiva =
                 solicitudService.obtenerSolicitudActiva(usuario.getCuit());
 
@@ -93,7 +93,7 @@ public class SolicitudRadicacionController {
     public String miSolicitud(Model model, HttpSession session) {
         UsuarioResponseDTO usuario =
                 (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         SolicitudRadicacion solicitud =
                 solicitudService.obtenerSolicitudActiva(usuario.getCuit());
