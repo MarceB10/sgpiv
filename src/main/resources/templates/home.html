@@ -26,32 +26,42 @@
             <h1 th:text="'Bienvenido, ' + ${usuario.nombre} + ' ' + ${usuario.apellido}"></h1>
             <p>Panel de usuario — Parque Industrial Viedma</p>
         </div>
+        <img src="https://i.ibb.co/mC8BgNX4/logobien.png" alt="Logo" class="logo" style="margin-left: auto;">
     </div>
 
-    <!-- INFO USUARIO -->
-    <div class="cards">
+    <!-- VIDEO DE FONDO CON CARDS ENCIMA -->
+    <div class="video-container">
+        <video autoplay loop muted playsinline>
+            <source th:src="@{/css/videoparque.mp4}" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
 
-        <div class="card">
-            <h3>Nombre</h3>
-            <h2 th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></h2>
+        <!-- INFO USUARIO -->
+        <div class="cards">
+
+            <div class="card">
+                <h3>Nombre</h3>
+                <h2 th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></h2>
+            </div>
+
+            <div class="card">
+                <h3>CUIT</h3>
+                <h2 th:text="${usuario.cuit}"></h2>
+            </div>
+
+            <div class="card">
+                <h3>Email</h3>
+                <h2 th:text="${usuario.email}"></h2>
+            </div>
+
+            <div class="card">
+                <h3>Estado</h3>
+                <h2 th:text="${usuario.activo} ? 'Activo' : 'Inactivo'"></h2>
+            </div>
+
         </div>
-
-        <div class="card">
-            <h3>CUIT</h3>
-            <h2 th:text="${usuario.cuit}"></h2>
-        </div>
-
-        <div class="card">
-            <h3>Email</h3>
-            <h2 th:text="${usuario.email}"></h2>
-        </div>
-
-        <div class="card">
-            <h3>Estado</h3>
-            <h2 th:text="${usuario.activo} ? 'Activo' : 'Inactivo'"></h2>
-        </div>
-
     </div>
+
 
 <!--    <button class="btn btn-regMiEmpresa"-->
 <!--            onclick="window.location.href='/empresas/registrarMiEmpresa'"-->
