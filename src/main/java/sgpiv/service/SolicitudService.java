@@ -153,7 +153,11 @@ public class SolicitudService {
         empresa.setCuit(solicitud.getCuitEmpresa());
         empresa.setRubro(solicitud.getRubro());
         empresa.setEmail(solicitud.getEmailEmpresa());
-        empresa.setTelefono(Long.valueOf(solicitud.getTelefonoEmpresa()));
+//        empresa.setTelefono(Long.valueOf(solicitud.getTelefonoEmpresa()));
+        String telefono = solicitud.getTelefonoEmpresa();
+        if (telefono != null && !telefono.isBlank()) {
+            empresa.setTelefono(Long.valueOf(telefono));
+        }
         empresa.setDireccion(solicitud.getDireccion());
         empresa.setIngresoBrutos(solicitud.getIngresoBrutos());
         empresa.setDescripcionBienServicio(solicitud.getDescripcionBienServicio());

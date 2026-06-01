@@ -63,10 +63,18 @@
                    th:classappend="${pagina == 'mi-empresa'} ? ' active' : ''">
                     <i class="fa-solid fa-industry"></i> Mi Empresa
                 </a>
+
                 <a th:href="@{/solicitudRadicacion}"
                    th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
                     <i class="fa-solid fa-file-signature"></i> Solicitud de Radicación
                 </a>
+
+                <a th:href="@{/empresas/proyectos}"
+                   th:classappend="${pagina == 'proyecto-empresa'} ? ' active' : ''">
+                    <i class="fa-solid fa-diagram-project"></i>
+                    Proyecto
+                </a>
+
             </th:block>
 
             <!-- ROL_PROVEEDOR -->

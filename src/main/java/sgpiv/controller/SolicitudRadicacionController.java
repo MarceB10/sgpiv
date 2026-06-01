@@ -23,18 +23,15 @@ public class SolicitudRadicacionController {
 
     @GetMapping("/solicitudRadicacion")
     public String mostrarFormulario(Model model, HttpSession session) {
-        UsuarioResponseDTO usuario =
-                (UsuarioResponseDTO) session.getAttribute("usuario");
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
         if (usuario == null) return "redirect:/";
-        SolicitudRadicacion solicitudActiva =
-                solicitudService.obtenerSolicitudActiva(usuario.getCuit());
+
+        SolicitudRadicacion solicitudActiva = solicitudService.obtenerSolicitudActiva(usuario.getCuit());
 
         model.addAttribute("solicitudActiva", solicitudActiva);
         //para la modificacion
-        if(solicitudActiva != null &&
-                solicitudActiva.getEstado() == EstadoSolicitud.REQUIERE_MODIFICACION){
-            model.addAttribute("solicitudDTO",
-                    solicitudService.toRequestDTO(solicitudActiva));
+        if(solicitudActiva != null && solicitudActiva.getEstado() == EstadoSolicitud.REQUIERE_MODIFICACION){
+            model.addAttribute("solicitudDTO", solicitudService.toRequestDTO(solicitudActiva));
             model.addAttribute("motivo", solicitudActiva.getMotivoRechazo());
             model.addAttribute("editando", true);
             model.addAttribute("usuario", usuario);
@@ -46,7 +43,6 @@ public class SolicitudRadicacionController {
 
         model.addAttribute("solicitudDTO", new SolicitudRequestDTO());
         model.addAttribute("usuario", usuario);
-
         model.addAttribute("pagina", "solicitud-radicacion");
 
         return "solicitudRadicacion";
@@ -54,50 +50,35 @@ public class SolicitudRadicacionController {
 
     @PostMapping("/solicitudRadicacion")
     public String guardarSolicitud(@Valid @ModelAttribute("solicitudDTO") SolicitudRequestDTO dto,
-                                   BindingResult result,
-                                   HttpSession session,
-                                   Model model) {
-        UsuarioResponseDTO usuarioDTO =
-                (UsuarioResponseDTO) session.getAttribute("usuario");
-
+                                   BindingResult result, HttpSession session, Model model) {
         if (result.hasErrors()) {
-            SolicitudRadicacion solicitudActiva =
-                    solicitudService.obtenerSolicitudActiva(usuarioDTO.getCuit());
-
+            UsuarioResponseDTO usuarioDTO = (UsuarioResponseDTO) session.getAttribute("usuario");
+            SolicitudRadicacion solicitudActiva = solicitudService.obtenerSolicitudActiva(usuarioDTO.getCuit());
             model.addAttribute("usuario", usuarioDTO);
-            model.addAttribute("solicitudActiva", solicitudActiva);
-            model.addAttribute("pagina", "solicitud-radicacion");
 
-            if (solicitudActiva != null &&
-                    solicitudActiva.getEstado() == EstadoSolicitud.REQUIERE_MODIFICACION) {
+            if (solicitudActiva != null && solicitudActiva.getEstado() == EstadoSolicitud.REQUIERE_MODIFICACION) {
                 model.addAttribute("editando", true);
                 model.addAttribute("motivo", solicitudActiva.getMotivoRechazo());
             }
-
             return "solicitudRadicacion";
         }
 
         try {
+            UsuarioResponseDTO usuarioDTO = (UsuarioResponseDTO) session.getAttribute("usuario");
             solicitudService.enviarSolicitud(dto, usuarioDTO.getCuit());
             return "redirect:/home";
-
         } catch (RuntimeException e) {
-            model.addAttribute("usuario", usuarioDTO);
             model.addAttribute("error", e.getMessage());
             model.addAttribute("pagina", "solicitud-radicacion");
             return "solicitudRadicacion";
         }
     }
-
     @GetMapping("/miSolicitud")
     public String miSolicitud(Model model, HttpSession session) {
-        UsuarioResponseDTO usuario =
-                (UsuarioResponseDTO) session.getAttribute("usuario");
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
         if (usuario == null) return "redirect:/";
 
-        SolicitudRadicacion solicitud =
-                solicitudService.obtenerSolicitudActiva(usuario.getCuit());
-
+        SolicitudRadicacion solicitud = solicitudService.obtenerSolicitudActiva(usuario.getCuit());
         if (solicitud == null) return "redirect:/solicitudRadicacion";
 
         model.addAttribute("solicitud", solicitud);

@@ -8,8 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sgpiv.enums.EstadoProyecto;
+import sgpiv.service.LoteService;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,27 @@ public class Proyecto {
 
     @Enumerated(EnumType.STRING)
     private EstadoProyecto estadoProyecto;
+
+//    private String objetivo;
+//    private String rubro;
+//    private String actividadPrincipal;
+//    private String actividadSecundaria;
+//    private BigDecimal inversionEstimada;
+//    private String produccionEstimada;
+//
+//    private Double supCubiertaTrabajoM2;
+//    private Double supCubiertaDepositoM2;
+//    private Double supExpansionM2;
+//
+//    private Boolean tienePlanos;
+//
+//    // Residuos
+//    private boolean generaResiduos;
+//    private String descripcionResiduos;
+//
+//    @ElementCollection
+//    @Enumerated(EnumType.STRING)
+//    private List<LoteService> serviciosRequeridos = new ArrayList<>();
 
     @NotNull(message = "La fecha de inicio del proyecto no puede estar vacia")
     private LocalDate fechaInicio;
@@ -80,10 +103,9 @@ public class Proyecto {
         this.tareas.remove(tarea);
     }
 
-    public void agregarTarea(Tarea tarea){
-        if (tarea == null){
-            throw new RuntimeException("No se pudo agregar la Tarea");
-        }
+    public void agregarTarea(Tarea tarea) {
+        if (tarea == null) throw new RuntimeException("No se pudo agregar la Tarea");
+        tarea.setProyecto(this);
         this.tareas.add(tarea);
     }
 
@@ -120,6 +142,9 @@ public class Proyecto {
 
 
     public void agregarTareas(List<Tarea> tareasProyecto) {
-        this.tareas.addAll(tareasProyecto);
+        for (Tarea tarea : tareasProyecto) {
+            tarea.setProyecto(this);
+            this.tareas.add(tarea);
+        }
     }
 }

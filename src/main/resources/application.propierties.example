@@ -38,3 +38,6 @@ server.port=8080
 #.btn-regMiEmpresa{
 #    background:#2563eb;
 #}
+
+database usada
+spring.datasource.url=jdbc:h2:file:./data/sgpiv2
