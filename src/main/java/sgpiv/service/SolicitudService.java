@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sgpiv.dtos.request.SolicitudRequestDTO;
-import sgpiv.dtos.request.TareaSoliDTORequest;
 import sgpiv.dtos.response.SolicitudResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
 import sgpiv.enums.EstadoSolicitud;
@@ -18,7 +17,6 @@ import sgpiv.repository.UsuarioRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +34,7 @@ public class SolicitudService {
     private final LoteService loteService;
 
 
-    public void enviarSolicitud(SolicitudRequestDTO dto, String cuitUsuario) {
+    public void enviarSolicitudInicial(SolicitudRequestDTO dto, String cuitUsuario) {
 
         Usuario usuario = usuarioRepository.findByCuit(cuitUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -83,35 +81,11 @@ public class SolicitudService {
         solicitud.setTipoEmpresa(dto.getTipoEmpresa());
         solicitud.setObjetivoProyecto(dto.getObjetivoProyecto());
         solicitud.setActividadPrincipal(dto.getActividadPrincipal());
-        solicitud.setActividadSecundaria(dto.getActividadSecundaria());
         solicitud.setNecesidadM2(dto.getNecesidadM2());
-        solicitud.setSupCubiertaTrabajoM2(dto.getSupCubiertaTrabajoM2());
-        solicitud.setSupCubiertaDepositoM2(dto.getSupCubiertaDepositoM2());
-        solicitud.setSupExpansionM2(dto.getSupExpansionM2());
         solicitud.setTienePlanos(dto.getTienePlanos());
-        solicitud.setPersonalAOcupar(dto.getPersonalAOcupar());
-        solicitud.setTiempoDeRadicacion(dto.getTiempoDeRadicacion());
-
-// TAREAS - Limpiar y recrear
-        solicitud.getTareas().clear();
-
-        if (dto.getTareas() != null && !dto.getTareas().isEmpty()) {
-            for (TareaSoliDTORequest tareaDTO : dto.getTareas()) {
-                TareaSolicitud tarea = new TareaSolicitud(
-                        tareaDTO.getTitulo(),
-                        tareaDTO.getDescripcion(),
-                        solicitud
-                );
-                solicitud.getTareas().add(tarea);
-            }
-        }
-
-        System.out.println("Cant Tareas guardadas: " + solicitud.getTareas().size());
-        /// NOTA: Las Tareas se guardan al guardar la Solicitud
 
         // RESETEAR ESTADO
         solicitud.setEstado(EstadoSolicitud.PENDIENTE);
-
         // LIMPIAR MOTIVO ANTERIOR
         solicitud.setMotivoRechazo(null);
 
@@ -119,75 +93,79 @@ public class SolicitudService {
     }
 
     @Transactional
-    public void aprobar(Long id, Long idLote) {
+    public void aprobar(Long id, Long idLote) {//aprobacion inicial
         SolicitudRadicacion solicitud = solicitudRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
-
-        Lote lote = loteService.obtenerPorId(idLote);
-
-        List<Tarea> tareasProyecto = new ArrayList<>();
-
-        for (TareaSolicitud tareaSolicitud: solicitud.getTareas()){
-            tareasProyecto.add(new Tarea(
-                    tareaSolicitud.getTitulo(),
-                    tareaSolicitud.getDescripcion()
-            ));
-        }
-
-        //Creacion de Proyecto
-        Proyecto proyecto = new Proyecto(
-                solicitud.getActividadPrincipal(),
-                solicitud.getObjetivoProyecto(),
-                LocalDate.now(),
-                solicitud.getPersonalAOcupar()
-        );
-
-        proyecto.agregarTareas(tareasProyecto);
-        //proyecto.setFechaFin(LocalDate.now().plus(solicitud.getTiempoDeRadicacion()));
-
-
-
-        //creacion de empresa
-        Empresa empresa = new Empresa();
-        empresa.setRazonSocial(solicitud.getRazonSocial());
-        empresa.setCuit(solicitud.getCuitEmpresa());
-        empresa.setRubro(solicitud.getRubro());
-        empresa.setEmail(solicitud.getEmailEmpresa());
-        empresa.setTelefono(Long.valueOf(solicitud.getTelefonoEmpresa()));
-        empresa.setDireccion(solicitud.getDireccion());
-        empresa.setIngresoBrutos(solicitud.getIngresoBrutos());
-        empresa.setDescripcionBienServicio(solicitud.getDescripcionBienServicio());
-        empresa.setTipoIndustria(solicitud.getTipoIndustria());
-
-        //asociar Proyecto a empresa
-        empresa.agregarProyecto(proyecto);
-
-        empresa.setEstadoEmpresa(EstadoEmpresa.ADJUDICADA);//por ahora interesada hasta que tenga la adjudicacion
-
-
-        Usuario usuario = solicitud.getUsuario();
-
-        usuarioService.asignarRol(
-                usuario.getCuit(),
-                NombreRol.ROL_REPRESENTANTE_EMPRESA
-        );
-
-        //creacion y asignacion de representante
-        RepresentanteEmpresa representante =
-                representanteService.buscarPorCuit(usuario.getCuit());
-
-        proyecto.setRepresentanteEmpresa(representante);
-        representanteService.asignarEmpresa(representante, empresa);
-        empresaRepository.saveAndFlush(empresa);
-
-
-        //cambio de estado de la solicitud
-        solicitud.setEstado(EstadoSolicitud.APROBADA);
-
+        // Cambiar estado a pendiente_proyecto
+        solicitud.setEstado(EstadoSolicitud.PENDIENTE_PROYECTO);
         solicitudRepository.save(solicitud);
 
+        // TODO ESTO SE HACE EN LA ETAPA 2 AHORA AL APROBAR EL PROYECTO
+
+//        Lote lote = loteService.obtenerPorId(idLote);
+
+//        List<Tarea> tareasProyecto = new ArrayList<>();
+
+//        for (TareaSolicitud tareaSolicitud: solicitud.getTareas()){
+//            tareasProyecto.add(new Tarea(
+//                    tareaSolicitud.getTitulo(),
+//                    tareaSolicitud.getDescripcion()
+//            ));
+//        }
+
+//        //Creacion de Proyecto
+//        Proyecto proyecto = new Proyecto(
+//                solicitud.getActividadPrincipal(),
+//                solicitud.getObjetivoProyecto(),
+//                LocalDate.now(),
+//                solicitud.getPersonalAOcupar()
+//        );
+
+//        proyecto.agregarTareas(tareasProyecto);
+        //proyecto.setFechaFin(LocalDate.now().plus(solicitud.getTiempoDeRadicacion()));
+
+        //creacion de empresa
+//        Empresa empresa = new Empresa();
+//        empresa.setRazonSocial(solicitud.getRazonSocial());
+//        empresa.setCuit(solicitud.getCuitEmpresa());
+//        empresa.setRubro(solicitud.getRubro());
+//        empresa.setEmail(solicitud.getEmailEmpresa());
+//        empresa.setTelefono(Long.valueOf(solicitud.getTelefonoEmpresa()));
+//        empresa.setDireccion(solicitud.getDireccion());
+//        empresa.setIngresoBrutos(solicitud.getIngresoBrutos());
+//        empresa.setDescripcionBienServicio(solicitud.getDescripcionBienServicio());
+//        empresa.setTipoIndustria(solicitud.getTipoIndustria());
+
+        //asociar Proyecto a empresa
+//        empresa.agregarProyecto(proyecto);
+
+//        empresa.setEstadoEmpresa(EstadoEmpresa.ADJUDICADA);//por ahora interesada hasta que tenga la adjudicacion
+
+
+//        Usuario usuario = solicitud.getUsuario();
+
+//        usuarioService.asignarRol(
+//                usuario.getCuit(),
+//                NombreRol.ROL_REPRESENTANTE_EMPRESA
+//        );
+
+        //creacion y asignacion de representante
+//        RepresentanteEmpresa representante =
+//                representanteService.buscarPorCuit(usuario.getCuit());
+//
+////        proyecto.setRepresentanteEmpresa(representante);
+//        representanteService.asignarEmpresa(representante, empresa);
+//        empresaRepository.saveAndFlush(empresa);
+//
+//
+//        //cambio de estado de la solicitud
+//        solicitud.setEstado(EstadoSolicitud.APROBADA);
+//
+//        solicitudRepository.save(solicitud);
+
         //OcupacionLote
-        ocupacionLoteService.ocuparLote(lote, proyecto);
+//        ocupacionLoteService.ocuparLote(lote, proyecto);
+
 
     }
 
@@ -216,6 +194,7 @@ public class SolicitudService {
                                 EstadoSolicitud.EN_REVISION,
                                 EstadoSolicitud.APROBADA,
                                 EstadoSolicitud.REQUIERE_MODIFICACION,
+                                EstadoSolicitud.PENDIENTE_PROYECTO,
                                 EstadoSolicitud.RECHAZADA
                         )
                 );
@@ -259,29 +238,37 @@ public class SolicitudService {
         dto.setTipoEmpresa(solicitud.getTipoEmpresa());
         dto.setObjetivoProyecto(solicitud.getObjetivoProyecto());
         dto.setActividadPrincipal(solicitud.getActividadPrincipal());
-        dto.setActividadSecundaria(solicitud.getActividadSecundaria());
         dto.setNecesidadM2(solicitud.getNecesidadM2());
-        dto.setSupCubiertaTrabajoM2(solicitud.getSupCubiertaTrabajoM2());
-        dto.setSupCubiertaDepositoM2(solicitud.getSupCubiertaDepositoM2());
-        dto.setSupExpansionM2(solicitud.getSupExpansionM2());
         dto.setTienePlanos(solicitud.getTienePlanos());
-        dto.setPersonalAOcupar(solicitud.getPersonalAOcupar());
-        dto.setTiempoDeRadicacion(solicitud.getTiempoDeRadicacion());
-
-        // MAPEAR TAREAS - ESTA ERA LA PARTE FALTANTE
-        if (solicitud.getTareas() != null && !solicitud.getTareas().isEmpty()) {
-            List<TareaSoliDTORequest> tareasDTO = solicitud.getTareas().stream()
-                    .map(tarea -> new TareaSoliDTORequest(
-                            tarea.getTitulo(),
-                            tarea.getDescripcion()
-                    ))
-                    .collect(Collectors.toList());
-            dto.setTareas(tareasDTO);
-        }
 
         return dto;
     }
 
+    // ===== MÉTODOS PARA EL GERENTE =====
 
+    public List<SolicitudRadicacion> listarSolicitudesInicialesPendientes() {
+        return solicitudRepository.findByEstado(EstadoSolicitud.PENDIENTE);
+    }
+
+    public void aceptarSolicitudInicial(Long solicitudId) {
+        SolicitudRadicacion solicitud = solicitudRepository.findById(solicitudId)
+                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+
+        if (solicitud.getEstado() != EstadoSolicitud.PENDIENTE) {
+            throw new RuntimeException("Solo se pueden aceptar solicitudes en estado PENDIENTE");
+        }
+
+        solicitud.setEstado(EstadoSolicitud.PENDIENTE_PROYECTO);
+        solicitudRepository.save(solicitud);
+    }
+
+    public void rechazarSolicitudInicial(Long solicitudId, String motivo) {
+        SolicitudRadicacion solicitud = solicitudRepository.findById(solicitudId)
+                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+
+        solicitud.setEstado(EstadoSolicitud.REQUIERE_MODIFICACION);
+        solicitud.setMotivoRechazo(motivo);
+        solicitudRepository.save(solicitud);
+    }
 
 }
