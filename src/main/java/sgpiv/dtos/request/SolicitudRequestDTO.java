@@ -13,9 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SolicitudRequestDTO {
+
     // -------------------
     // DATOS EMPRESA
     // -------------------
+
     @NotBlank(message = "La razón social es obligatoria")
     private String razonSocial;
 
@@ -39,9 +41,11 @@ public class SolicitudRequestDTO {
     private String descripcionBienServicio;
 
     private String tipoIndustria;
+
     //
     // DATOS PROYECOT
     //
+
     @NotBlank(message = "El tipo de empresa no puede estar vacio")
     private String tipoEmpresa;
 
@@ -51,10 +55,31 @@ public class SolicitudRequestDTO {
     @NotBlank(message = "La actividad principal no puede estar vacia")
     private String actividadPrincipal;
 
+    private String actividadSecundaria;
+
     @NotNull(message = "Indicar la superficie necesaria en m2")
     private Double necesidadM2;
 
+    @NotNull(message = "La superficie de trabajo no puede estar vacia")
+    private Double supCubiertaTrabajoM2;
+
+    @NotNull(message = "La superficie de deposito no puede estar vacia")
+    private Double supCubiertaDepositoM2;
+
+    private Double supExpansionM2;
+
+    @NotNull
+    private List<TareaSoliDTORequest> tareas;
+
     @NotNull(message = "Indique si tiene planos")
     private Boolean tienePlanos;
+
+    @NotNull(message = "Indique el personal a ocupar")
+    @Min(value = 1, message = "Debe haber al menos 1 persona")
+    private Long personalAOcupar;
+
+    @NotNull(message = "Indicar el tiempo de radicacion")
+    private Integer tiempoDeRadicacion;
+
 
 }

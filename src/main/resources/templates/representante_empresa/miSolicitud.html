@@ -47,7 +47,8 @@
             <span class="estado-badge"
                   th:classappend="${solicitud.estado.name()}">
 
-                <span th:text="${solicitud.estado.name() == 'PENDIENTE_PROYECTO' ? 'Aceptada' : solicitud.estado}"></span>
+                <span th:text="${solicitud.estado}"></span>
+
             </span>
 
         </div>
@@ -145,70 +146,70 @@
             <h2 th:text="${solicitud.actividadPrincipal}"></h2>
         </div>
 
-<!--        <div class="card">-->
-<!--            <h3>Actividad secundaria</h3>-->
-<!--            <h2 th:text="${solicitud.actividadSecundaria}"></h2>-->
-<!--        </div>-->
+        <div class="card">
+            <h3>Actividad secundaria</h3>
+            <h2 th:text="${solicitud.actividadSecundaria}"></h2>
+        </div>
 
         <div class="card">
             <h3>Necesidad m²</h3>
             <h2 th:text="${solicitud.necesidadM2}"></h2>
         </div>
 
-<!--        <div class="card">-->
-<!--            <h3>Superficie de trabajo</h3>-->
-<!--            <h2 th:text="${solicitud.supCubiertaTrabajoM2}"></h2>-->
-<!--        </div>-->
+        <div class="card">
+            <h3>Superficie de trabajo</h3>
+            <h2 th:text="${solicitud.supCubiertaTrabajoM2}"></h2>
+        </div>
 
-<!--        <div class="card">-->
-<!--            <h3>Superficie depósito</h3>-->
-<!--            <h2 th:text="${solicitud.supCubiertaDepositoM2}"></h2>-->
-<!--        </div>-->
+        <div class="card">
+            <h3>Superficie depósito</h3>
+            <h2 th:text="${solicitud.supCubiertaDepositoM2}"></h2>
+        </div>
 
-<!--        <div class="card">-->
-<!--            <h3>Expansión</h3>-->
-<!--            <h2 th:text="${solicitud.supExpansionM2}"></h2>-->
-<!--        </div>-->
+        <div class="card">
+            <h3>Expansión</h3>
+            <h2 th:text="${solicitud.supExpansionM2}"></h2>
+        </div>
 
         <div class="card">
             <h3>Tiene planos</h3>
             <h2 th:text="${solicitud.tienePlanos ? 'Sí' : 'No'}"></h2>
         </div>
 
-<!--        <div class="card">-->
-<!--            <h3>Personal a ocupar</h3>-->
-<!--            <h2 th:text="${solicitud.personalAOcupar}"></h2>-->
-<!--        </div>-->
+        <div class="card">
+            <h3>Personal a ocupar</h3>
+            <h2 th:text="${solicitud.personalAOcupar}"></h2>
+        </div>
 
-<!--        <div class="card">-->
-<!--            <h3>Tiempo de radicación</h3>-->
-<!--            <h2 th:text="${solicitud.tiempoDeRadicacion + ' meses'}"></h2>-->
-<!--        </div>-->
+        <div class="card">
+            <h3>Tiempo de radicación</h3>
+            <h2 th:text="${solicitud.tiempoDeRadicacion + ' meses'}"></h2>
+        </div>
 
     </div>
 
-<!--    &lt;!&ndash; TAREAS DEL PROYECTO &ndash;&gt;-->
-<!--    <div class="section-title">-->
-<!--        <i class="fa-solid fa-tasks"></i>-->
-<!--        <h2>Tareas del proyecto</h2>-->
-<!--    </div>-->
+    <!-- TAREAS DEL PROYECTO -->
+    <div class="section-title">
+        <i class="fa-solid fa-tasks"></i>
+        <h2>Tareas del proyecto</h2>
+    </div>
 
-<!--    <div th:if="${solicitud.tareas != null and solicitud.tareas.size() > 0}" class="tareas-container">-->
-<!--        <div th:each="tarea : ${solicitud.tareas}" class="tarea-card">-->
-<!--            <div class="tarea-header">-->
-<!--                <div class="tarea-icon">-->
-<!--                    <i class="fa-solid fa-check-circle"></i>-->
-<!--                </div>-->
-<!--                <h3 th:text="${tarea.titulo}"></h3>-->
-<!--            </div>-->
-<!--            <p class="tarea-descripcion" th:text="${tarea.descripcion}"></p>-->
-<!--        </div>-->
-<!--    </div>-->
+    <div th:if="${solicitud.tareas != null and solicitud.tareas.size() > 0}" class="tareas-container">
+        <div th:each="tarea : ${solicitud.tareas}" class="tarea-card">
+            <div class="tarea-header">
+                <div class="tarea-icon">
+                    <i class="fa-solid fa-check-circle"></i>
+                </div>
+                <h3 th:text="${tarea.titulo}"></h3>
+            </div>
+            <p class="tarea-descripcion" th:text="${tarea.descripcion}"></p>
+        </div>
+    </div>
 
-<!--    <div th:if="${solicitud.tareas == null or solicitud.tareas.size() == 0}" class="card empty-state">-->
-<!--        <i class="fa-solid fa-inbox"></i>-->
-<!--        <p>No hay tareas agregadas para este proyecto.</p>-->
-<!--    </div>-->
+    <div th:if="${solicitud.tareas == null or solicitud.tareas.size() == 0}" class="card empty-state">
+        <i class="fa-solid fa-inbox"></i>
+        <p>No hay tareas agregadas para este proyecto.</p>
+    </div>
 
 </div>
 </body></html>

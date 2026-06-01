@@ -13,9 +13,13 @@
 
     <!-- PANEL IZQUIERDO -->
     <div class="left-panel">
+
         <div class="overlay"></div>
+
         <div class="left-content">
+
             <h1>Parque Industrial VIEDMA</h1>
+
             <p>
                 El parque Industrial se encuentra sobre la Ruta Provincial Nº 1, camino a El Cóndor.
 
@@ -28,12 +32,14 @@
             </p>
 
             <div class="companies">
+
                 <span>FRIDEVI</span>
                 <span>Daluar</span>
                 <span>Cementos del Sur</span>
                 <span>Sur Forestal</span>
                 <span>Hupulus Viedma</span>
                 <span>Allhue</span>
+
             </div>
 
         </div>
@@ -42,8 +48,13 @@
 
     <!-- PANEL DERECHO -->
     <div class="right-panel">
+
         <div class="login-box">
+
 <!--            <a href="#" class="back-link">← Dashboard</a>-->
+            <!-- LOGO -->
+            <img src="https://i.ibb.co/mC8BgNX4/logobien.png" alt="Logo Parque Industrial" class="logo">
+
             <h2>Iniciar sesión</h2>
 
             <p class="register-text">
@@ -56,20 +67,14 @@
 
             <form th:action="@{/login}" th:object="${loginDTO}" method="post">
 
-                <div class="input-group clearable-input">
+                <div class="input-group">
+
                     <input
                             type="email"
                             name="email"
                             th:field="*{email}"
-                            placeholder="Email"
-                            id="emailInput">
+                            placeholder="Email">
 
-                    <!-- boton X -->
-                    <button type="button"
-                            class="clear-btn"
-                            onclick="limpiarEmail()">
-                        ×
-                    </button>
                     <!-- error de validación del campo email -->
                     <p th:if="${#fields.hasErrors('email')}"
                        th:errors="*{email}"
@@ -107,15 +112,6 @@
     </div>
 
 </div>
-<script>
-    function limpiarEmail() {
-        const input =
-            document.getElementById("emailInput");
 
-        input.value = "";
-        input.dispatchEvent(new Event('input'));
-        input.focus();
-    }
-</script>
 </body>
 </html>
