@@ -12,6 +12,7 @@ import sgpiv.dtos.response.LoteResponseDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.enums.EstadoSolicitud;
 import sgpiv.enums.NombreRol;
+import sgpiv.model.SolicitudRadicacion;
 import sgpiv.repository.SolicitudRadicacionRepository;
 import sgpiv.service.SolicitudService;
 import sgpiv.service.UsuarioService;

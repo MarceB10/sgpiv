@@ -19,4 +19,5 @@ public interface SolicitudRadicacionRepository extends JpaRepository<SolicitudRa
             List<EstadoSolicitud> estados
     );
 
+
 }

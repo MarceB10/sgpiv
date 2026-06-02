@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Solicitud de Proyecto</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+  <link rel="stylesheet" th:href="@{/css/solicitudProyecto.css}">
+
+
+  !-- FONT AWESOME -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <h1 th:text="${editando} ? 'Modificar solicitud' : 'Nueva solicitud de radicación'"></h1>
+
+    <p th:text="${editando}
+        ? 'Realizá las modificaciones solicitadas por el gerente.'
+        : 'Solicitá la radicación de tu empresa en el Parque Industrial Viedma.'">
+    </p>
+
+  </div>
+
+  <!-- MOTIVO MODIFICACION -->
+  <div class="motivo-box"
+       th:if="${editando}">
+
+    <h3>Motivo de la modificación</h3>
+
+    <p th:text="${motivo}"></p>
+
+  </div>
+
+  <!-- ALERTA -->
+  <div class="info-box">
+
+    <div class="info-icon">
+      <i class="fa-solid fa-info"></i>
+    </div>
+
+    <div class="info-text">
+      <h3>Información importante</h3>
+
+      <p>
+        Completá todos los datos solicitados.
+        La solicitud será evaluada por el gerente del Parque Industrial.
+        Si es aprobada, se creará automáticamente tu empresa y se te asignará
+        como representante.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- FORM -->
+  <div class="form-card">
+
+
+  <div class="form-group full-width">
+    <label>Servicios disponibles</label>
+
+    <div class="services-grid">
+      <label class="service-item">
+        <input type="checkbox"
+             th:field="*{servicios}"
+             value="AGUA">
+        <i class="fa-solid fa-droplet"></i>
+        Agua
+      </label>
+
+      <label class="service-item">
+        <input type="checkbox"
+             th:field="*{servicios}"
+             value="ELECTRICIDAD">
+        <i class="fa-solid fa-bolt"></i>
+        Electricidad
+      </label>
+
+      <label class="service-item">
+        <input type="checkbox"
+             th:field="*{servicios}"
+             value="INTERNET">
+        <i class="fa-solid fa-wifi"></i>
+        Internet
+      </label>
+
+      <label class="service-item">
+        <input type="checkbox"
+             th:field="*{servicios}"
+             value="GAS_NATURAL">
+        <i class="fa-solid fa-fire"></i>
+        Gas natural
+      </label>
+
+      <label class="service-item">
+        <input type="checkbox"
+             th:field="*{servicios}"
+             value="CLOACAS">
+        <i class="fa-solid fa-toilet"></i>
+        Cloacas
+      </label>
+
+      <label class="service-item">
+        <input type="checkbox"
+             th:field="*{servicios}"
+             value="DESAGUE_PLUVIAL">
+        <i class="fa-solid fa-cloud-rain"></i>
+        Desagüe pluvial
+      </label>
+
+      <label class="service-item">
+        <input type="checkbox"
+             th:field="*{servicios}"
+             value="SEGURIDAD_24HS">
+        <i class="fa-solid fa-shield-halved"></i>
+        Seguridad 24hs
+      </label>
+
+      <label class="service-item">
+        <input type="checkbox"
+             th:field="*{servicios}"
+             value="CALLES_PAVIMENTADAS">
+        <i class="fa-solid fa-road"></i>
+        Calles pavimentadas
+      </label>
+
+      <label class="service-item">
+        <input type="checkbox"
+             th:field="*{servicios}"
+             value="ALUMBRADO_PUBLICO">
+          <i class="fa-solid fa-lightbulb"></i>
+          Alumbrado público
+        </label>
+
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

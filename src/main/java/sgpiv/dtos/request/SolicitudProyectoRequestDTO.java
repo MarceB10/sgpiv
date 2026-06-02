@@ -18,6 +18,10 @@ import java.util.List;
 @AllArgsConstructor
 public class SolicitudProyectoRequestDTO {
 
+    // Referencia a la solicitud de radicacion
+    @NotNull(message = "La solicitud de radicación es obligatoria")
+    private Long solicitudRadicacionId;  //
+
     @NotBlank(message = "El nombre del proyecto es obligatorio")
     private String titulo;
 
