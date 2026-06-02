@@ -91,36 +91,68 @@
             <a th:if="${solicitudActiva == null}"
                th:href="@{/solicitudRadicacion}"
                th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
-
                 <i class="fa-solid fa-file-signature"></i>
                 Solicitud de Radicación
-
             </a>
 
-            <!-- SOLICITUD NORMAL -->
+            <!-- SOLICITUD NORMAL (PENDIENTE) -->
             <a th:if="${solicitudActiva != null
-            and solicitudActiva.estado.name() != 'REQUIERE_MODIFICACION'}"
+            and solicitudActiva.estado.name() != 'REQUIERE_MODIFICACION'
+             and solicitudActiva.estado.name() != 'ACEPTADA'}"
                th:href="@{/miSolicitud}"
                th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
-
                 <i class="fa-solid fa-clock"></i>
                 Ver mi solicitud
-
             </a>
 
             <!-- REQUIERE MODIFICACION -->
             <a th:if="${solicitudActiva != null
-            and solicitudActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
+        and solicitudActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
                th:href="@{/solicitudRadicacion}"
                th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
-
                 <i class="fa-solid fa-pen-to-square"></i>
                 Modificar solicitud
-
             </a>
 
+            <!-- ACEPTADA → puede presentar solicitud de proyecto -->
+            <th:block th:if="${solicitudActiva != null
+            and solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO'}">
+
+                <a th:href="@{/miSolicitud}"
+                   th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Mi solicitud
+                </a>
+
+                <!-- Solo si NO presentó solicitud de proyecto todavía -->
+                <a th:if="${solicitudProyectoActiva == null}"
+                   th:href="@{/solicitudProyecto}"
+                   th:classappend="${pagina == 'solicitud-proyecto'} ? ' active' : ''">
+                    <i class="fa-solid fa-folder-plus"></i>
+                    Presentar proyecto
+                </a>
+
+                <!-- Si ya presentó solicitud de proyecto -->
+                <a th:if="${solicitudProyectoActiva != null}"
+                   th:href="@{/miSolicitudProyecto}"
+                   th:classappend="${pagina == 'mi-solicitud-proyecto'} ? ' active' : ''">
+                    <i class="fa-solid fa-folder-open"></i>
+                    Ver mi proyecto
+                </a>
+            </th:block>
         </th:block>
 
+
+
+        <!-- Boton cerrar sesion -->
+        <div class="logout-container">
+
+            <a th:href="@{/cerrarSesion}" class="logout-link">
+                <i class="fa fa-sign-out"> </i>
+                Cerrar Sesión
+
+            </a>
+        </div>
     </div>
 
 </div>

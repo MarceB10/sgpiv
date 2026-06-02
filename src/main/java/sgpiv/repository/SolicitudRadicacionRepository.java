@@ -7,10 +7,9 @@ import sgpiv.model.SolicitudRadicacion;
 import sgpiv.model.Usuario;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
-public interface SolicitudRepository extends JpaRepository<SolicitudRadicacion, Long> {
+public interface SolicitudRadicacionRepository extends JpaRepository<SolicitudRadicacion, Long> {
 
     List<SolicitudRadicacion> findByUsuario(Usuario usuario);
     List<SolicitudRadicacion> findByEstado(sgpiv.enums.EstadoSolicitud estado);
@@ -19,5 +18,6 @@ public interface SolicitudRepository extends JpaRepository<SolicitudRadicacion, 
             Long usuarioId,
             List<EstadoSolicitud> estados
     );
+
 
 }

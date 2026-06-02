@@ -13,7 +13,7 @@ import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.enums.EstadoSolicitud;
 import sgpiv.enums.NombreRol;
 import sgpiv.model.SolicitudRadicacion;
-import sgpiv.repository.SolicitudRepository;
+import sgpiv.repository.SolicitudRadicacionRepository;
 import sgpiv.service.SolicitudService;
 import sgpiv.service.UsuarioService;
 
@@ -24,7 +24,7 @@ import java.util.List;
 public class GerenteController {
 
     private final SolicitudService solicitudService;
-    private final SolicitudRepository solicitudRepository;
+    private final SolicitudRadicacionRepository solicitudRadicacionRepository;
     private final UsuarioService usuarioService;
 
     @GetMapping("/gerente/usuarios")
@@ -91,7 +91,7 @@ public class GerenteController {
         }
 
 
-        solicitudService.aprobar(id, lote.getId());
+        solicitudService.aprobarSolicitudPrimeraParte(id);
         session.removeAttribute("loteSeleccionado");
         return "redirect:/solicitudesGerente";
     }
@@ -102,7 +102,7 @@ public class GerenteController {
                                    HttpSession session) {
 
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         model.addAttribute("solicitud", solicitudService.obtenerPorId(id));
         model.addAttribute("usuario", usuario);

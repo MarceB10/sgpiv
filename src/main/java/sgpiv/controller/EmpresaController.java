@@ -38,7 +38,7 @@ public class EmpresaController {
                 (UsuarioResponseDTO) session.getAttribute("usuario");
 
         if(usuario == null){
-            return "redirect:/login";
+            return "redirect:/";
         }
         model.addAttribute("usuario", usuario);
 
@@ -101,7 +101,7 @@ public class EmpresaController {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
 
         if (usuario == null) {
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         model.addAttribute("usuario", usuario);
@@ -112,6 +112,7 @@ public class EmpresaController {
             model.addAttribute("empresa", empresa);
         } catch (Exception e) {
             // Si no hay empresa, mandamos el atributo como null o un mensaje
+            System.out.println("Error al buscar empresa: " + e.getMessage()); // temporal
             model.addAttribute("empresa", null);
             model.addAttribute("mensaje", "Aún no has registrado ninguna empresa en el sistema.");
         }
@@ -123,7 +124,7 @@ public class EmpresaController {
     public String mostrarFormulario(Model model, HttpSession session) {
         UsuarioResponseDTO usuario =
                 (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         model.addAttribute("empresaDTO", new EmpresaRequestDTO());
         model.addAttribute("usuario", usuario);
