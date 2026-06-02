@@ -27,7 +27,7 @@
 
         <!-- TOP: título + filtros (Estilo idéntico a Lotes) -->
         <div class="table-top">
-            <h3>Listado de Solicitudes</h3>
+            <h3>Solicitudes de nuevas empresas</h3>
             <form th:action="@{/solicitudesGerente}" method="get" class="search-form">
                 <input
                         type="text"
@@ -85,6 +85,66 @@
     </div>
     <!-- /table-container -->
 
+
+    <!-- TABLA CONTAINER -->
+    <div class="table-container">
+
+        <!-- TOP: título + filtros (Estilo idéntico a Lotes) -->
+        <div class="table-top">
+            <h3>Solicitudes de proyectos productivos</h3>
+            <form th:action="@{/solicitudesGerente}" method="get" class="search-form">
+                <input
+                        type="text"
+                        name="empresa"
+                        th:value="${param.empresa}"
+                        placeholder="Buscar por empresa..."
+                />
+                <select name="estado">
+                    <option value="">Todos los estados</option>
+                    <option value="PENDIENTE" th:selected="${param.estado == 'PENDIENTE'}">Pendiente</option>
+                    <option value="APROBADA" th:selected="${param.estado == 'APROBADA'}">Aprobada</option>
+                    <option value="RECHAZADA" th:selected="${param.estado == 'RECHAZADA'}">Rechazada</option>
+                </select>
+                <button type="submit" class="search-button">Buscar</button>
+            </form>
+        </div>
+
+        <!-- LISTADO DE PROYECTOS -->
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Proyecto</th>
+                <th>Empresa</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="proyecto : ${proyectos}">
+                <td th:text="${proyecto.id}"></td>
+                <td th:text="${proyecto.nombre}" style="font-weight: 500;"></td>
+                <td th:text="${proyecto.empresa}"></td>
+                <td>
+            <span th:text="${proyecto.estado}"
+                  th:classappend="${proyecto.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
+                 (${proyecto.estado.name() == 'APROBADO'} ? 'estado aprobada' : 'estado rechazado')">
+            </span>
+                </td>
+                <td th:text="${proyecto.fechaEnvio}"></td>
+                <td>
+                    <a class="btn btn-edit" th:href="@{/proyectos/{id}(id=${proyecto.id})}">
+                        <i class="fa-regular fa-eye"></i> Ver detalle
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+    <!-- /table-container -->
 </div>
 <!-- /main-content -->
 

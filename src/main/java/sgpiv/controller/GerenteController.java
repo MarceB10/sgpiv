@@ -168,4 +168,30 @@ public class GerenteController {
             return "redirect:/solicitudesGerente?error=" + e.getMessage();
         }
     }
+
+    @GetMapping("/proyectos")
+    public String listarProyectos(Model model, HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/login";
+
+        model.addAttribute("usuario", usuario);
+//        model.addAttribute("proyectos", solicitudProyectoService.listarTodos());
+        model.addAttribute("pagina", "proyectos");
+
+        return "solicitudesGerente";
+    }
+
+    @GetMapping("/proyectos/{id}")
+    public String detalleProyecto(@PathVariable Long id,
+                                  Model model,
+                                  HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/login";
+
+        model.addAttribute("usuario", usuario);
+//        model.addAttribute("proyecto", solicitudProyectoService.obtenerPorId(id));
+        model.addAttribute("pagina", "detalle-proyecto");
+
+        return "gerente/detalleProyecto";
+    }
 }
