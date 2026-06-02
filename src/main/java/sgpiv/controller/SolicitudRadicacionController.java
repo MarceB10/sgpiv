@@ -82,7 +82,7 @@ public class SolicitudRadicacionController {
             UsuarioResponseDTO usuarioDTO =
                     (UsuarioResponseDTO) session.getAttribute("usuario");
 
-            solicitudService.enviarSolicitud(dto, usuarioDTO.getCuit());
+            solicitudService.enviarSolicitudInicial(dto, usuarioDTO.getCuit());
             return "redirect:/home";
 
         } catch (RuntimeException e) {
