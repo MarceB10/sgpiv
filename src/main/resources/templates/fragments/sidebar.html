@@ -28,111 +28,125 @@
                 </div>
             </div>
         </div>
-        <!-- tus links -->
-        <div class="menu-links">
-            <!-- DASHBOARD — todos los roles -->
-            <a th:href="@{/home}"
-               th:classappend="${pagina == 'home'} ? ' active' : ''">
-                <i class="fa-solid fa-chart-pie"></i> Inicio
+
+        <!-- DASHBOARD — todos los roles -->
+        <a th:href="@{/home}"
+           th:classappend="${pagina == 'home'} ? ' active' : ''">
+            <i class="fa-solid fa-chart-pie"></i> Inicio
+        </a>
+
+        <!-- ROL_GERENTE -->
+        <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'}">
+            <a th:href="@{/empresas}"
+               th:classappend="${pagina == 'empresas'} ? ' active' : ''">
+                <i class="fa-solid fa-building"></i> Empresas
+            </a>
+            <a th:href="@{/gerente/usuarios}"
+               th:classappend="${pagina == 'usuarios'} ? ' active' : ''">
+                <i class="fa-solid fa-users"></i> Usuarios
+            </a>
+            <a th:href="@{/gerente/lotes}"
+               th:classappend="${pagina == 'lotes'} ? ' active' : ''">
+                <i class="fa-solid fa-map-location-dot"></i> Lotes
+            </a>
+            <!-- Corregido: removimos el div repetido y agregamos el active check -->
+            <a th:href="@{/solicitudesGerente}"
+               th:classappend="${pagina == 'solicitudes-gerente'} ? ' active' : ''">
+                <i class="fa-regular fa-file-lines"></i> Solicitudes recibidas
+            </a>
+        </th:block>
+
+        <!-- ROL_REPRESENTANTE_EMPRESA -->
+        <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">
+            <a th:href="@{/empresas/mi-empresa}"
+               th:classappend="${pagina == 'mi-empresa'} ? ' active' : ''">
+                <i class="fa-solid fa-industry"></i> Mi Empresa
+            </a>
+            <a th:href="@{/solicitudRadicacion}"
+               th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
+                <i class="fa-solid fa-file-signature"></i> Solicitud de Radicación
+            </a>
+        </th:block>
+
+        <!-- ROL_PROVEEDOR -->
+        <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_PROVEEDOR'}">
+            <a th:href="@{/mi-perfil}"
+               th:classappend="${pagina == 'mi-perfil'} ? ' active' : ''">
+                <i class="fa-solid fa-user"></i> Mi Perfil
+            </a>
+        </th:block>
+
+        <!-- ROL_ORGANISMO_PUBLICO -->
+        <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_ORGANISMO_PUBLICO'}">
+            <a th:href="@{/mi-perfil}"
+               th:classappend="${pagina == 'mi-perfil'} ? ' active' : ''">
+                <i class="fa-solid fa-building-shield"></i> Mi Perfil
+            </a>
+        </th:block>
+
+        <!-- ROL_NULO -->
+        <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'}">
+
+            <!-- SIN SOLICITUD -->
+            <a th:if="${solicitudActiva == null}"
+               th:href="@{/solicitudRadicacion}"
+               th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
+                <i class="fa-solid fa-file-signature"></i>
+                Solicitud de Radicación
             </a>
 
-            <!-- ROL_GERENTE -->
-            <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'}">
-                <a th:href="@{/empresas}"
-                   th:classappend="${pagina == 'empresas'} ? ' active' : ''">
-                    <i class="fa-solid fa-building"></i> Empresas
-                </a>
-                <a th:href="@{/gerente/usuarios}"
-                   th:classappend="${pagina == 'usuarios'} ? ' active' : ''">
-                    <i class="fa-solid fa-users"></i> Usuarios
-                </a>
-                <a th:href="@{/gerente/lotes}"
-                   th:classappend="${pagina == 'lotes'} ? ' active' : ''">
-                    <i class="fa-solid fa-map-location-dot"></i> Lotes
-                </a>
-                <!-- Corregido: removimos el div repetido y agregamos el active check -->
-                <a th:href="@{/solicitudesGerente}"
-                   th:classappend="${pagina == 'solicitudes-gerente'} ? ' active' : ''">
-                    <i class="fa-regular fa-file-lines"></i> Solicitudes recibidas
-                </a>
-            </th:block>
+            <!-- SOLICITUD NORMAL (PENDIENTE) -->
+            <a th:if="${solicitudActiva != null
+            and solicitudActiva.estado.name() != 'REQUIERE_MODIFICACION'
+             and solicitudActiva.estado.name() != 'ACEPTADA'}"
+               th:href="@{/miSolicitud}"
+               th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
+                <i class="fa-solid fa-clock"></i>
+                Ver mi solicitud
+            </a>
 
-            <!-- ROL_REPRESENTANTE_EMPRESA -->
-            <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">
-                <a th:href="@{/empresas/mi-empresa}"
-                   th:classappend="${pagina == 'mi-empresa'} ? ' active' : ''">
-                    <i class="fa-solid fa-industry"></i> Mi Empresa
-                </a>
+            <!-- REQUIERE MODIFICACION -->
+            <a th:if="${solicitudActiva != null
+        and solicitudActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
+               th:href="@{/solicitudRadicacion}"
+               th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
+                <i class="fa-solid fa-pen-to-square"></i>
+                Modificar solicitud
+            </a>
 
-                <a th:href="@{/solicitudRadicacion}"
-                   th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
-                    <i class="fa-solid fa-file-signature"></i> Solicitud de Radicación
-                </a>
+            <!-- ACEPTADA → puede presentar solicitud de proyecto -->
+            <th:block th:if="${solicitudActiva != null
+            and solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO'}">
 
-                <a th:href="@{/empresas/proyectos}"
-                   th:classappend="${pagina == 'proyecto-empresa'} ? ' active' : ''">
-                    <i class="fa-solid fa-diagram-project"></i>
-                    Proyecto
-                </a>
-
-            </th:block>
-
-            <!-- ROL_PROVEEDOR -->
-            <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_PROVEEDOR'}">
-                <a th:href="@{/mi-perfil}"
-                   th:classappend="${pagina == 'mi-perfil'} ? ' active' : ''">
-                    <i class="fa-solid fa-user"></i> Mi Perfil
-                </a>
-            </th:block>
-
-            <!-- ROL_ORGANISMO_PUBLICO -->
-            <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_ORGANISMO_PUBLICO'}">
-                <a th:href="@{/mi-perfil}"
-                   th:classappend="${pagina == 'mi-perfil'} ? ' active' : ''">
-                    <i class="fa-solid fa-building-shield"></i> Mi Perfil
-                </a>
-            </th:block>
-
-            <!-- ROL_NULO -->
-            <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'}">
-
-                <!-- SIN SOLICITUD -->
-                <a th:if="${solicitudActiva == null}"
-                   th:href="@{/solicitudRadicacion}"
-                   th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
-
-                    <i class="fa-solid fa-file-signature"></i>
-                    Solicitud de Radicación
-
-                </a>
-
-                <!-- SOLICITUD NORMAL -->
-                <a th:if="${solicitudActiva != null
-            and solicitudActiva.estado.name() != 'REQUIERE_MODIFICACION'}"
-                   th:href="@{/miSolicitud}"
+                <a th:href="@{/miSolicitud}"
                    th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
-
-                    <i class="fa-solid fa-clock"></i>
-                    Ver mi solicitud
-
+                    <i class="fa-solid fa-circle-check"></i>
+                    Mi solicitud
                 </a>
 
-                <!-- REQUIERE MODIFICACION -->
-                <a th:if="${solicitudActiva != null
-            and solicitudActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
-                   th:href="@{/solicitudRadicacion}"
-                   th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
-
-                    <i class="fa-solid fa-pen-to-square"></i>
-                    Modificar solicitud
-
+                <!-- Solo si NO presentó solicitud de proyecto todavía -->
+                <a th:if="${solicitudProyectoActiva == null}"
+                   th:href="@{/solicitudProyecto}"
+                   th:classappend="${pagina == 'solicitud-proyecto'} ? ' active' : ''">
+                    <i class="fa-solid fa-folder-plus"></i>
+                    Presentar proyecto
                 </a>
 
+                <!-- Si ya presentó solicitud de proyecto -->
+                <a th:if="${solicitudProyectoActiva != null}"
+                   th:href="@{/miSolicitudProyecto}"
+                   th:classappend="${pagina == 'mi-solicitud-proyecto'} ? ' active' : ''">
+                    <i class="fa-solid fa-folder-open"></i>
+                    Ver mi proyecto
+                </a>
             </th:block>
-        </div>
+        </th:block>
+
+
 
         <!-- Boton cerrar sesion -->
         <div class="logout-container">
+
             <a th:href="@{/cerrarSesion}" class="logout-link">
                 <i class="fa fa-sign-out"> </i>
                 Cerrar Sesión

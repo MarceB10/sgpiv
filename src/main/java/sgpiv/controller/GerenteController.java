@@ -13,7 +13,7 @@ import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.enums.EstadoSolicitud;
 import sgpiv.enums.NombreRol;
 import sgpiv.model.SolicitudRadicacion;
-import sgpiv.repository.SolicitudRepository;
+import sgpiv.repository.SolicitudRadicacionRepository;
 import sgpiv.service.SolicitudService;
 import sgpiv.service.UsuarioService;
 
@@ -24,7 +24,7 @@ import java.util.List;
 public class GerenteController {
 
     private final SolicitudService solicitudService;
-    private final SolicitudRepository solicitudRepository;
+    private final SolicitudRadicacionRepository solicitudRadicacionRepository;
     private final UsuarioService usuarioService;
 
     @GetMapping("/gerente/usuarios")
@@ -67,7 +67,7 @@ public class GerenteController {
                 (UsuarioResponseDTO) session.getAttribute("usuario");
 
         if (usuario == null){
-            return "redirect:/";
+            return "redirect:/login";
         }
 
         model.addAttribute("usuario", usuario);
@@ -87,11 +87,11 @@ public class GerenteController {
                           HttpSession session){
         LoteResponseDTO lote = (LoteResponseDTO) session.getAttribute("loteSeleccionado");
         if (lote == null){
-            return "redirect:/solicitudesGerente/" + id;
+            return "redirect:/solicitudesGerente" + id;
         }
 
 
-        solicitudService.aprobar(id, lote.getId());
+        solicitudService.aprobarSolicitudPrimeraParte(id);
         session.removeAttribute("loteSeleccionado");
         return "redirect:/solicitudesGerente";
     }
@@ -123,6 +123,49 @@ public class GerenteController {
     public String requiereModificacion(@PathVariable Long id,
                                        @RequestParam String motivo) {
         solicitudService.requiereModificacion(id, motivo);
+
         return "redirect:/solicitudesGerente";
+    }
+
+    // ===== NUEVOS MÉTODOS PARA ETAPA INICIAL =====
+
+    @GetMapping("/gerente/solicitudes")
+    public String listarSolicitudes(Model model, HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/login";
+
+        List<SolicitudRadicacion> solicitudesIniciales = solicitudService.listarSolicitudesInicialesPendientes();
+        model.addAttribute("solicitudesIniciales", solicitudesIniciales);
+        model.addAttribute("usuario", usuario);
+
+        return "/solicitudesGerente";
+    }
+
+    @PostMapping("/gerente/solicitudes/{id}/aceptar")
+    public String aceptarSolicitud(@PathVariable Long id, HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/login";
+
+        try {
+            solicitudService.aceptarSolicitudInicial(id);
+            return "redirect:/solicitudesGerente?ok=Solicitud aceptada";
+        } catch (RuntimeException e) {
+            return "redirect:/solicitudesGerente?error=" + e.getMessage();
+        }
+    }
+
+    @PostMapping("/gerente/solicitudes/{id}/rechazar")
+    public String rechazarSolicitud(@PathVariable Long id,
+                                    @RequestParam String motivo,
+                                    HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/login";
+
+        try {
+            solicitudService.rechazarSolicitudInicial(id, motivo);
+            return "redirect:/solicitudesGerente?ok=Solicitud rechazada";
+        } catch (RuntimeException e) {
+            return "redirect:/solicitudesGerente?error=" + e.getMessage();
+        }
     }
 }

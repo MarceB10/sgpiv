@@ -56,6 +56,9 @@ public class Empresa {
     @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
     private List<Proyecto> proyectos = new ArrayList<>();
 
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
+    private List<ProveedorEmpresa> proveedores = new ArrayList<>();
+
     public void agregarProyecto(Proyecto proyecto){
         this.proyectos.add(proyecto);
         proyecto.setEmpresa(this);
