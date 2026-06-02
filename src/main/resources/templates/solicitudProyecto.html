@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Solicitud de Proyecto</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Solicitud de Proyecto</title>
 
   <!-- CSS -->
-  <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
-  <link rel="stylesheet" th:href="@{/css/solicitudProyecto.css}">
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}" />
+  <link rel="stylesheet" th:href="@{/css/solicitudProyecto.css}" />
 
-
-  !-- FONT AWESOME -->
+  <!-- FONT AWESOME -->
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
 </head>
+
 <body>
 
 <div th:replace="~{fragments/sidebar :: sidebar}"></div>
@@ -23,11 +23,12 @@
 
   <!-- HEADER -->
   <div class="page-header">
-    <h1 th:text="${editando} ? 'Modificar solicitud' : 'Nueva solicitud de radicación'"></h1>
+
+    <h1 th:text="${editando} ? 'Modificar proyecto' : 'Nuevo proyecto industrial'"></h1>
 
     <p th:text="${editando}
-        ? 'Realizá las modificaciones solicitadas por el gerente.'
-        : 'Solicitá la radicación de tu empresa en el Parque Industrial Viedma.'">
+            ? 'Realizá las modificaciones solicitadas por el gerente.'
+            : 'Completá la información técnica y productiva de tu proyecto.'">
     </p>
 
   </div>
@@ -42,7 +43,7 @@
 
   </div>
 
-  <!-- ALERTA -->
+  <!-- INFO -->
   <div class="info-box">
 
     <div class="info-icon">
@@ -50,14 +51,15 @@
     </div>
 
     <div class="info-text">
+
       <h3>Información importante</h3>
 
       <p>
-        Completá todos los datos solicitados.
-        La solicitud será evaluada por el gerente del Parque Industrial.
-        Si es aprobada, se creará automáticamente tu empresa y se te asignará
-        como representante.
+        La información declarada será utilizada para evaluar la
+        factibilidad técnica, ambiental y territorial del proyecto
+        dentro del Parque Industrial Viedma.
       </p>
+
     </div>
 
   </div>
@@ -65,87 +67,388 @@
   <!-- FORM -->
   <div class="form-card">
 
+    <form th:action="@{/solicitudProyecto}"
+          th:object="${solicitudProyectoDTO}"
+          method="post">
 
-  <div class="form-group full-width">
-    <label>Servicios disponibles</label>
+      <!-- INFORMACION GENERAL -->
+      <h2>Información general</h2>
 
-    <div class="services-grid">
-      <label class="service-item">
-        <input type="checkbox"
-             th:field="*{servicios}"
-             value="AGUA">
-        <i class="fa-solid fa-droplet"></i>
-        Agua
-      </label>
+      <div class="form-grid">
 
-      <label class="service-item">
-        <input type="checkbox"
-             th:field="*{servicios}"
-             value="ELECTRICIDAD">
-        <i class="fa-solid fa-bolt"></i>
-        Electricidad
-      </label>
+        <div class="form-group">
+          <label>Título del proyecto *</label>
 
-      <label class="service-item">
-        <input type="checkbox"
-             th:field="*{servicios}"
-             value="INTERNET">
-        <i class="fa-solid fa-wifi"></i>
-        Internet
-      </label>
+          <input type="text"
+                 th:field="*{titulo}"
+                 placeholder="Ej: Planta de fabricación de estructuras metálicas">
+        </div>
 
-      <label class="service-item">
-        <input type="checkbox"
-             th:field="*{servicios}"
-             value="GAS_NATURAL">
-        <i class="fa-solid fa-fire"></i>
-        Gas natural
-      </label>
+        <div class="form-group">
+          <label>Rubro *</label>
 
-      <label class="service-item">
-        <input type="checkbox"
-             th:field="*{servicios}"
-             value="CLOACAS">
-        <i class="fa-solid fa-toilet"></i>
-        Cloacas
-      </label>
+          <input type="text"
+                 th:field="*{rubro}"
+                 placeholder="Ej: Metalúrgica">
+        </div>
 
-      <label class="service-item">
-        <input type="checkbox"
-             th:field="*{servicios}"
-             value="DESAGUE_PLUVIAL">
-        <i class="fa-solid fa-cloud-rain"></i>
-        Desagüe pluvial
-      </label>
+        <div class="form-group full-width">
+          <label>Objetivo del proyecto *</label>
 
-      <label class="service-item">
-        <input type="checkbox"
-             th:field="*{servicios}"
-             value="SEGURIDAD_24HS">
-        <i class="fa-solid fa-shield-halved"></i>
-        Seguridad 24hs
-      </label>
+          <textarea th:field="*{objetivo}"
+                    placeholder="Describa el objetivo principal del proyecto">
+                    </textarea>
+        </div>
 
-      <label class="service-item">
-        <input type="checkbox"
-             th:field="*{servicios}"
-             value="CALLES_PAVIMENTADAS">
-        <i class="fa-solid fa-road"></i>
-        Calles pavimentadas
-      </label>
+        <div class="form-group full-width">
+          <label>Descripción *</label>
 
-      <label class="service-item">
-        <input type="checkbox"
-             th:field="*{servicios}"
-             value="ALUMBRADO_PUBLICO">
+          <textarea th:field="*{descripcion}"
+                    placeholder="Describa brevemente el proyecto">
+                    </textarea>
+        </div>
+
+      </div>
+
+      <!-- ACTIVIDAD PRODUCTIVA -->
+      <h2>Actividad productiva</h2>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Actividad principal *</label>
+
+          <input type="text"
+                 th:field="*{actividadPrincipal}"
+                 placeholder="Ej: Fabricación de estructuras metálicas">
+        </div>
+
+        <div class="form-group">
+          <label>Actividad secundaria</label>
+
+          <input type="text"
+                 th:field="*{actividadSecundaria}"
+                 placeholder="Opcional">
+        </div>
+
+        <div class="form-group full-width">
+          <label>Producción estimada *</label>
+
+          <input type="text"
+                 th:field="*{produccionEstimada}"
+                 placeholder="Ej: 5.000 unidades por mes">
+        </div>
+
+      </div>
+
+      <!-- INVERSION -->
+      <h2>Inversión y empleo</h2>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Inversión estimada ($) *</label>
+
+          <input type="number"
+                 step="0.01"
+                 th:field="*{inversionEstimada}">
+        </div>
+
+        <div class="form-group">
+          <label>Personal a ocupar *</label>
+
+          <input type="number"
+                 th:field="*{personalAOcupar}">
+        </div>
+
+        <div class="form-group">
+          <label>Tiempo de radicación (meses) *</label>
+
+          <select th:field="*{tiempoDeRadicacion}">
+            <option value="">Seleccionar</option>
+            <option value="12">12 meses</option>
+            <option value="24">24 meses</option>
+            <option value="36">36 meses</option>
+            <option value="48">48 meses</option>
+            <option value="60">60 meses o más</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- INFRAESTRUCTURA -->
+      <h2>Infraestructura requerida</h2>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Superficie cubierta de trabajo (m²) *</label>
+
+          <input type="number"
+                 step="0.01"
+                 th:field="*{supCubiertaTrabajoM2}">
+        </div>
+
+        <div class="form-group">
+          <label>Superficie cubierta de depósito (m²) *</label>
+
+          <input type="number"
+                 step="0.01"
+                 th:field="*{supCubiertaDepositoM2}">
+        </div>
+
+        <div class="form-group">
+          <label>Superficie para expansión futura (m²)</label>
+
+          <input type="number"
+                 step="0.01"
+                 th:field="*{supExpansionM2}">
+        </div>
+
+      </div>
+
+      <!-- PLANOS -->
+      <h2>Documentación técnica</h2>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>¿Posee planos? *</label>
+
+          <select th:field="*{tienePlanos}">
+            <option value="">Seleccionar</option>
+            <option th:value="true">Sí</option>
+            <option th:value="false">No</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Adjuntar planos</label>
+
+          <input type="file">
+        </div>
+
+      </div>
+
+      <!-- IMPACTO AMBIENTAL -->
+      <h2>Impacto ambiental</h2>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>¿Genera residuos? *</label>
+
+          <select id="generaResiduos"
+                  th:field="*{generaResiduos}">
+            <option th:value="false">No</option>
+            <option th:value="true">Sí</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="form-group full-width"
+           id="residuosBox">
+
+        <label>Descripción de residuos</label>
+
+        <textarea th:field="*{descripcionResiduos}"
+                  placeholder="Indique los residuos generados y su tratamiento">
+                </textarea>
+
+      </div>
+
+      <!-- SERVICIOS -->
+      <h2>Servicios requeridos</h2>
+
+      <div class="services-grid">
+
+        <label class="service-item">
+          <input type="checkbox"
+                 th:field="*{serviciosRequeridos}"
+                 value="AGUA">
+          <i class="fa-solid fa-droplet"></i>
+          Agua
+        </label>
+
+        <label class="service-item">
+          <input type="checkbox"
+                 th:field="*{serviciosRequeridos}"
+                 value="ELECTRICIDAD">
+          <i class="fa-solid fa-bolt"></i>
+          Electricidad
+        </label>
+
+        <label class="service-item">
+          <input type="checkbox"
+                 th:field="*{serviciosRequeridos}"
+                 value="INTERNET">
+          <i class="fa-solid fa-wifi"></i>
+          Internet
+        </label>
+
+        <label class="service-item">
+          <input type="checkbox"
+                 th:field="*{serviciosRequeridos}"
+                 value="GAS_NATURAL">
+          <i class="fa-solid fa-fire"></i>
+          Gas Natural
+        </label>
+
+        <label class="service-item">
+          <input type="checkbox"
+                 th:field="*{serviciosRequeridos}"
+                 value="CLOACAS">
+          <i class="fa-solid fa-toilet"></i>
+          Cloacas
+        </label>
+
+        <label class="service-item">
+          <input type="checkbox"
+                 th:field="*{serviciosRequeridos}"
+                 value="DESAGUE_PLUVIAL">
+          <i class="fa-solid fa-cloud-rain"></i>
+          Desagüe Pluvial
+        </label>
+
+        <label class="service-item">
+          <input type="checkbox"
+                 th:field="*{serviciosRequeridos}"
+                 value="SEGURIDAD_24HS">
+          <i class="fa-solid fa-shield-halved"></i>
+          Seguridad 24 hs
+        </label>
+
+        <label class="service-item">
+          <input type="checkbox"
+                 th:field="*{serviciosRequeridos}"
+                 value="CALLES_PAVIMENTADAS">
+          <i class="fa-solid fa-road"></i>
+          Calles pavimentadas
+        </label>
+
+        <label class="service-item">
+          <input type="checkbox"
+                 th:field="*{serviciosRequeridos}"
+                 value="ALUMBRADO_PUBLICO">
           <i class="fa-solid fa-lightbulb"></i>
           Alumbrado público
         </label>
 
       </div>
 
-    </div>
+      <!-- TAREAS -->
+      <h2>Cronograma de tareas</h2>
+
+      <div id="tareas-list"></div>
+
+      <button type="button"
+              class="btn-secondary"
+              onclick="agregarTarea()">
+
+        <i class="fa-solid fa-plus"></i>
+        Agregar tarea
+
+      </button>
+
+      <!-- BOTONES -->
+      <div class="buttons">
+
+        <button type="submit"
+                class="btn-primary">
+
+          <i class="fa-regular fa-paper-plane"></i>
+
+          <span th:text="${editando}
+                        ? 'Guardar cambios'
+                        : 'Enviar proyecto'">
+                    </span>
+
+        </button>
+
+        <button type="button"
+                class="btn-secondary"
+                onclick="window.history.back()">
+          Cancelar
+        </button>
+
+      </div>
+
+      <p class="footer-text">
+        Los campos marcados con * son obligatorios.
+      </p>
+
+    </form>
+
   </div>
+
+</div>
+
+<script>
+
+  let tareaIndex = 0;
+
+  function agregarTarea() {
+
+      const tareasList = document.getElementById("tareas-list");
+
+      const tarea = document.createElement("div");
+
+      tarea.classList.add("tarea-item");
+
+      tarea.innerHTML = `
+          <div class="form-grid">
+
+              <div class="form-group">
+                  <label>Título de la tarea *</label>
+
+                  <input type="text"
+                         name="tareas[${tareaIndex}].titulo">
+              </div>
+
+              <div class="form-group full-width">
+                  <label>Descripción *</label>
+
+                  <textarea
+                      name="tareas[${tareaIndex}].descripcion">
+                  </textarea>
+              </div>
+
+          </div>
+
+          <button type="button"
+                  class="btn-danger"
+                  onclick="this.parentElement.remove()">
+
+              <i class="fa-solid fa-trash"></i>
+              Eliminar
+
+          </button>
+      `;
+
+      tareasList.appendChild(tarea);
+
+      tareaIndex++;
+  }
+
+  const generaResiduos = document.getElementById("generaResiduos");
+  const residuosBox = document.getElementById("residuosBox");
+
+  function toggleResiduos() {
+
+      if(generaResiduos.value === "true") {
+          residuosBox.style.display = "block";
+      } else {
+          residuosBox.style.display = "none";
+      }
+  }
+
+  generaResiduos.addEventListener("change", toggleResiduos);
+
+  toggleResiduos();
+
+</script>
 
 </body>
 </html>
+

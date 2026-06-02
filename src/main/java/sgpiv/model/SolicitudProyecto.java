@@ -48,6 +48,13 @@ public class SolicitudProyecto {
 
     private String produccionEstimada;
 
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(
+            name = "solicitud_proyecto_servicios",
+            joinColumns = @JoinColumn(name = "solicitud_proyecto_id")
+    )
+    @Column(name = "servicio")
     private List<ServicioLote> serviciosRequeridos;
 
     // Tareas
