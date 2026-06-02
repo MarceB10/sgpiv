@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sgpiv.dtos.request.SolicitudRequestDTO;
 import sgpiv.dtos.request.TareaSoliDTORequest;
 import sgpiv.dtos.response.SolicitudResponseDTO;
+import sgpiv.enums.EstadoEmpresa;
 import sgpiv.enums.EstadoSolicitud;
 import sgpiv.enums.EstadoSolicitudProyecto;
 import sgpiv.enums.NombreRol;
@@ -13,6 +14,7 @@ import sgpiv.model.*;
 import sgpiv.repository.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -254,17 +256,6 @@ public class SolicitudService {
         dto.setTienePlanos(solicitud.getTienePlanos());
         dto.setPersonalAOcupar(solicitud.getPersonalAOcupar());
         dto.setTiempoDeRadicacion(solicitud.getTiempoDeRadicacion());
-
-        // MAPEAR TAREAS - ESTA ERA LA PARTE FALTANTE
-        if (solicitud.getTareas() != null && !solicitud.getTareas().isEmpty()) {
-            List<TareaSoliDTORequest> tareasDTO = solicitud.getTareas().stream()
-                    .map(tarea -> new TareaSoliDTORequest(
-                            tarea.getTitulo(),
-                            tarea.getDescripcion()
-                    ))
-                    .collect(Collectors.toList());
-            dto.setTareas(tareasDTO);
-        }
 
         return dto;
     }

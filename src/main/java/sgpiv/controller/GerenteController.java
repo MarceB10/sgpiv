@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sgpiv.dtos.response.LoteResponseDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
+import sgpiv.enums.EstadoSolicitud;
 import sgpiv.enums.NombreRol;
 import sgpiv.repository.SolicitudRadicacionRepository;
 import sgpiv.service.SolicitudService;
@@ -65,7 +66,7 @@ public class GerenteController {
                 (UsuarioResponseDTO) session.getAttribute("usuario");
 
         if (usuario == null){
-            return "redirect:/";
+            return "redirect:/login";
         }
 
         model.addAttribute("usuario", usuario);
