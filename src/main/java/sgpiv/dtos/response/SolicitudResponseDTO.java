@@ -31,18 +31,7 @@ public class SolicitudResponseDTO {
     private String descripcionBienServicio;
 
     // DATOS PROYECTO
-    private String tipoEmpresa;
-    private String objetivoProyecto;
-    private String actividadPrincipal;
-    private String actividadSecundaria;
-    private Double necesidadM2;
-    private Double supCubiertaTrabajoM2;
-    private Double supCubiertaDepositoM2;
-    private Double supExpansionM2;
-    private Boolean tienePlanos;
-    private Long personalAOcupar;
-    private Integer tiempoDeRadicacion;
-    private List<TareaSoliDTOResponse> tareas = new ArrayList<>();
+    private
 
     // ESTADO
     private EstadoSolicitud estado;
@@ -65,17 +54,17 @@ public class SolicitudResponseDTO {
         this.direccion               = solicitud.getDireccion();
         this.ingresoBrutos           = solicitud.getIngresoBrutos();
         this.descripcionBienServicio = solicitud.getDescripcionBienServicio();
-        this.tipoEmpresa             = solicitud.getTipoEmpresa();
-        this.objetivoProyecto        = solicitud.getObjetivoProyecto();
-        this.actividadPrincipal      = solicitud.getActividadPrincipal();
-        this.actividadSecundaria     = solicitud.getActividadSecundaria();
-        this.necesidadM2             = solicitud.getNecesidadM2();
-        this.supCubiertaTrabajoM2    = solicitud.getSupCubiertaTrabajoM2();
-        this.supCubiertaDepositoM2   = solicitud.getSupCubiertaDepositoM2();
-        this.supExpansionM2          = solicitud.getSupExpansionM2();
-        this.tienePlanos             = solicitud.getTienePlanos();
-        this.personalAOcupar         = solicitud.getPersonalAOcupar();
-        this.tiempoDeRadicacion      = solicitud.getTiempoDeRadicacion();
+//        this.tipoEmpresa             = solicitud.getTipoEmpresa();
+//        this.objetivoProyecto        = solicitud.getObjetivoProyecto();
+//        this.actividadPrincipal      = solicitud.getActividadPrincipal();
+//        this.actividadSecundaria     = solicitud.getActividadSecundaria();
+//        this.necesidadM2             = solicitud.getNecesidadM2();
+//        this.supCubiertaTrabajoM2    = solicitud.getSupCubiertaTrabajoM2();
+//        this.supCubiertaDepositoM2   = solicitud.getSupCubiertaDepositoM2();
+//        this.supExpansionM2          = solicitud.getSupExpansionM2();
+//        this.tienePlanos             = solicitud.getTienePlanos();
+//        this.personalAOcupar         = solicitud.getPersonalAOcupar();
+//        this.tiempoDeRadicacion      = solicitud.getTiempoDeRadicacion();
         this.estado                  = solicitud.getEstado();
         this.fechaEnvio              = solicitud.getFechaEnvio();
         this.motivoRechazo           = solicitud.getMotivoRechazo();
@@ -86,9 +75,9 @@ public class SolicitudResponseDTO {
             this.cuitUsuario     = solicitud.getUsuario().getCuit();
         }
 
-        for (TareaSolicitud tarea : solicitud.getTareas()){
-            this.tareas.add(new TareaSoliDTOResponse(tarea));
-        }
+//        for (TareaSolicitud tarea : solicitud.getTareas()){
+//            this.tareas.add(new TareaSoliDTOResponse(tarea));
+//        }
 
 
     }

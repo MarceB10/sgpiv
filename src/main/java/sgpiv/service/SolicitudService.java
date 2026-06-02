@@ -3,6 +3,7 @@ package sgpiv.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sgpiv.dtos.request.SolicitudProyectoRequestDTO;
 import sgpiv.dtos.request.SolicitudRequestDTO;
 import sgpiv.dtos.request.TareaSoliDTORequest;
 import sgpiv.dtos.response.SolicitudResponseDTO;
@@ -85,11 +86,11 @@ public class SolicitudService {
         solicitud.setTipoEmpresa(dto.getTipoEmpresa());
         solicitud.setObjetivoProyecto(dto.getObjetivoProyecto());
         solicitud.setActividadPrincipal(dto.getActividadPrincipal());
-        solicitud.setActividadSecundaria(dto.getActividadSecundaria());
+//        solicitud.setActividadSecundaria(dto.getActividadSecundaria());
         solicitud.setNecesidadM2(dto.getNecesidadM2());
-        solicitud.setSupCubiertaTrabajoM2(dto.getSupCubiertaTrabajoM2());
-        solicitud.setSupCubiertaDepositoM2(dto.getSupCubiertaDepositoM2());
-        solicitud.setSupExpansionM2(dto.getSupExpansionM2());
+//        solicitud.setSupCubiertaTrabajoM2(dto.getSupCubiertaTrabajoM2());
+//        solicitud.setSupCubiertaDepositoM2(dto.getSupCubiertaDepositoM2());
+//        solicitud.setSupExpansionM2(dto.getSupExpansionM2());
         solicitud.setTienePlanos(dto.getTienePlanos());
         solicitud.setPersonalAOcupar(dto.getPersonalAOcupar());
         solicitud.setTiempoDeRadicacion(dto.getTiempoDeRadicacion());
@@ -114,6 +115,19 @@ public class SolicitudService {
         solicitudRadicacionRepository.save(solicitud);
     }
 
+    public void guardarSolicitudProyecto(SolicitudProyectoRequestDTO dto){
+        if (dto.getGeneraResiduos() &&
+                (dto.getDescripcionResiduos() == null || dto.getDescripcionResiduos().isBlank())) {
+            throw new IllegalArgumentException("Debe describir los residuos que genera");
+        }
+
+        SolicitudProyecto solicitud = new SolicitudProyecto();
+        solicitud.setTitulo(dto.getTitulo());
+        solicitud.setDescripcion(dto.getDescripcion());
+        solicitud.setObjetivo(dto.getObjetivo());
+
+
+    }
 
     public void aprobarSolicitudProyecto(Long solicitudProyectoId){
         SolicitudProyecto sp = solicitudProyectoRepository
@@ -248,11 +262,11 @@ public class SolicitudService {
         dto.setTipoEmpresa(solicitud.getTipoEmpresa());
         dto.setObjetivoProyecto(solicitud.getObjetivoProyecto());
         dto.setActividadPrincipal(solicitud.getActividadPrincipal());
-        dto.setActividadSecundaria(solicitud.getActividadSecundaria());
+//        dto.setActividadSecundaria(solicitud.getActividadSecundaria());
         dto.setNecesidadM2(solicitud.getNecesidadM2());
-        dto.setSupCubiertaTrabajoM2(solicitud.getSupCubiertaTrabajoM2());
-        dto.setSupCubiertaDepositoM2(solicitud.getSupCubiertaDepositoM2());
-        dto.setSupExpansionM2(solicitud.getSupExpansionM2());
+//        dto.setSupCubiertaTrabajoM2(solicitud.getSupCubiertaTrabajoM2());
+//        dto.setSupCubiertaDepositoM2(solicitud.getSupCubiertaDepositoM2());
+//        dto.setSupExpansionM2(solicitud.getSupExpansionM2());
         dto.setTienePlanos(solicitud.getTienePlanos());
         dto.setPersonalAOcupar(solicitud.getPersonalAOcupar());
         dto.setTiempoDeRadicacion(solicitud.getTiempoDeRadicacion());

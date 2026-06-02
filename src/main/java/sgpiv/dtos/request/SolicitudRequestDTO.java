@@ -56,21 +56,21 @@ public class SolicitudRequestDTO {
     @NotBlank(message = "La actividad principal no puede estar vacia")
     private String actividadPrincipal;
 
-    private String actividadSecundaria;
+//    private String actividadSecundaria;
 
     @NotNull(message = "Indicar la superficie necesaria en m2")
     private Double necesidadM2;
 
-    @NotNull(message = "La superficie de trabajo no puede estar vacia")
-    private Double supCubiertaTrabajoM2;
+//    @NotNull(message = "La superficie de trabajo no puede estar vacia")
+//    private Double supCubiertaTrabajoM2;
+//
+//    @NotNull(message = "La superficie de deposito no puede estar vacia")
+//    private Double supCubiertaDepositoM2;
+//
+//    private Double supExpansionM2;
 
-    @NotNull(message = "La superficie de deposito no puede estar vacia")
-    private Double supCubiertaDepositoM2;
-
-    private Double supExpansionM2;
-
-    @NotNull
-    private List<TareaSoliDTORequest> tareas = new ArrayList<>();
+//    @NotNull
+//    private List<TareaSoliDTORequest> tareas = new ArrayList<>();
 
     @NotNull(message = "Indique si tiene planos")
     private Boolean tienePlanos;
