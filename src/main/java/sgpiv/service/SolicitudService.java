@@ -33,7 +33,7 @@ public class SolicitudService {
     private final UsuarioService usuarioService;
     private final RepresentanteService representanteService;
     private final LoteService loteService;
-
+    private final EmailService emailService;
 
     public void enviarSolicitud(SolicitudRequestDTO dto, String cuitUsuario) {
 
@@ -109,6 +109,11 @@ public class SolicitudService {
 
         System.out.println("Cant Tareas: " + tareas.size());
 
+        emailService.enviarSolicitudRecibida(
+                solicitud.getEmailEmpresa(),
+                solicitud.getRazonSocial()
+        );
+
         solicitudRepository.save(solicitud);
     }
 
@@ -178,6 +183,11 @@ public class SolicitudService {
         //cambio de estado de la solicitud
         solicitud.setEstado(EstadoSolicitud.APROBADA);
 
+        emailService.enviarSolicitudAprobada(
+                solicitud.getEmailEmpresa(),
+                solicitud.getRazonSocial()
+        );
+
         solicitudRepository.save(solicitud);
 
         //OcupacionLote
@@ -190,6 +200,12 @@ public class SolicitudService {
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
         solicitud.setEstado(EstadoSolicitud.RECHAZADA);
         solicitud.setMotivoRechazo(motivo);
+
+        emailService.enviarSolicitudRechazada(
+                solicitud.getEmailEmpresa(),
+                solicitud.getRazonSocial(),
+                motivo
+        );
         solicitudRepository.save(solicitud);
         // Si se rechaza se puede desactivar el usuario
 //        Usuario usuario = solicitud.getUsuario();
@@ -232,6 +248,13 @@ public class SolicitudService {
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
         solicitud.setEstado(EstadoSolicitud.REQUIERE_MODIFICACION);
         solicitud.setMotivoRechazo(motivo);
+
+        emailService.enviarRequiereModificacion(
+                solicitud.getEmailEmpresa(),
+                solicitud.getRazonSocial(),
+                motivo
+        );
+
         solicitudRepository.save(solicitud);
     }
 
