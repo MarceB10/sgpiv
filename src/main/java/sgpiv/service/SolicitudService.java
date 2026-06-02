@@ -152,6 +152,8 @@ public class SolicitudService {
         solicitud.setEstado(EstadoSolicitudProyecto.PENDIENTE);
 
         solicitudProyectoRepository.save(solicitud);
+        soliRadicacion.setSolicitudProyecto(solicitud);
+        solicitudRadicacionRepository.save(soliRadicacion);
     }
 
     public void aprobarSolicitudProyecto(Long solicitudProyectoId){
@@ -382,4 +384,18 @@ public class SolicitudService {
         solicitudRadicacionRepository.save(solicitud);
     }
 
+    public SolicitudResponseDTO obtenerSolicitudRadicacionAprobadaPrimerParte(String cuit) {
+        Usuario user = usuarioRepository
+                .findByCuit(cuit)
+                .orElseThrow(() -> new RuntimeException("Usuario No encontrado"));
+
+        List<SolicitudRadicacion> solicitudes = solicitudRadicacionRepository.findByUsuario(user);
+
+        SolicitudRadicacion actual = solicitudes.stream()
+                .filter(s -> s.getEstado() == EstadoSolicitud.PENDIENTE_PROYECTO)
+                .findFirst()
+                .orElse(null);
+
+        return new SolicitudResponseDTO(actual);
+    }
 }

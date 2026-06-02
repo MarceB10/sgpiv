@@ -60,4 +60,7 @@ public class SolicitudRadicacion {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
+    @OneToOne(mappedBy = "solicitudRadicacion", cascade = CascadeType.ALL)
+    private SolicitudProyecto solicitudProyecto;
+
 }
