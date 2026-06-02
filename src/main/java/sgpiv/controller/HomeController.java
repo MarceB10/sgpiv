@@ -39,7 +39,6 @@ public class HomeController {
 
         model.addAttribute("solicitudActiva", solicitudActiva);
 
-
         return "home";
     }
 }

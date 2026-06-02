@@ -305,6 +305,7 @@ public class SolicitudService {
                         usuario.getId(),
                         List.of(
                                 EstadoSolicitud.PENDIENTE,
+                                EstadoSolicitud.PENDIENTE_PROYECTO,
                                 EstadoSolicitud.EN_REVISION,
                                 EstadoSolicitud.APROBADA,
                                 EstadoSolicitud.REQUIERE_MODIFICACION,

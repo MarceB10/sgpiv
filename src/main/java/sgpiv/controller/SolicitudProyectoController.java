@@ -24,13 +24,16 @@ public class SolicitudProyectoController {
     @GetMapping
     public String formulario(HttpSession session, Model model) {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/login";
 
         // Verificar que tenga una solicitud de radicacion aprobada
         SolicitudResponseDTO solicitudRadicacion = solicitudService
                 .obtenerSolicitudRadicacionAprobadaPrimerParte(usuario.getCuit());
 
+        model.addAttribute("usuario", usuario);
         model.addAttribute("solicitudProyectoDTO", new SolicitudProyectoRequestDTO());
         model.addAttribute("solicitudRadicacionId", solicitudRadicacion.getId());
+        model.addAttribute("pagina", "solicitudProyecto");
         return "solicitudProyecto";
     }
 
@@ -38,11 +41,16 @@ public class SolicitudProyectoController {
     public String guardar(@Valid @ModelAttribute SolicitudProyectoRequestDTO dto,
                           BindingResult result,
                           @RequestParam Long solicitudRadicacionId,
+                          HttpSession session,
                           Model model) {
+
         if (result.hasErrors()) {
+            UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+            model.addAttribute("usuario", usuario);
             model.addAttribute("solicitudRadicacionId", solicitudRadicacionId);
             return "solicitudProyecto";
         }
+
         dto.setSolicitudRadicacionId(solicitudRadicacionId);
         solicitudService.guardarSolicitudProyecto(dto);
         return "redirect:/home";

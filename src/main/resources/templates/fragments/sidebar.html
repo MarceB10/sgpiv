@@ -116,7 +116,7 @@
 
             <!-- ACEPTADA → puede presentar solicitud de proyecto -->
             <th:block th:if="${solicitudActiva != null
-            and solicitudActiva.estado.name() == 'ACEPTADA'}">
+            and solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO'}">
 
                 <a th:href="@{/miSolicitud}"
                    th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
