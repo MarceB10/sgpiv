@@ -6,17 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import sgpiv.dtos.request.SolicitudRequestDTO;
 import sgpiv.dtos.request.TareaSoliDTORequest;
 import sgpiv.dtos.response.SolicitudResponseDTO;
-import sgpiv.enums.EstadoEmpresa;
 import sgpiv.enums.EstadoSolicitud;
+import sgpiv.enums.EstadoSolicitudProyecto;
 import sgpiv.enums.NombreRol;
 import sgpiv.model.*;
-import sgpiv.repository.EmpresaRepository;
-import sgpiv.repository.ProyectoRepository;
-import sgpiv.repository.SolicitudRepository;
-import sgpiv.repository.UsuarioRepository;
+import sgpiv.repository.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,12 +20,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SolicitudService {
 
-    private final SolicitudRepository solicitudRepository;
+    private final SolicitudRadicacionRepository solicitudRadicacionRepository;
+    private final SolicitudProyectoRepository solicitudProyectoRepository;
+
     private final UsuarioRepository usuarioRepository;
 
     private final OcupacionLoteService ocupacionLoteService;
 
     private final ProyectoRepository proyectoRepository;
+    private final TareaRepository tareaRepository;
+
     private final EmpresaRepository empresaRepository;
     private final UsuarioService usuarioService;
     private final RepresentanteService representanteService;
@@ -92,111 +92,98 @@ public class SolicitudService {
         solicitud.setPersonalAOcupar(dto.getPersonalAOcupar());
         solicitud.setTiempoDeRadicacion(dto.getTiempoDeRadicacion());
 
-// TAREAS - Limpiar y recrear
-        solicitud.getTareas().clear();
-
-        if (dto.getTareas() != null && !dto.getTareas().isEmpty()) {
-            for (TareaSoliDTORequest tareaDTO : dto.getTareas()) {
-                TareaSolicitud tarea = new TareaSolicitud(
-                        tareaDTO.getTitulo(),
-                        tareaDTO.getDescripcion(),
-                        solicitud
-                );
-                solicitud.getTareas().add(tarea);
-            }
-        }
-
-        System.out.println("Cant Tareas guardadas: " + solicitud.getTareas().size());
-        /// NOTA: Las Tareas se guardan al guardar la Solicitud
-
         // RESETEAR ESTADO
         solicitud.setEstado(EstadoSolicitud.PENDIENTE);
 
         // LIMPIAR MOTIVO ANTERIOR
         solicitud.setMotivoRechazo(null);
 
-        solicitudRepository.save(solicitud);
+        solicitudRadicacionRepository.save(solicitud);
     }
 
     @Transactional
-    public void aprobar(Long id, Long idLote) {
-        SolicitudRadicacion solicitud = solicitudRepository.findById(id)
+    public void aprobarSolicitudPrimeraParte(Long id) {
+        SolicitudRadicacion solicitud = solicitudRadicacionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
-
-        Lote lote = loteService.obtenerPorId(idLote);
-
-        List<Tarea> tareasProyecto = new ArrayList<>();
-
-        for (TareaSolicitud tareaSolicitud: solicitud.getTareas()){
-            tareasProyecto.add(new Tarea(
-                    tareaSolicitud.getTitulo(),
-                    tareaSolicitud.getDescripcion()
-            ));
-        }
-
-        //Creacion de Proyecto
-        Proyecto proyecto = new Proyecto(
-                solicitud.getActividadPrincipal(),
-                solicitud.getObjetivoProyecto(),
-                LocalDate.now(),
-                solicitud.getPersonalAOcupar()
-        );
-
-        proyecto.agregarTareas(tareasProyecto);
-        //proyecto.setFechaFin(LocalDate.now().plus(solicitud.getTiempoDeRadicacion()));
-
-
-
-        //creacion de empresa
-        Empresa empresa = new Empresa();
-        empresa.setRazonSocial(solicitud.getRazonSocial());
-        empresa.setCuit(solicitud.getCuitEmpresa());
-        empresa.setRubro(solicitud.getRubro());
-        empresa.setEmail(solicitud.getEmailEmpresa());
-        empresa.setTelefono(Long.valueOf(solicitud.getTelefonoEmpresa()));
-        empresa.setDireccion(solicitud.getDireccion());
-        empresa.setIngresoBrutos(solicitud.getIngresoBrutos());
-        empresa.setDescripcionBienServicio(solicitud.getDescripcionBienServicio());
-        empresa.setTipoIndustria(solicitud.getTipoIndustria());
-
-        //asociar Proyecto a empresa
-        empresa.agregarProyecto(proyecto);
-
-        empresa.setEstadoEmpresa(EstadoEmpresa.ADJUDICADA);//por ahora interesada hasta que tenga la adjudicacion
-
-
-        Usuario usuario = solicitud.getUsuario();
-
-        usuarioService.asignarRol(
-                usuario.getCuit(),
-                NombreRol.ROL_REPRESENTANTE_EMPRESA
-        );
-
-        //creacion y asignacion de representante
-        RepresentanteEmpresa representante =
-                representanteService.buscarPorCuit(usuario.getCuit());
-
-        proyecto.setRepresentanteEmpresa(representante);
-        representanteService.asignarEmpresa(representante, empresa);
-        empresaRepository.saveAndFlush(empresa);
 
 
         //cambio de estado de la solicitud
         solicitud.setEstado(EstadoSolicitud.APROBADA);
+        solicitudRadicacionRepository.save(solicitud);
+    }
 
-        solicitudRepository.save(solicitud);
 
-        //OcupacionLote
-        ocupacionLoteService.ocuparLote(lote, proyecto);
+    public void aprobarSolicitudProyecto(Long solicitudProyectoId){
+        SolicitudProyecto sp = solicitudProyectoRepository
+                .findByIdConTareas(solicitudProyectoId).orElseThrow();
+
+        Usuario usuario = sp.getSolicitudRadicacion().getUsuario();
+
+        // 1. Crear empresa desde la solicitud de radicacion
+        Empresa empresa = new Empresa();
+        empresa.setRazonSocial(sp.getSolicitudRadicacion().getRazonSocial());
+        empresa.setCuit(sp.getSolicitudRadicacion().getCuitEmpresa());
+        empresa.setRubro(sp.getSolicitudRadicacion().getRubro());
+        empresa = empresaRepository.save(empresa);
+
+        // 2. Dar rol representante al usuario y asociarlo a la empresa
+        usuarioService.asignarRol(usuario.getCuit(), NombreRol.ROL_REPRESENTANTE_EMPRESA);
+        usuario = usuarioRepository
+                .findByCuit(usuario.getCuit())
+                .orElseThrow(() -> new RuntimeException("Usuario No encontrado"));
+        usuarioRepository.save(usuario);
+
+        RepresentanteEmpresa representanteEmpresa = representanteService.buscarPorCuit(usuario.getCuit());
+
+        // 3. Crear proyecto copiando todos los campos de SolicitudProyecto
+        Proyecto proyecto = new Proyecto();
+        proyecto.setTitulo(sp.getTitulo());
+        proyecto.setDescripcion(sp.getDescripcion());
+        proyecto.setObjetivo(sp.getObjetivo());
+        proyecto.setRubro(sp.getRubro());
+        proyecto.setInversionEstimada(sp.getInversionEstimada());
+        proyecto.setActividadPrincipal(sp.getActividadPrincipal());
+        proyecto.setActividadSecundaria(sp.getActividadSecundaria());
+        proyecto.setPersonalAOcupar(sp.getPersonalAOcupar());
+        proyecto.setTiempoDeRadicacion(sp.getTiempoDeRadicacion());
+        proyecto.setSupCubiertaTrabajoM2(sp.getSupCubiertaTrabajoM2());
+        proyecto.setSupCubiertaDepositoM2(sp.getSupCubiertaDepositoM2());
+        proyecto.setSupExpansionM2(sp.getSupExpansionM2());
+        proyecto.setTienePlanos(sp.getTienePlanos());
+        proyecto.setGeneraResiduos(sp.isGeneraResiduos());
+        proyecto.setDescripcionResiduos(sp.getDescripcionResiduos());
+        proyecto.setProduccionEstimada(sp.getProduccionEstimada());
+        proyecto.setServiciosRequeridos(sp.getServiciosRequeridos());
+        proyecto.setEmpresa(empresa);
+        proyecto.setRepresentanteEmpresa(representanteEmpresa);
+        proyecto = proyectoRepository.save(proyecto);
+
+
+        // 4. Convertir TareaSolicitud → Tarea del proyecto
+        for (TareaSolicitud ts : sp.getTareas()) {
+            Tarea tarea = new Tarea();
+            tarea.setTitulo(ts.getTitulo());
+            tarea.setDescripcion(ts.getDescripcion());
+            tarea.setCompleta(false);
+            tarea.setProyecto(proyecto);
+            tareaRepository.save(tarea);
+        }
+
+        // 5. Actualizar estado
+        sp.setEstado(EstadoSolicitudProyecto.APROBADA);
+        solicitudProyectoRepository.save(sp);
 
     }
 
+
+
+
     public void rechazar(Long id, String motivo) {
-        SolicitudRadicacion solicitud = solicitudRepository.findById(id)
+        SolicitudRadicacion solicitud = solicitudRadicacionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
         solicitud.setEstado(EstadoSolicitud.RECHAZADA);
         solicitud.setMotivoRechazo(motivo);
-        solicitudRepository.save(solicitud);
+        solicitudRadicacionRepository.save(solicitud);
         // Si se rechaza se puede desactivar el usuario
 //        Usuario usuario = solicitud.getUsuario();
 //        usuario.desactivar();
@@ -208,7 +195,7 @@ public class SolicitudService {
         Usuario usuario = usuarioRepository.findByCuit(cuit)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        return solicitudRepository
+        return solicitudRadicacionRepository
                 .findFirstByUsuarioIdAndEstadoIn(
                         usuario.getId(),
                         List.of(
@@ -222,23 +209,23 @@ public class SolicitudService {
     }
 
     public List<SolicitudRadicacion> listarPendientes(){
-        return solicitudRepository
+        return solicitudRadicacionRepository
                 .findByEstado(EstadoSolicitud.PENDIENTE);
     }
 
     public SolicitudResponseDTO obtenerPorId(Long id) {
-        SolicitudRadicacion solicitud = solicitudRepository.findById(id)
+        SolicitudRadicacion solicitud = solicitudRadicacionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
 
         return new SolicitudResponseDTO(solicitud);
     }
 
     public void requiereModificacion(Long id, String motivo) {
-        SolicitudRadicacion solicitud = solicitudRepository.findById(id)
+        SolicitudRadicacion solicitud = solicitudRadicacionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
         solicitud.setEstado(EstadoSolicitud.REQUIERE_MODIFICACION);
         solicitud.setMotivoRechazo(motivo);
-        solicitudRepository.save(solicitud);
+        solicitudRadicacionRepository.save(solicitud);
     }
 
     public SolicitudRequestDTO toRequestDTO(SolicitudRadicacion solicitud) {
