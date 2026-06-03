@@ -77,6 +77,9 @@ public class GerenteController {
                 solicitudService.listarPendientes()
         );
 
+        model.addAttribute("proyectos",
+                solicitudService.listarTodosProyectos());
+
         model.addAttribute("pagina", "solicitudes-gerente");
 
         return "solicitudesGerente";
@@ -169,17 +172,6 @@ public class GerenteController {
         }
     }
 
-    @GetMapping("/proyectos")
-    public String listarProyectos(Model model, HttpSession session) {
-        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
-
-        model.addAttribute("usuario", usuario);
-//        model.addAttribute("proyectos", solicitudProyectoService.listarTodos());
-        model.addAttribute("pagina", "proyectos");
-
-        return "solicitudesGerente";
-    }
 
     @GetMapping("/proyectos/{id}")
     public String detalleProyecto(@PathVariable Long id,
@@ -189,9 +181,34 @@ public class GerenteController {
         if (usuario == null) return "redirect:/login";
 
         model.addAttribute("usuario", usuario);
-//        model.addAttribute("proyecto", solicitudProyectoService.obtenerPorId(id));
+        model.addAttribute("proyecto", solicitudService.obtenerProyectoPorId(id));
         model.addAttribute("pagina", "detalle-proyecto");
 
         return "gerente/detalleProyecto";
     }
+
+    @PostMapping("/proyectos/{id}/rechazar")
+    public String rechazarProyecto(@PathVariable Long id,
+                                   @RequestParam String motivo) {
+        solicitudService.rechazarSolicitudProyecto(id, motivo);
+        return "redirect:/solicitudesGerente";
+
+    }
+
+    @PostMapping("/proyectos/{id}/modificar")
+    public String solicitarModificacionProyecto(@PathVariable Long id,
+                                                @RequestParam String motivo) {
+        solicitudService.requiereModificacionProyecto(id, motivo);
+        return "redirect:/solicitudesGerente";
+
+    }
+
+    @PostMapping("/proyectos/{id}/aceptar")
+    public String aceptarProyecto(@PathVariable Long id) {
+        solicitudService.aprobarSolicitudProyecto(id);
+        return "redirect:/solicitudesGerente";
+
+    }
+
+
 }

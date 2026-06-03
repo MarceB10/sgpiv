@@ -75,12 +75,12 @@
                             th:field="*{email}"
                             placeholder="Email">
 
-                    <!-- boton X -->
-                    <button type="button"
-                            class="clear-btn"
-                            onclick="limpiarEmail()">
-                        ×
-                    </button>
+<!--                    &lt;!&ndash; boton X &ndash;&gt;-->
+<!--                    <button type="button"-->
+<!--                            class="clear-btn"-->
+<!--                            onclick="limpiarEmail()">-->
+<!--                        ×-->
+<!--                    </button>-->
                     <!-- error de validación del campo email -->
                     <p th:if="${#fields.hasErrors('email')}"
                        th:errors="*{email}"

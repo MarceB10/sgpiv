@@ -165,11 +165,77 @@
     </div>
 
     <!-- ACCIONES -->
+    <!-- ACCIONES -->
     <div class="acciones">
+
         <button onclick="window.history.back()" class="btn-cerrar">
             Cerrar
         </button>
+
+        <!-- RECHAZAR -->
+        <div class="accion-grupo">
+            <h3 class="accion-titulo">
+                <i class="fa-solid fa-xmark"></i>
+                Rechazar proyecto
+            </h3>
+
+            <form th:action="@{/proyectos/{id}/rechazar(id=${proyecto.id})}" method="post">
+      <textarea name="motivo"
+                placeholder="Motivo de rechazo (obligatorio)"
+                class="input-motivo"
+                required></textarea>
+
+                <button type="submit" class="btn-rechazar">
+                    <i class="fa-solid fa-xmark"></i>
+                    Rechazar
+                </button>
+            </form>
+        </div>
+
+        <!-- SOLICITAR MODIFICACIÓN -->
+        <div class="accion-grupo">
+            <h3 class="accion-titulo">
+                <i class="fa-solid fa-pen"></i>
+                Solicitar modificaciones
+            </h3>
+
+            <form th:action="@{/proyectos/{id}/modificar(id=${proyecto.id})}" method="post">
+      <textarea name="motivo"
+                placeholder="Indicá qué debe modificar"
+                class="input-motivo"
+                required></textarea>
+
+                <button type="submit" class="btn-modificar">
+                    <i class="fa-solid fa-pen"></i>
+                    Requiere modificación
+                </button>
+            </form>
+        </div>
+
+        <!-- ACEPTAR -->
+        <div class="accion-grupo">
+            <h3 class="accion-titulo">
+                <i class="fa-solid fa-check"></i>
+                Aceptar proyecto
+            </h3>
+
+            <form th:action="@{/proyectos/{id}/aceptar(id=${proyecto.id})}" method="post">
+                <input type="hidden"
+                       th:if="${_csrf != null}"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}" />
+                <p>Confirmá la aceptación del proyecto productivo.</p>
+
+                <button type="submit" class="btn-aprobar">
+                    <i class="fa-solid fa-check"></i>
+                    Aceptar proyecto
+                </button>
+            </form>
+        </div>
+
     </div>
+
+
 
 </div>
 

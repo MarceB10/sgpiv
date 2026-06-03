@@ -124,13 +124,13 @@
             <tbody>
             <tr th:each="proyecto : ${proyectos}">
                 <td th:text="${proyecto.id}"></td>
-                <td th:text="${proyecto.nombre}" style="font-weight: 500;"></td>
-                <td th:text="${proyecto.empresa}"></td>
+                <td th:text="${proyecto.titulo}" style="font-weight: 500;"></td>
+                <td th:text="${proyecto.solicitudRadicacion.razonSocial}"></td>
                 <td>
-            <span th:text="${proyecto.estado}"
-                  th:classappend="${proyecto.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
-                 (${proyecto.estado.name() == 'APROBADO'} ? 'estado aprobada' : 'estado rechazado')">
-            </span>
+        <span th:text="${proyecto.estado}"
+              th:classappend="${proyecto.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
+                 (${proyecto.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">
+        </span>
                 </td>
                 <td th:text="${proyecto.fechaEnvio}"></td>
                 <td>
@@ -140,6 +140,7 @@
                 </td>
             </tr>
             </tbody>
+
         </table>
 
 
