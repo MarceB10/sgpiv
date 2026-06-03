@@ -95,15 +95,6 @@
                 Solicitud de Radicación
             </a>
 
-            <!-- SOLICITUD NORMAL (PENDIENTE) -->
-            <a th:if="${solicitudActiva != null
-            and solicitudActiva.estado.name() != 'REQUIERE_MODIFICACION'
-             and solicitudActiva.estado.name() != 'ACEPTADA'}"
-               th:href="@{/miSolicitud}"
-               th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
-                <i class="fa-solid fa-clock"></i>
-                Ver mi solicitud
-            </a>
 
             <!-- REQUIERE MODIFICACION -->
             <a th:if="${solicitudActiva != null
@@ -120,8 +111,8 @@
 
                 <a th:href="@{/miSolicitud}"
                    th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
-                    <i class="fa-solid fa-circle-check"></i>
-                    Mi solicitud
+                    <i class="fa-solid fa-clock"></i>
+                    Ver mi solicitud
                 </a>
 
                 <!-- Solo si NO presentó solicitud de proyecto todavía -->

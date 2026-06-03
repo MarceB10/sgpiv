@@ -1,16 +1,16 @@
 package sgpiv.service;
 
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sgpiv.dtos.request.SolicitudProyectoRequestDTO;
 import sgpiv.dtos.request.SolicitudRequestDTO;
 import sgpiv.dtos.request.TareaSoliDTORequest;
+import sgpiv.dtos.response.ProyectoResponseDTO;
+import sgpiv.dtos.response.SolicitudProyectoResponseDTO;
 import sgpiv.dtos.response.SolicitudResponseDTO;
-import sgpiv.enums.EstadoEmpresa;
-import sgpiv.enums.EstadoSolicitud;
-import sgpiv.enums.EstadoSolicitudProyecto;
-import sgpiv.enums.NombreRol;
+import sgpiv.enums.*;
 import sgpiv.model.*;
 import sgpiv.repository.*;
 
@@ -174,6 +174,8 @@ public class SolicitudService {
         empresa.setEmail(sp.getSolicitudRadicacion().getEmailEmpresa());
         empresa.setTipoIndustria(sp.getSolicitudRadicacion().getTipoIndustria());
         empresa.setDireccion(sp.getSolicitudRadicacion().getDireccion());
+        empresa.setEstadoEmpresa(EstadoEmpresa.PENDIENTE_LOTE);
+
         empresa = empresaRepository.save(empresa);
 
         // 2. Dar rol representante al usuario y asociarlo a la empresa
@@ -388,4 +390,15 @@ public class SolicitudService {
     }
 
 
+    public List<SolicitudProyectoResponseDTO> listarProyectosPendientes() {
+        List<SolicitudProyectoResponseDTO> proyectoResponseDTOS = new ArrayList<>();
+        List<SolicitudProyecto> proyectos =  solicitudProyectoRepository.findByEstado(EstadoSolicitudProyecto.PENDIENTE);
+
+        for (SolicitudProyecto sp: proyectos){
+            proyectoResponseDTOS.add(
+                    new SolicitudProyectoResponseDTO(sp)
+            );
+        }
+        return proyectoResponseDTOS;
+    }
 }

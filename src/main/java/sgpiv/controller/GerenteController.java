@@ -78,7 +78,7 @@ public class GerenteController {
         );
 
         model.addAttribute("proyectos",
-                solicitudService.listarTodosProyectos());
+                solicitudService.listarProyectosPendientes());
 
         model.addAttribute("pagina", "solicitudes-gerente");
 
