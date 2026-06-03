@@ -35,7 +35,7 @@ public class Lote {
     private Long id;
 
     @NotNull(message = "Ingrese la superficie")
-    private Float superficie;
+    private Double superficie;
 
     @NotBlank(message = "Ingrese la ubicacion")
     private String ubicacion;
@@ -56,7 +56,7 @@ public class Lote {
     @OneToMany(mappedBy = "lote", cascade = CascadeType.ALL)
     private List<OcupacionLote> ocupaciones;
 
-    public Lote(Float superficie,
+    public Lote(Double superficie,
                 String ubicacion,
                 Float precio,
                 String restricciones
@@ -84,7 +84,7 @@ public class Lote {
         this.precio = precio;
     }
 
-    public void setSuperficie(float superficie) {
+    public void setSuperficie(Double superficie) {
         this.superficie = superficie;
     }
 }

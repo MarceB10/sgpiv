@@ -71,6 +71,9 @@ public class Proyecto {
     @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Tarea> tareas = new ArrayList<>();
 
+    @NotNull
+    private Double necesidadM2;
+
     @ManyToOne
     @JoinColumn(name = "empresa_id")
     private Empresa empresa;
@@ -159,4 +162,6 @@ public class Proyecto {
     public void agregarTareas(List<Tarea> tareasProyecto) {
         this.tareas.addAll(tareasProyecto);
     }
+
+
 }

@@ -107,7 +107,8 @@
 
             <!-- ACEPTADA → puede presentar solicitud de proyecto -->
             <th:block th:if="${solicitudActiva != null
-            and solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO'}">
+            and
+            (solicitudActiva.estado.name() == 'PENDIENTE' or solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO')}">
 
                 <a th:href="@{/miSolicitud}"
                    th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
@@ -115,8 +116,10 @@
                     Ver mi solicitud
                 </a>
 
+
                 <!-- Solo si NO presentó solicitud de proyecto todavía -->
-                <a th:if="${solicitudProyectoActiva == null}"
+                <a th:if="${solicitudProyectoActiva == null
+                and solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO'}"
                    th:href="@{/solicitudProyecto}"
                    th:classappend="${pagina == 'solicitud-proyecto'} ? ' active' : ''">
                     <i class="fa-solid fa-folder-plus"></i>

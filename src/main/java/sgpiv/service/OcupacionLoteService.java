@@ -24,6 +24,7 @@ public class OcupacionLoteService {
     private final LoteRepository loteRepository;
     private final EmpresaRepository empresaRepository;
 
+    private final ProyectoService proyectoService;
 
 
     public List<OcupacionLoteResponseDTO> obtenerTodas() {
@@ -46,7 +47,15 @@ public class OcupacionLoteService {
     }
 
 
-    public void ocuparLote(Lote lote, Proyecto proyecto){
+    public void ocuparLote(Long idLote, Long idProyecto){
+        Lote lote = loteRepository
+                .findById(idLote)
+                .orElseThrow(() -> new RuntimeException("Lote no encontrado"));
+
+        Proyecto proyecto = proyectoService
+                .obtenerPorId(idProyecto);
+
+
         lote.setEstadoLote(EstadoLote.EN_USO);
         loteRepository.save(lote);
         proyecto.getEmpresa().setEstadoEmpresa(EstadoEmpresa.RADICADA);

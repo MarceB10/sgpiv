@@ -211,6 +211,9 @@ public class SolicitudService {
         proyecto.setFechaInicio(LocalDate.now());
         proyecto.setEmpresa(empresa);
         proyecto.setRepresentanteEmpresa(representanteEmpresa);
+
+        proyecto.setNecesidadM2(sp.getSolicitudRadicacion().getNecesidadM2());
+
         proyecto.setServiciosRequeridos(
                 new ArrayList<>(sp.getServiciosRequeridos())
         );

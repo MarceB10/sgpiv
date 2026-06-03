@@ -20,7 +20,7 @@ public class LoteRequestDTO {
 
     @NotNull(message = "Ingrese la superficie")
     @Positive(message = "La superficie debe ser mayor a 0")
-    private Float superficie;
+    private Double superficie;
 
     @NotBlank(message = "Ingrese la ubicacion")
     private String ubicacion;

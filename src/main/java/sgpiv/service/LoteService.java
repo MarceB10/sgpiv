@@ -4,13 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sgpiv.dtos.response.LoteResponseDTO;
 import sgpiv.dtos.request.LoteRequestDTO;
+import sgpiv.enums.ServicioLote;
 import sgpiv.model.Lote;
+import sgpiv.model.Proyecto;
 import sgpiv.repository.LoteRepository;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +20,7 @@ public class LoteService {
 
     private final String LOTE_NOT_FOUND = "El Lote no fue encontrado";
     private final LoteRepository loteRepository;
+    private final ProyectoService proyectoService;
 
 
     public void definirLote(LoteRequestDTO loteDTO){
@@ -36,18 +39,32 @@ public class LoteService {
         return new LoteResponseDTO(lote);
     }
 
-    public List<LoteResponseDTO> obtenerLotesParaSolicitud(Float superficie){
+    public List<LoteResponseDTO> obtenerLotesParaAdjudicar(Long idProyecto){
+        Proyecto proyecto = proyectoService.obtenerPorId(idProyecto);
+        Double superficie = proyecto.getNecesidadM2();
+
         List<Lote> lotes = loteRepository
                 .findLotesDisponiblesConSuperficieMinima(superficie)
                 .orElse(Collections.emptyList()); //devuelvo lista vacia para mostrar un mensaje en front
         List<LoteResponseDTO> lotesDTOS = new ArrayList<>();
 
+
         for (Lote lote: lotes){
+            if (tieneServiciosRequeridos(lote, proyecto)){
             lotesDTOS.add(new LoteResponseDTO(lote));
+            }
         }
 
         return lotesDTOS;
     }
+
+    private boolean tieneServiciosRequeridos(Lote lote, Proyecto proyecto){
+        return lote.getServicios().
+                containsAll( proyecto.getServiciosRequeridos() );
+
+
+    }
+
 
     public Lote obtenerPorId(Long id){
         return loteRepository

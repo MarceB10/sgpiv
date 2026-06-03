@@ -124,6 +124,48 @@
     <!-- /table-container -->
 
 
+
+    <!-- LISTADO DE PROYECTOS -->
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Proyecto</th>
+            <th>Empresa</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="proyecto : ${proyectos}">
+            <td th:text="${proyecto.id}"></td>
+            <td th:text="${proyecto.titulo}" style="font-weight: 500;"></td>
+            <td th:text="${proyecto.razonSocialEmpresa}"></td>
+            <td>
+        <span th:text="${proyecto.estado}">
+<!--              th:classappend="${proyecto.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :-->
+<!--                 (${proyecto.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">-->
+        </span>
+<!--            </td>-->
+<!--            <td th:text="${proyecto.fechaEnvio}"></td>-->
+<!--            <td>-->
+                <a class="btn btn-edit" th:href="@{/gerente/proyectos/{id}/detalle(id=${proyecto.id})}">
+                    <i class="fa-regular fa-eye"></i> Ver detalle
+                </a>
+            </td>
+
+        </tr>
+        </tbody>
+
+    </table>
+
+
+
+
+
+
+
 </div>
 <!-- /main-content -->
 
