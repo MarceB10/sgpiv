@@ -1,5 +1,6 @@
 package sgpiv.dtos.response;
 
+import lombok.Getter;
 import sgpiv.enums.ServicioLote;
 import sgpiv.model.Proyecto;
 import sgpiv.model.Tarea;
@@ -8,6 +9,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class ProyectoResponseDTO {
     private Long id;
     private String titulo;
@@ -31,7 +33,7 @@ public class ProyectoResponseDTO {
     private String cuitEmpresa;
     private List<TareaResponseDTO> tareas = new ArrayList<>();
     private long tareasCompletadas;
-    private double porcentajeCompletado;
+    private double progreso;
 
     public ProyectoResponseDTO(Proyecto p) {
         this.id                  = p.getId();
@@ -63,7 +65,7 @@ public class ProyectoResponseDTO {
         }
 
         this.tareasCompletadas    = p.cantTareasCompletadas();
-        this.porcentajeCompletado = p.obtenerProgreso();
+        this.progreso = p.obtenerProgreso();
     }
 }
 

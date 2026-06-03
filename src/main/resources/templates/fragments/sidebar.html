@@ -111,6 +111,12 @@
                 <i class="fa-solid fa-folder-plus"></i> Presentar proyecto
             </a>
 
+            <!--Lista de proyectos-->
+            <a th:href="@{/empresas/proyectos}"
+               th:classappend="${pagina == 'proyectos-empresa'} ? ' active' : ''">
+                <i class="fa-solid fa-diagram-project"></i> Mis Proyectos
+            </a>
+
         </th:block>
 
         <!-- ROL_PROVEEDOR -->
