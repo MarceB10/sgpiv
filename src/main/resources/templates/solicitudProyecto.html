@@ -71,6 +71,10 @@
           th:object="${solicitudProyectoDTO}"
           method="post">
 
+      <input type="hidden"
+             name="solicitudRadicacionId"
+             th:value="${solicitudRadicacionId}">
+
       <!-- INFORMACION GENERAL -->
       <h2>Información general</h2>
 

@@ -259,10 +259,9 @@ public class SolicitudService {
         proyecto.setDescripcionResiduos(sp.getDescripcionResiduos());
         proyecto.setProduccionEstimada(sp.getProduccionEstimada());
         proyecto.setServiciosRequeridos(sp.getServiciosRequeridos());
-        proyecto.setEmpresa(empresa);
         proyecto.setRepresentanteEmpresa(representanteEmpresa);
-        proyecto = proyectoRepository.save(proyecto);
-
+        empresa.agregarProyecto(proyecto);
+        empresaRepository.save(empresa);
 
         // 4. Convertir TareaSolicitud → Tarea del proyecto
         for (TareaSolicitud ts : sp.getTareas()) {
@@ -280,7 +279,19 @@ public class SolicitudService {
 
     }
 
+    public SolicitudProyecto obtenerSolicitudProyecto(String cuit){
+        Usuario usuario = usuarioRepository.findByCuit(cuit)
+                .orElseThrow(() ->
+                        new RuntimeException("Usuario no encontrado"));
 
+        SolicitudRadicacion solicitudRadicacion = solicitudRadicacionRepository
+                        .findFirstByUsuarioIdAndEstadoIn(usuario.getId(),
+                                List.of(EstadoSolicitud.PENDIENTE_PROYECTO, EstadoSolicitud.APROBADA)
+                        );
+
+        if(solicitudRadicacion == null) return null;
+        return solicitudRadicacion.getSolicitudProyecto();
+    }
 
 
     public void rechazar(Long id, String motivo) {
