@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Solicitudes - SGPIV</title>
+    <link rel="stylesheet" th:href="@{/css/solicitudesGerente.css}"/>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+    <!-- HEADER (Mismo estilo que Gestión de Lotes) -->
+    <div class="header">
+        <div class="header-text">
+            <h1>Solicitudes recibidas</h1>
+            <p>Administrá y evaluá las radicaciones para el Parque Industrial</p>
+        </div>
+    </div>
+
+    <!-- TABLA CONTAINER -->
+    <div class="table-container">
+
+        <!-- TOP: título + filtros (Estilo idéntico a Lotes) -->
+        <div class="table-top">
+            <h3>Solicitudes de nuevas empresas</h3>
+            <form th:action="@{/solicitudesGerente}" method="get" class="search-form">
+                <input
+                        type="text"
+                        name="empresa"
+                        th:value="${param.empresa}"
+                        placeholder="Buscar por empresa..."
+                />
+                <select name="estado">
+                    <option value="">Todos los estados</option>
+                    <option value="PENDIENTE" th:selected="${param.estado == 'PENDIENTE'}">Pendiente</option>
+                    <option value="APROBADA" th:selected="${param.estado == 'APROBADA'}">Aprobada</option>
+                    <option value="RECHAZADA" th:selected="${param.estado == 'RECHAZADA'}">Rechazada</option>
+                </select>
+                <button type="submit" class="search-button">Buscar</button>
+            </form>
+        </div>
+
+        <!-- LISTADO -->
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Empresa</th>
+                <th>CUIT</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="solicitud : ${solicitudes}">
+                <td th:text="${solicitud.id}"></td>
+                <td th:text="${solicitud.razonSocial}" style="font-weight: 500;"></td>
+                <td th:text="${solicitud.cuitEmpresa}"></td>
+                <td th:text="${solicitud.tipoEmpresa}"></td>
+                <td>
+                    <!-- Usamos la clase unificada .estado y los modificadores específicos -->
+                    <span th:text="${solicitud.estado}"
+                          th:classappend="${solicitud.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
+                         (${solicitud.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">
+                    </span>
+                </td>
+                <td th:text="${solicitud.fechaEnvio}"></td>
+                <td>
+                    <!-- Botón estilizado con la clase .btn y .btn-edit de tu compañero -->
+                    <a class="btn btn-edit" th:href="@{/solicitudesGerente/{id}(id=${solicitud.id})}">
+                        <i class="fa-regular fa-eye"></i> Ver detalle
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <!-- /table-container -->
+
+
+    <!-- TABLA CONTAINER -->
+    <div class="table-container">
+
+        <!-- TOP: título + filtros (Estilo idéntico a Lotes) -->
+        <div class="table-top">
+            <h3>Solicitudes de proyectos productivos</h3>
+            <form th:action="@{/solicitudesGerente}" method="get" class="search-form">
+                <input
+                        type="text"
+                        name="empresa"
+                        th:value="${param.empresa}"
+                        placeholder="Buscar por empresa..."
+                />
+                <select name="estado">
+                    <option value="">Todos los estados</option>
+                    <option value="PENDIENTE" th:selected="${param.estado == 'PENDIENTE'}">Pendiente</option>
+                    <option value="APROBADA" th:selected="${param.estado == 'APROBADA'}">Aprobada</option>
+                    <option value="RECHAZADA" th:selected="${param.estado == 'RECHAZADA'}">Rechazada</option>
+                </select>
+                <button type="submit" class="search-button">Buscar</button>
+            </form>
+        </div>
+
+        <!-- LISTADO DE PROYECTOS -->
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Proyecto</th>
+                <th>Empresa</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="proyecto : ${proyectos}">
+                <td th:text="${proyecto.id}"></td>
+                <td th:text="${proyecto.titulo}" style="font-weight: 500;"></td>
+                <td th:text="${proyecto.razonSocial}"></td>
+                <td>
+        <span th:text="${proyecto.estado}"
+              th:classappend="${proyecto.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
+                 (${proyecto.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">
+        </span>
+                </td>
+                <td th:text="${proyecto.fechaEnvio}"></td>
+                <td>
+                    <a class="btn btn-edit" th:href="@{/proyectos/{id}(id=${proyecto.id})}">
+                        <i class="fa-regular fa-eye"></i> Ver detalle
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+
+        </table>
+
+
+    </div>
+    <!-- /table-container -->
+</div>
+<!-- /main-content -->
+
+</body>
+</html>

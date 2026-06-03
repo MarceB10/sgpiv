@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Proyectos</title>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/proyectosEmpresa.css}">
+</head>
+
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+<div class="main-content">
+    <div class="header">
+        <h1>Mis Proyectos</h1>
+        <p>Proyectos asociados a tu empresa</p>
+    </div>
+
+    <div class="projects-container">
+        <div class="project-card"
+             th:each="proyecto : ${proyectos}">
+            <h2 th:text="${proyecto.titulo}"></h2>
+            <p th:text="${proyecto.descripcion}"></p>
+            <div class="project-info">
+                <span>
+                    Estado:
+                    <b th:text="${proyecto.estadoProyecto}"></b>
+                </span>
+                <span>
+                    Inicio:
+                    <b th:text="${proyecto.fechaInicio}"></b>
+                </span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill"
+                     th:style="'width:' + ${proyecto.progreso} + '%'">
+                </div>
+            </div>
+
+            <p class="progress-text">
+                <span th:text="${#numbers.formatDecimal(proyecto.progreso,0,0)}"></span>%
+                completado
+            </p>
+
+            <a class="view-btn"
+               th:href="@{/empresas/proyecto/{id}(id=${proyecto.id})}">
+                Ver proyecto
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

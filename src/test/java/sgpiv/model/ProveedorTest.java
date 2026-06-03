@@ -27,7 +27,8 @@ class ProveedorTest {
 
     @Test
     public void testNombre(){
-        Proveedor p = new Proveedor("", "perez", "jp@gmail.com", 123456L, "1234", "24-23556-3", "Gas", "nose");
+        var usuario = new Usuario("", "perez", "jp@gmail.com", 123456L, "1234", "24-23556-3");
+        Proveedor p = new Proveedor(usuario, "Gas", "nose");
 
         //aca el validator comprueba y atrapa todos los errores que hayan en donde pusimos notaciones
         Set<ConstraintViolation<Proveedor>> errores = validator.validate(p);
@@ -44,7 +45,8 @@ class ProveedorTest {
 
     @Test
     public void testApellido(){
-        Proveedor p = new Proveedor("juan", "", "jp@gmail.com", 123456L, "1234", "24-23556-3", "Gas", "nose");
+        var usuario = new Usuario("juan", "", "jp@gmail.com", 123456L, "1234", "24-23556-3");
+        Proveedor p = new Proveedor(usuario, "Gas", "nose");
 
         Set<ConstraintViolation<Proveedor>> errores = validator.validate(p);
 
@@ -56,7 +58,8 @@ class ProveedorTest {
 
     @Test
     public void testEmail01(){
-        Proveedor p = new Proveedor("juan", "perez", "", 123456L, "1234", "24-23556-3", "Gas", "nose");
+        var usuario = new Usuario("juan", "perez", "", 123456L, "1234", "24-23556-3");
+        Proveedor p = new Proveedor(usuario, "Gas", "nose");
 
         Set<ConstraintViolation<Proveedor>> errores = validator.validate(p);
 
@@ -68,7 +71,8 @@ class ProveedorTest {
 
     @Test
     public void testEmail02(){
-        Proveedor p = new Proveedor("juan", "perez", "jpgmail", 123456L, "1234", "24-23556-3", "Gas", "nose");
+        var usuario = new Usuario("juan", "perez", "jp.com", 123456L, "1234", "24-23556-3");
+        Proveedor p = new Proveedor(usuario, "Gas", "nose");
 
         Set<ConstraintViolation<Proveedor>> errores = validator.validate(p);
 
@@ -80,7 +84,8 @@ class ProveedorTest {
 
     @Test
     public void testTelefono01(){
-        Proveedor p = new Proveedor("juan", "perez", "jp@gmail.com", null, "1234", "24-23556-3", "Gas", "nose");
+        var usuario = new Usuario("juan", "perez", "jp@gmail.com", null, "1234", "24-23556-3");
+        Proveedor p = new Proveedor(usuario, "Gas", "nose");
 
         Set<ConstraintViolation<Proveedor>> errores = validator.validate(p);
 
@@ -92,7 +97,8 @@ class ProveedorTest {
 
     @Test
     public void testTelefono02(){
-        Proveedor p = new Proveedor("juan", "perez", "jp@gmail.com", 123L, "1234", "24-23556-3", "Gas", "nose");
+        var usuario = new Usuario("juan", "perez", "jp@gmail.com", 1L, "1234", "24-23556-3");
+        Proveedor p = new Proveedor(usuario, "Gas", "nose");
 
         Set<ConstraintViolation<Proveedor>> errores = validator.validate(p);
 

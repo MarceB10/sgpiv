@@ -5,15 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import sgpiv.model.verificator.Verificador;
-import sgpiv.model.verificator.Verificator;
+
 
 @Entity
 @Table(name = "tareas")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class Tarea {
 
     @Id
@@ -26,11 +24,18 @@ public class Tarea {
     @NotBlank(message = "La descripcion de la tarea no puede estar vacia")
     private String descripcion;
 
-    private boolean completa;
+    private boolean completa = false;
 
     @ManyToOne
     @JoinColumn(name = "proyecto_id")
     private Proyecto proyecto;
+
+    public Tarea(String titulo, String descripcion){
+
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+    }
+
 
     public void completarTarea(){
         this.completa = true;
@@ -41,7 +46,7 @@ public class Tarea {
     }
 
     public boolean isCompleta() {
-        return completa;
+        return this.completa;
     }
 
 

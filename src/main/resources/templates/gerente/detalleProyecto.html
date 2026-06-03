@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Detalle de Proyecto</title>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/detalleSolicitud.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-text">
+            <h1>Detalle de Proyecto</h1>
+            <p>Revisá los datos enviados para este proyecto productivo</p>
+        </div>
+        <button onclick="window.history.back()" class="btn-volver">← Volver</button>
+    </div>
+
+    <!-- SECCION: DATOS GENERALES -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">📋 Datos generales</h2>
+        <div class="datos-grid">
+
+            <div class="dato-item">
+                <span class="dato-label">Título</span>
+                <span class="dato-valor" th:text="${proyecto.titulo}">-</span>
+            </div>
+
+            <div class="dato-item full-width">
+                <span class="dato-label">Descripción</span>
+                <span class="dato-valor" th:text="${proyecto.descripcion}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Objetivo</span>
+                <span class="dato-valor" th:text="${proyecto.objetivo}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Rubro</span>
+                <span class="dato-valor" th:text="${proyecto.rubro}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Inversión estimada</span>
+                <span class="dato-valor" th:text="${proyecto.inversionEstimada} + ' $'">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Estado</span>
+                <span class="dato-valor" th:text="${proyecto.estado}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Fecha de envío</span>
+                <span class="dato-valor" th:text="${proyecto.fechaEnvio}">-</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SECCION: ACTIVIDADES -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">🏭 Actividades</h2>
+        <div class="datos-grid">
+
+            <div class="dato-item">
+                <span class="dato-label">Actividad principal</span>
+                <span class="dato-valor" th:text="${proyecto.actividadPrincipal}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Actividad secundaria</span>
+                <span class="dato-valor" th:text="${proyecto.actividadSecundaria}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Personal a ocupar</span>
+                <span class="dato-valor" th:text="${proyecto.personalAOcupar} + ' personas'">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Tiempo de radicación</span>
+                <span class="dato-valor" th:text="${proyecto.tiempoDeRadicacion} + ' meses'">-</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SECCION: SUPERFICIES -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">📐 Superficies</h2>
+        <div class="datos-grid">
+
+            <div class="dato-item">
+                <span class="dato-label">Trabajo cubierto</span>
+                <span class="dato-valor" th:text="${proyecto.supCubiertaTrabajoM2} + ' m²'">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Depósito cubierto</span>
+                <span class="dato-valor" th:text="${proyecto.supCubiertaDepositoM2} + ' m²'">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Expansión</span>
+                <span class="dato-valor" th:text="${proyecto.supExpansionM2} + ' m²'">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Tiene planos</span>
+                <span class="dato-valor" th:text="${proyecto.tienePlanos ? 'Sí' : 'No'}">-</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SECCION: RESIDUOS -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">♻️ Residuos</h2>
+        <div class="datos-grid">
+
+            <div class="dato-item">
+                <span class="dato-label">Genera residuos</span>
+                <span class="dato-valor" th:text="${proyecto.generaResiduos ? 'Sí' : 'No'}">-</span>
+            </div>
+
+            <div class="dato-item full-width" th:if="${proyecto.generaResiduos}">
+                <span class="dato-label">Descripción de residuos</span>
+                <span class="dato-valor" th:text="${proyecto.descripcionResiduos}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Producción estimada</span>
+                <span class="dato-valor" th:text="${proyecto.produccionEstimada}">-</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SECCION: TAREAS -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">📌 Tareas del proyecto</h2>
+
+        <div th:if="${#lists.isEmpty(proyecto.tareas)}" class="dato-valor">
+            No hay tareas cargadas
+        </div>
+
+        <div th:each="tarea : ${proyecto.tareas}" class="tarea-item">
+            <div class="dato-item">
+                <span class="dato-label">Título</span>
+                <span class="dato-valor" th:text="${tarea.titulo}">-</span>
+            </div>
+            <div class="dato-item full-width">
+                <span class="dato-label">Descripción</span>
+                <span class="dato-valor" th:text="${tarea.descripcion}">-</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCIONES -->
+    <!-- ACCIONES -->
+    <div class="acciones">
+
+        <button onclick="window.history.back()" class="btn-cerrar">
+            Cerrar
+        </button>
+
+        <!-- RECHAZAR -->
+        <div class="accion-grupo">
+            <h3 class="accion-titulo">
+                <i class="fa-solid fa-xmark"></i>
+                Rechazar proyecto
+            </h3>
+
+            <form th:action="@{/proyectos/{id}/rechazar(id=${proyecto.id})}" method="post">
+      <textarea name="motivo"
+                placeholder="Motivo de rechazo (obligatorio)"
+                class="input-motivo"
+                required></textarea>
+
+                <button type="submit" class="btn-rechazar">
+                    <i class="fa-solid fa-xmark"></i>
+                    Rechazar
+                </button>
+            </form>
+        </div>
+
+        <!-- SOLICITAR MODIFICACIÓN -->
+        <div class="accion-grupo">
+            <h3 class="accion-titulo">
+                <i class="fa-solid fa-pen"></i>
+                Solicitar modificaciones
+            </h3>
+
+            <form th:action="@{/proyectos/{id}/modificar(id=${proyecto.id})}" method="post">
+      <textarea name="motivo"
+                placeholder="Indicá qué debe modificar"
+                class="input-motivo"
+                required></textarea>
+
+                <button type="submit" class="btn-modificar">
+                    <i class="fa-solid fa-pen"></i>
+                    Requiere modificación
+                </button>
+            </form>
+        </div>
+
+        <!-- ACEPTAR -->
+        <div class="accion-grupo">
+            <h3 class="accion-titulo">
+                <i class="fa-solid fa-check"></i>
+                Aceptar proyecto
+            </h3>
+
+            <form th:action="@{/proyectos/{id}/aceptar(id=${proyecto.id})}" method="post">
+                <input type="hidden"
+                       th:if="${_csrf != null}"
+                       th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}" />
+                <p>Confirmá la aceptación del proyecto productivo.</p>
+
+                <button type="submit" class="btn-aprobar">
+                    <i class="fa-solid fa-check"></i>
+                    Aceptar proyecto
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+
+
+</div>
+
+</body>
+</html>
+

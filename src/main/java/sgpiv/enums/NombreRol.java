@@ -1,7 +1,7 @@
 package sgpiv.enums;
 
 public enum NombreRol {
-    ROL_USUARIO_COMUN,
+    ROL_NULO,
     ROL_GERENTE,
     ROL_PROVEEDOR,
     ROL_REPRESENTANTE_EMPRESA,

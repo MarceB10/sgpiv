@@ -1,0 +1,75 @@
+package sgpiv.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import sgpiv.dtos.response.LoteResponseDTO;
+import sgpiv.dtos.request.LoteRequestDTO;
+import sgpiv.model.Lote;
+import sgpiv.repository.LoteRepository;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class LoteService {
+
+    private final String LOTE_NOT_FOUND = "El Lote no fue encontrado";
+    private final LoteRepository loteRepository;
+
+
+    public void definirLote(LoteRequestDTO loteDTO){
+
+        Lote loteNuevo = new Lote(loteDTO.getSuperficie(), loteDTO.getUbicacion(), loteDTO.getPrecio(), loteDTO.getRestricciones());
+        loteNuevo.setServicios(
+                loteDTO.getServicios()
+        );
+        loteRepository.save(loteNuevo);
+    }
+
+    public  LoteResponseDTO obtenerLoteParaAdjudicar(Long idLote){
+        Lote lote = loteRepository.findById(idLote)
+                .orElseThrow(() -> new RuntimeException(LOTE_NOT_FOUND));
+
+        return new LoteResponseDTO(lote);
+    }
+
+    public List<LoteResponseDTO> obtenerLotesParaSolicitud(Float superficie){
+        List<Lote> lotes = loteRepository
+                .findLotesDisponiblesConSuperficieMinima(superficie)
+                .orElse(Collections.emptyList()); //devuelvo lista vacia para mostrar un mensaje en front
+        List<LoteResponseDTO> lotesDTOS = new ArrayList<>();
+
+        for (Lote lote: lotes){
+            lotesDTOS.add(new LoteResponseDTO(lote));
+        }
+
+        return lotesDTOS;
+    }
+
+    public Lote obtenerPorId(Long id){
+        return loteRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException(LOTE_NOT_FOUND));
+
+    }
+
+
+    public List<LoteResponseDTO> obtenerTodosLosLotes(){
+        List<LoteResponseDTO> lotesResponseDTO = new ArrayList<>();
+        List<Lote> lotes = loteRepository.findAll();
+
+        for (Lote lote: lotes){
+            lotesResponseDTO.add(
+                    new LoteResponseDTO(lote)
+            );
+
+        }
+
+        return lotesResponseDTO;
+    }
+
+
+}

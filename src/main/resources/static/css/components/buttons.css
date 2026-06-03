@@ -1,0 +1,58 @@
+/* La idea de crear un css de botones es:
+
+- evitar codigo duplicado en los distintos css donde definiamos
+los mismos diseños de btn para cada archivo css
+- evitar perdernos al diseñar css
+- la vinculacion se hace desde los html
+
+*/
+
+/* Diseño de botones (en general) */
+.btn{
+    border:none;
+    padding:10px 14px;
+    border-radius:10px;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    margin-right:8px;
+    transition:0.2s;
+}
+
+/* Boton "Editar" */
+.btn-edit{
+    background:#2563eb;
+}
+
+/* Boton "Editar" al ser apuntado con el mouse */
+.btn-edit:hover{
+    background:#1d4ed8;
+}
+
+/* Boton "Eliminar" */
+.btn-delete{
+    background:#dc2626;
+}
+
+/* Boton "Eliminar" al ser apuntado con el mouse */
+.btn-delete:hover{
+    background:#b91c1c;
+}
+
+/* Boton "Registrar mi empresa" */
+.btn-regMiEmpresa{
+    background:#2563eb;
+}
+
+/* Boton "Registrar mi empresa" al ser apuntado con el mouse */
+.btn-regMiEmpresa:hover{
+    background:#1d4ed8;
+}
+
+/* Boton "Buscar" */
+.btn-searchButton{
+    background:#2563eb;
+}
+.btn-searchButton:hover{
+    background:#1d4ed8;
+}

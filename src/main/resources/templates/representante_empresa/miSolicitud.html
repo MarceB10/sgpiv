@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Solicitud - SGPIV</title>
+
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+    <link rel="stylesheet" th:href="@{/css/miSolicitud.css}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<!-- CONTENIDO -->
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="header">
+
+        <div>
+            <h1>Mi Solicitud</h1>
+            <p>
+                Consultá el estado y la información de tu solicitud de radicación.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- ESTADO -->
+    <div class="estado-card">
+
+        <div class="estado-icon">
+            <i class="fa-regular fa-file-lines"></i>
+        </div>
+
+        <div class="estado-header">
+
+            <h2>Estado</h2>
+
+            <span class="estado-badge"
+                  th:classappend="${solicitud.estado.name()}">
+
+                <span th:text="${solicitud.estado.name() == 'PENDIENTE_PROYECTO' ? 'Aceptada' : solicitud.estado}"></span>
+            </span>
+
+        </div>
+
+        <!-- MENSAJES -->
+        <p th:if="${solicitud.estado.name() == 'PENDIENTE'}">
+            Tu solicitud está siendo revisada.
+        </p>
+
+        <p th:if="${solicitud.estado.name() == 'EN_REVISION'}">
+            El gerente está evaluando tu solicitud.
+        </p>
+
+        <p th:if="${solicitud.estado.name() == 'APROBADA'}">
+            ¡Felicitaciones! Tu solicitud fue aprobada.
+        </p>
+
+        <div th:if="${solicitud.estado.name() == 'RECHAZADA'}">
+
+            <p>Tu solicitud fue rechazada.</p>
+
+            <div class="motivo-box">
+                <strong>Motivo:</strong>
+                <span th:text="${solicitud.motivoRechazo}"></span>
+            </div>
+
+        </div>
+
+        <div th:if="${solicitud.estado.name() == 'REQUIERE_MODIFICACION'}">
+
+            <p>Debés modificar tu solicitud.</p>
+
+            <div class="motivo-box">
+                <strong>Motivo:</strong>
+                <span th:text="${solicitud.motivoRechazo}"></span>
+            </div>
+
+            <button class="btn btn-primary"
+                    onclick="window.location.href='/solicitudRadicacion'">
+
+                <i class="fa-solid fa-pen-to-square"></i>
+                Modificar solicitud
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="section-title">
+        <i class="fa-solid fa-building"></i>
+        <h2>Datos de la empresa</h2>
+    </div>
+
+    <!-- DATOS EMPRESA -->
+    <div class="cards">
+
+        <div class="card">
+            <h3>Razón Social</h3>
+            <h2 th:text="${solicitud.razonSocial}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>CUIT</h3>
+            <h2 th:text="${solicitud.cuitEmpresa}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Rubro</h3>
+            <h2 th:text="${solicitud.rubro}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Tipo Empresa</h3>
+            <h2 th:text="${solicitud.tipoEmpresa}"></h2>
+        </div>
+
+    </div>
+
+    <div class="section-title">
+        <i class="fa-solid fa-diagram-project"></i>
+        <h2>Datos del proyecto</h2>
+    </div>
+
+    <!-- DATOS PROYECTO -->
+    <div class="cards">
+
+        <div class="card">
+            <h3>Objetivo del proyecto</h3>
+            <h2 th:text="${solicitud.objetivoProyecto}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Actividad principal</h3>
+            <h2 th:text="${solicitud.actividadPrincipal}"></h2>
+        </div>
+
+<!--        <div class="card">-->
+<!--            <h3>Actividad secundaria</h3>-->
+<!--            <h2 th:text="${solicitud.actividadSecundaria}"></h2>-->
+<!--        </div>-->
+
+        <div class="card">
+            <h3>Necesidad m²</h3>
+            <h2 th:text="${solicitud.necesidadM2}"></h2>
+        </div>
+
+<!--        <div class="card">-->
+<!--            <h3>Superficie de trabajo</h3>-->
+<!--            <h2 th:text="${solicitud.supCubiertaTrabajoM2}"></h2>-->
+<!--        </div>-->
+
+<!--        <div class="card">-->
+<!--            <h3>Superficie depósito</h3>-->
+<!--            <h2 th:text="${solicitud.supCubiertaDepositoM2}"></h2>-->
+<!--        </div>-->
+
+<!--        <div class="card">-->
+<!--            <h3>Expansión</h3>-->
+<!--            <h2 th:text="${solicitud.supExpansionM2}"></h2>-->
+<!--        </div>-->
+
+        <div class="card">
+            <h3>Tiene planos</h3>
+            <h2 th:text="${solicitud.tienePlanos ? 'Sí' : 'No'}"></h2>
+        </div>
+
+<!--        <div class="card">-->
+<!--            <h3>Personal a ocupar</h3>-->
+<!--            <h2 th:text="${solicitud.personalAOcupar}"></h2>-->
+<!--        </div>-->
+
+<!--        <div class="card">-->
+<!--            <h3>Tiempo de radicación</h3>-->
+<!--            <h2 th:text="${solicitud.tiempoDeRadicacion + ' meses'}"></h2>-->
+<!--        </div>-->
+
+    </div>
+
+<!--    &lt;!&ndash; TAREAS DEL PROYECTO &ndash;&gt;-->
+<!--    <div class="section-title">-->
+<!--        <i class="fa-solid fa-tasks"></i>-->
+<!--        <h2>Tareas del proyecto</h2>-->
+<!--    </div>-->
+
+<!--    <div th:if="${solicitud.tareas != null and solicitud.tareas.size() > 0}" class="tareas-container">-->
+<!--        <div th:each="tarea : ${solicitud.tareas}" class="tarea-card">-->
+<!--            <div class="tarea-header">-->
+<!--                <div class="tarea-icon">-->
+<!--                    <i class="fa-solid fa-check-circle"></i>-->
+<!--                </div>-->
+<!--                <h3 th:text="${tarea.titulo}"></h3>-->
+<!--            </div>-->
+<!--            <p class="tarea-descripcion" th:text="${tarea.descripcion}"></p>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div th:if="${solicitud.tareas == null or solicitud.tareas.size() == 0}" class="card empty-state">-->
+<!--        <i class="fa-solid fa-inbox"></i>-->
+<!--        <p>No hay tareas agregadas para este proyecto.</p>-->
+<!--    </div>-->
+
+</div>
+</body></html>

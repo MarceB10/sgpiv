@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Gestión de Lotes</title>
+    <link rel="stylesheet" th:href="@{/css/lotes.css}"/>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+    <!-- Iconos -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+<div class="main-content">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-text">
+            <h1>Gestión de Lotes</h1>
+            <p>Administrá el estado y la disponibilidad de los lotes</p>
+        </div>
+        <a th:href="@{/gerente/lotes/nuevo-lote}" class="btn-nuevo">
+            + Nuevo Lote
+        </a>
+    </div>
+    <!-- Mensaje Creacion Lote -->
+    <div th:if="${mensaje}" class="alert alert-warning" th:text="${mensaje}"></div>
+
+    <!-- CARDS DE RESUMEN -->
+    <div class="cards">
+        <div class="card">
+            <i class="material-icons">layers</i> <!-- Icono de Lotes Disponibles -->
+            <h3>Disponibles</h3>
+            <h2 th:text="${totalDisponibles != null ? totalDisponibles : 0}">0</h2>
+        </div>
+        <div class="card">
+            <i class="material-icons">layers_clear</i> <!-- icono de layer para los lotes en uso -->
+            <h3>En Uso</h3>
+            <h2 th:text="${totalEnUso != null ? totalEnUso : 0}">0</h2>
+        </div>
+        <div class="card">
+
+            <i class="material-icons">terrain</i> <!-- tengo que darle un nombre al icono --->
+            <h3>Total de Lotes</h3>
+            <h2 th:text="${totalLotes != null ? totalLotes : 0}">0</h2>
+        </div>
+    </div>
+
+    <!-- TABLA CONTAINER -->
+    <div class="table-container">
+
+        <!-- TOP: título + búsqueda -->
+        <div class="table-top">
+            <h3>Listado de Lotes</h3>
+            <!--
+            <form th:action="@{/gerente/lotes}" method="get" class="search-form">
+                <input
+                        type="text"
+                        name="ubicacion"
+                        th:value="${param.ubicacion}"
+                        placeholder="Buscar por ubicación..."
+                />
+                <select name="estado">
+                    <option value="">Todos los estados</option>
+                    <option value="DISPONIBLE"
+                            th:selected="${param.estado == 'DISPONIBLE'}">Disponible</option>
+                    <option value="EN_USO"
+                            th:selected="${param.estado == 'EN_USO'}">En Uso</option>
+                </select>
+                <button type="submit" class="search-button">Buscar</button>
+            </form>
+            -->
+            <div class="search-form">
+                <input
+                        type="text"
+                        id="buscadorLote"
+                        placeholder="Buscar por ubicación..."
+                />
+                <select id="filtroEstado">
+                    <option value="">Todos los estados</option>
+                    <option value="DISPONIBLE">Disponible</option>
+                    <option value="EN_USO">En Uso</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- FRAGMENTO DE TABLA -->
+        <div th:replace="~{fragments/tablaLotes :: tablaLotes}"></div>
+
+
+    </div>
+    <!-- /table-container -->
+
+    <!-- TABLA CONTAINER -->
+    <div class="table-container">
+
+        <!-- TOP: título + búsqueda -->
+        <div class="table-top">
+            <h3>Listado de Lotes Ocupados</h3>
+            <form th:action="@{/gerente/lotes}" method="get" class="search-form">
+                <input
+                        type="text"
+                        name="ubicacion"
+                        th:value="${param.ubicacion}"
+                        placeholder="Buscar por ubicación..."
+                />
+                <select name="estado">
+                    <option value="">Todos los estados</option>
+                    <option value="DISPONIBLE"
+                            th:selected="${param.estado == 'DISPONIBLE'}">Disponible</option>
+                    <option value="EN_USO"
+                            th:selected="${param.estado == 'EN_USO'}">En Uso</option>
+                </select>
+                <button type="submit" class="search-button">Buscar</button>
+            </form>
+        </div>
+
+        <!-- FRAGMENTO DE TABLA -->
+
+        <div th:replace="~{fragments/tablaOcupaciones :: tablaOcupaciones}"></div>
+
+    </div>
+    <!-- /table-container -->
+
+
+</div>
+<!-- /main-content -->
+
+<script>
+
+    const buscador =
+        document.getElementById("buscadorLote");
+
+    const filtroEstado =
+        document.getElementById("filtroEstado");
+
+    function filtrarLotes() {
+
+        let texto =
+            buscador.value.toLowerCase().trim();
+
+        let estado =
+            filtroEstado.value.toLowerCase();
+
+        let filas =
+            document.querySelectorAll(".fila-lote");
+
+        filas.forEach(fila => {
+
+            let ubicacion =
+                fila.querySelector(".col-ubicacion")
+                    .innerText
+                    .toLowerCase();
+
+            let estadoFila =
+                fila.querySelector(".col-estado")
+                    .innerText
+                    .toLowerCase();
+
+            let coincideTexto =
+                ubicacion.startsWith(texto);
+
+            let coincideEstado =
+                estado === "" ||
+                estadoFila === estado;
+
+            if (coincideTexto && coincideEstado) {
+                fila.style.display = "";
+            }
+            else {
+                fila.style.display = "none";
+            }
+
+        });
+    }
+
+    buscador.addEventListener(
+        "input",
+        filtrarLotes
+    );
+
+    filtroEstado.addEventListener(
+        "change",
+        filtrarLotes
+    );
+
+</script>
+</body>
+</html>

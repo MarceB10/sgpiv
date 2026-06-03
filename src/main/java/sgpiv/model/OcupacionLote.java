@@ -27,15 +27,22 @@ public class OcupacionLote {
     private String motivoFinalizacion;
 
     @ManyToOne
-    @JoinColumn(name = "empresa_id")
-    private Empresa empresa;
+    @JoinColumn(name = "proyecto_id")
+    private Proyecto proyecto;
 
     @ManyToOne
     @JoinColumn(name = "lote_id")
     private Lote lote;
 
-    public boolean estaActica() {
+    public OcupacionLote(Proyecto proyecto, Lote lote, LocalDate fechaInicio){
+        this.proyecto = proyecto;
+        this.lote = lote;
+        this.fechaInicio = fechaInicio;
+    }
+
+    public boolean estaActiva() {
         return this.fechaFin == null;
     }
+
 
 }

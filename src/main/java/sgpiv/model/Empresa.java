@@ -23,14 +23,19 @@ public class Empresa {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "La razon social no puede estar vacia") // veriefica que no sea null,
+    @NotBlank(message = "La razon social no puede estar vacia") // veriefica que no sea null
+    @Column(nullable = false)
     private String razonSocial;
 
     @NotBlank(message = "El CUIT no puede estar vacio")
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 13)
     private String cuit;
 
+    private Long telefono;
+
     private String ingresoBrutos;
+
+    private String descripcionBienServicio;
 
     @NotBlank(message = "El rubro no puede estar vacio")
     private String rubro;
@@ -47,7 +52,16 @@ public class Empresa {
     @Enumerated(EnumType.STRING) // guarda el enum como string en la bd
     private EstadoEmpresa estadoEmpresa = (EstadoEmpresa.INTERESADA);
 
-    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL) // define la relacion con proyecto de 1 a mucho y lo
-    private List<Proyecto> proyectos = new ArrayList<>();                           //mapea, seria que la relacion esta en la tabla proyecto
-                                                                //y no en empresa, se borraria en cascada asi que hay que ver esto si esta bien o sacarle esta conf
+
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
+    private List<Proyecto> proyectos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "empresa", cascade = CascadeType.ALL)
+    private List<ProveedorEmpresa> proveedores = new ArrayList<>();
+
+    public void agregarProyecto(Proyecto proyecto){
+        this.proyectos.add(proyecto);
+        proyecto.setEmpresa(this);
+    }
+
 }

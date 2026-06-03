@@ -1,8 +1,6 @@
 package sgpiv.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +26,19 @@ public class RepresentanteEmpresa {
 
     @ManyToOne
     @JoinColumn(name = "empresa_id")
-    @NotNull(message = "El representante debe estar asociado a una empresa")
+    //@NotNull(message = "El representante debe estar asociado a una empresa")
     private Empresa empresa;
+
+    public RepresentanteEmpresa(Usuario usuario){
+        this.usuario = usuario;
+    }
+
+    public void asignarEmpresa(Empresa empresa){
+        this.empresa = empresa;
+    }
+
+    public Empresa miEmpresaEs(){
+        return this.empresa;
+    }
 
 }

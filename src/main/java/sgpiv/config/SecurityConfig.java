@@ -7,7 +7,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -16,8 +15,9 @@ public class SecurityConfig {
                 )
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers
-                        .frameOptions(frame -> frame.disable()) // necesario para H2 console
+                        .frameOptions(frame -> frame.disable())
                 );
         return http.build();
     }
+
 }
