@@ -70,12 +70,8 @@
     <form th:action="@{/solicitudProyecto}"
           th:object="${solicitudProyectoDTO}"
           method="post">
-      <input type="hidden" name="solicitudRadicacionId" th:value="${solicitudRadicacionId}" />
-
-
-      <input type="hidden"
-             name="solicitudRadicacionId"
-             th:value="${solicitudRadicacionId}">
+      <!-- Campo oculto para que viaje el ID -->
+      <input type="hidden" th:field="*{solicitudRadicacionId}" />
 
       <!-- INFORMACION GENERAL -->
       <h2>Información general</h2>
@@ -351,25 +347,15 @@
       <button type="button"
               class="btn-secondary"
               onclick="agregarTarea()">
-
         <i class="fa-solid fa-plus"></i>
         Agregar tarea
-
       </button>
 
       <!-- BOTONES -->
       <div class="buttons">
-
-        <button type="submit"
-                class="btn-primary">
-
+        <button type="submit" class="btn-primary">
           <i class="fa-regular fa-paper-plane"></i>
-
-          <span th:text="${editando}
-                        ? 'Guardar cambios'
-                        : 'Enviar proyecto'">
-                    </span>
-
+          <span th:text="${editando} ? 'Guardar cambios' : 'Enviar proyecto'"></span>
         </button>
 
         <button type="button"
@@ -377,84 +363,107 @@
                 onclick="window.history.back()">
           Cancelar
         </button>
-
       </div>
 
       <p class="footer-text">
         Los campos marcados con * son obligatorios.
       </p>
-
     </form>
-
   </div>
-
 </div>
 
 <script>
-
   let tareaIndex = 0;
 
-  function agregarTarea() {
+  // Inicializar tareas existentes si es edición
+  document.addEventListener('DOMContentLoaded', function() {
+    inicializarTareas();
+  });
 
-      const tareasList = document.getElementById("tareas-list");
+  function inicializarTareas() {
+    // Obtener tareas existentes del formulario si es edición
+    const form = document.querySelector('form');
+    const data = new FormData(form);
 
-      const tarea = document.createElement("div");
+    let indice = 0;
+    while (data.has(`tareas[${indice}].titulo`)) {
+      const titulo = data.get(`tareas[${indice}].titulo`);
+      const descripcion = data.get(`tareas[${indice}].descripcion`);
 
-      tarea.classList.add("tarea-item");
-
-      tarea.innerHTML = `
-          <div class="form-grid">
-
-              <div class="form-group">
-                  <label>Título de la tarea *</label>
-
-                  <input type="text"
-                         name="tareas[${tareaIndex}].titulo">
-              </div>
-
-              <div class="form-group full-width">
-                  <label>Descripción *</label>
-
-                  <textarea
-                      name="tareas[${tareaIndex}].descripcion">
-                  </textarea>
-              </div>
-
-          </div>
-
-          <button type="button"
-                  class="btn-danger"
-                  onclick="this.parentElement.remove()">
-
-              <i class="fa-solid fa-trash"></i>
-              Eliminar
-
-          </button>
-      `;
-
-      tareasList.appendChild(tarea);
-
-      tareaIndex++;
+      if (titulo || descripcion) {
+        agregarTareaUI(titulo, descripcion, indice);
+        tareaIndex = indice + 1;
+      }
+      indice++;
+    }
   }
 
+  function agregarTarea() {
+    agregarTareaUI('', '', tareaIndex);
+    tareaIndex++;
+  }
+
+  function agregarTareaUI(titulo = '', descripcion = '', index = null) {
+    if (index === null) {
+      index = tareaIndex;
+    }
+
+    const tareasList = document.getElementById('tareas-list');
+
+    const tareaDiv = document.createElement('div');
+    tareaDiv.className = 'tarea-item';
+    tareaDiv.id = `tarea-${index}`;
+    tareaDiv.innerHTML = `
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Título de la tarea *</label>
+                <input type="text"
+                       name="tareas[${index}].titulo"
+                       class="tarea-titulo"
+                       value="${titulo}"
+                       placeholder="Ej: Instalación de maquinaria"
+                       required>
+            </div>
+
+            <div class="form-group full-width">
+                <label>Descripción de la tarea *</label>
+                <textarea name="tareas[${index}].descripcion"
+                          class="tarea-descripcion"
+                          placeholder="Describe brevemente la tarea"
+                          required>${descripcion}</textarea>
+            </div>
+        </div>
+
+        <button type="button" class="btn-danger" onclick="eliminarTarea(${index})">
+            <i class="fa-solid fa-trash"></i> Eliminar tarea
+        </button>
+      `;
+
+    tareasList.appendChild(tareaDiv);
+  }
+
+  function eliminarTarea(index) {
+    const tareaDiv = document.getElementById(`tarea-${index}`);
+    if (tareaDiv) {
+      tareaDiv.remove();
+    }
+  }
+
+  // Mostrar/ocultar residuos
   const generaResiduos = document.getElementById("generaResiduos");
   const residuosBox = document.getElementById("residuosBox");
 
   function toggleResiduos() {
-
-      if(generaResiduos.value === "true") {
-          residuosBox.style.display = "block";
-      } else {
-          residuosBox.style.display = "none";
-      }
+    if (generaResiduos.value === "true") {
+      residuosBox.style.display = "block";
+    } else {
+      residuosBox.style.display = "none";
+    }
   }
 
   generaResiduos.addEventListener("change", toggleResiduos);
-
   toggleResiduos();
-
 </script>
-
 </body>
 </html>
 

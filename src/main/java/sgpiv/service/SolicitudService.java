@@ -401,4 +401,54 @@ public class SolicitudService {
         }
         return proyectoResponseDTOS;
     }
+
+    public SolicitudProyectoRequestDTO convertirARequestDTO(SolicitudProyecto proyecto) {
+        SolicitudProyectoRequestDTO dto = new SolicitudProyectoRequestDTO();
+
+        // Relación con la solicitud de radicación
+        if (proyecto.getSolicitudRadicacion() != null) {
+            dto.setSolicitudRadicacionId(proyecto.getSolicitudRadicacion().getId());
+        }
+
+        // Datos generales
+        dto.setTitulo(proyecto.getTitulo());                // título del proyecto
+        dto.setDescripcion(proyecto.getDescripcion());      // descripción del proyecto
+        dto.setObjetivo(proyecto.getObjetivo());
+        dto.setRubro(proyecto.getRubro());
+        dto.setActividadPrincipal(proyecto.getActividadPrincipal());
+        dto.setActividadSecundaria(proyecto.getActividadSecundaria());
+        dto.setInversionEstimada(proyecto.getInversionEstimada());
+        dto.setProduccionEstimada(proyecto.getProduccionEstimada());
+
+        // Personal a ocupar
+        dto.setPersonalAOcupar(proyecto.getPersonalAOcupar());
+
+        // Superficies
+        dto.setSupCubiertaTrabajoM2(proyecto.getSupCubiertaTrabajoM2());
+        dto.setSupCubiertaDepositoM2(proyecto.getSupCubiertaDepositoM2());
+        dto.setSupExpansionM2(proyecto.getSupExpansionM2());
+
+        // Otros datos
+        dto.setTienePlanos(proyecto.getTienePlanos());
+        dto.setGeneraResiduos(proyecto.isGeneraResiduos());
+        dto.setDescripcionResiduos(proyecto.getDescripcionResiduos());
+
+        // Servicios seleccionados (enum)
+        if (proyecto.getServiciosRequeridos() != null && !proyecto.getServiciosRequeridos().isEmpty()) {
+            dto.setServiciosRequeridos(new ArrayList<>(proyecto.getServiciosRequeridos()));
+        }
+
+
+        // Tareas → usamos TareaSoliDTORequest
+        if (proyecto.getTareas() != null && !proyecto.getTareas().isEmpty()) {
+            dto.setTareas(
+                    proyecto.getTareas().stream()
+                            .map(t -> new TareaSoliDTORequest(t.getTitulo(), t.getDescripcion()))
+                            .collect(Collectors.toList())
+            );
+        }
+
+        return dto;
+    }
+
 }

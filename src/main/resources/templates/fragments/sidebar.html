@@ -58,14 +58,59 @@
 
         <!-- ROL_REPRESENTANTE_EMPRESA -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">
+
             <a th:href="@{/empresas/mi-empresa}"
                th:classappend="${pagina == 'mi-empresa'} ? ' active' : ''">
                 <i class="fa-solid fa-industry"></i> Mi Empresa
             </a>
-            <a th:href="@{/solicitudRadicacion}"
+
+            <!-- Solicitud inicial -->
+            <a th:if="${solicitudActiva == null}"
+               th:href="@{/solicitudRadicacion}"
                th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
                 <i class="fa-solid fa-file-signature"></i> Solicitud de Radicación
             </a>
+
+            <a th:if="${solicitudActiva != null}"
+               th:href="@{/miSolicitud}"
+               th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
+                <i class="fa-solid fa-clock"></i> Ver mi solicitud
+            </a>
+
+            <!-- Proyecto productivo -->
+            <th:block th:if="${solicitudProyectoActiva != null}">
+
+                <!-- REQUIERE MODIFICACION -->
+                <a th:if="${solicitudProyectoActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
+                   th:href="@{/solicitudProyecto}"
+                   th:classappend="${pagina == 'solicitud-proyecto'} ? ' active' : ''">
+                    <i class="fa-solid fa-pen-to-square"></i> Modificar proyecto
+                </a>
+
+                <!-- RECHAZADO -->
+                <a th:if="${solicitudProyectoActiva.estado.name() == 'RECHAZADA'}"
+                   th:href="@{/miProyecto}"
+                   th:classappend="${pagina == 'mi-proyecto'} ? ' active' : ''">
+                    <i class="fa-solid fa-folder-open"></i> Ver mi proyecto
+                </a>
+
+                <!-- PENDIENTE o EN_REVISION -->
+                <a th:if="${solicitudProyectoActiva.estado.name() == 'PENDIENTE' or solicitudProyectoActiva.estado.name() == 'EN_REVISION'}"
+                   th:href="@{/miProyecto}"
+                   th:classappend="${pagina == 'mi-proyecto'} ? ' active' : ''">
+                    <i class="fa-solid fa-folder-open"></i> Ver mi proyecto
+                </a>
+
+                <!-- APROBADA → no mostrar nada, porque ya se crea la empresa -->
+            </th:block>
+
+            <!-- Si la solicitud inicial fue aceptada y aún no presentó proyecto -->
+            <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO' and solicitudProyectoActiva == null}"
+               th:href="@{/solicitudProyecto}"
+               th:classappend="${pagina == 'solicitud-proyecto'} ? ' active' : ''">
+                <i class="fa-solid fa-folder-plus"></i> Presentar proyecto
+            </a>
+
         </th:block>
 
         <!-- ROL_PROVEEDOR -->
@@ -95,27 +140,34 @@
                 Solicitud de Radicación
             </a>
 
-
-            <!-- REQUIERE MODIFICACION -->
-            <a th:if="${solicitudActiva != null
-        and solicitudActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
+            <!-- REQUIERE MODIFICACION → solo mostrar Modificar -->
+            <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
                th:href="@{/solicitudRadicacion}"
                th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
                 <i class="fa-solid fa-pen-to-square"></i>
                 Modificar solicitud
             </a>
 
-            <!-- ACEPTADA → puede presentar solicitud de proyecto -->
-            <th:block th:if="${solicitudActiva != null
-            and solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO'}">
+            <!-- RECHAZADA → solo mostrar Ver mi solicitud -->
+            <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'RECHAZADA'}"
+               th:href="@{/miSolicitud}"
+               th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
+                <i class="fa-solid fa-clock"></i>
+                Ver mi solicitud
+            </a>
 
-                <a th:href="@{/miSolicitud}"
-                   th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
-                    <i class="fa-solid fa-clock"></i>
-                    Ver mi solicitud
-                </a>
+            <!-- CUALQUIER OTRO ESTADO (PENDIENTE, EN_REVISION, APROBADA, PENDIENTE_PROYECTO) → Ver mi solicitud -->
+            <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() != 'REQUIERE_MODIFICACION' and solicitudActiva.estado.name() != 'RECHAZADA'}"
+               th:href="@{/miSolicitud}"
+               th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
+                <i class="fa-solid fa-clock"></i>
+                Ver mi solicitud
+            </a>
 
-                <!-- Solo si NO presentó solicitud de proyecto todavía -->
+            <!-- ACEPTADA → puede presentar proyecto -->
+            <th:block th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO'}">
+
+                <!-- Si NO presentó proyecto -->
                 <a th:if="${solicitudProyectoActiva == null}"
                    th:href="@{/solicitudProyecto}"
                    th:classappend="${pagina == 'solicitud-proyecto'} ? ' active' : ''">
@@ -123,17 +175,15 @@
                     Presentar proyecto
                 </a>
 
-                <!-- Si ya presentó solicitud de proyecto -->
+                <!-- Si YA presentó proyecto -->
                 <a th:if="${solicitudProyectoActiva != null}"
                    th:href="@{/solicitudProyecto/miSolicitudProyecto}"
-                   th:classappend="${pagina == 'mi-solicitud-proyecto'} ? ' active' : ''">
+                   th:classappend="${pagina == 'mi-proyecto'} ? ' active' : ''">
                     <i class="fa-solid fa-folder-open"></i>
                     Ver mi proyecto
                 </a>
             </th:block>
         </th:block>
-
-
 
         <!-- Boton cerrar sesion -->
         <div class="logout-container">
