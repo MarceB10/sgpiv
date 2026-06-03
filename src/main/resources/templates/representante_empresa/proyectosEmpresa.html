@@ -23,13 +23,16 @@
             <h2 th:text="${proyecto.titulo}"></h2>
             <p th:text="${proyecto.descripcion}"></p>
             <div class="project-info">
+<!--                <span>-->
+<!--                    Estado:-->
+<!--                    <b th:text="${proyecto.estadoProyecto}"></b>-->
+<!--                </span>-->
+<!--                <span>-->
+<!--                    Inicio:-->
+<!--                    <b th:text="${proyecto.fechaInicio}"></b>-->
+<!--                </span>-->
                 <span>
-                    Estado:
-                    <b th:text="${proyecto.estadoProyecto}"></b>
-                </span>
-                <span>
-                    Inicio:
-                    <b th:text="${proyecto.fechaInicio}"></b>
+                    Rubro: <b th:text="${proyecto.rubro}"></b>
                 </span>
             </div>
 

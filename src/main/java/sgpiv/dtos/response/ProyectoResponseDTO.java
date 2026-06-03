@@ -1,9 +1,5 @@
 package sgpiv.dtos.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import sgpiv.enums.EstadoProyecto;
 import sgpiv.enums.ServicioLote;
 import sgpiv.model.Proyecto;
 import sgpiv.model.Tarea;
@@ -48,6 +44,7 @@ public class ProyectoResponseDTO {
     private String nombreRepresentante;
     private String apellidoRepresentante;
     private String cuitRepresentante;
+    private double progreso;
 
     public ProyectoResponseDTO(Proyecto p) {
         this.id                  = p.getId();
@@ -89,7 +86,7 @@ public class ProyectoResponseDTO {
         }
 
         this.tareasCompletadas    = p.cantTareasCompletadas();
-        this.porcentajeCompletado = p.obtenerProgreso();
+        this.progreso = p.obtenerProgreso();
     }
 }
 
