@@ -32,7 +32,7 @@ public class SolicitudService {
 
     private final ProyectoRepository proyectoRepository;
     private final TareaRepository tareaRepository;
-
+    private final RepresentanteRepository representanteRepository;
     private final EmpresaRepository empresaRepository;
     private final UsuarioService usuarioService;
     private final RepresentanteService representanteService;
@@ -131,6 +131,8 @@ public class SolicitudService {
         solicitud.setSupExpansionM2(dto.getSupExpansionM2());
         solicitud.setTienePlanos(dto.getTienePlanos());
         solicitud.setTiempoDeRadicacion(dto.getTiempoDeRadicacion());
+        solicitud.setFechaEnvio(LocalDate.now());
+
 
         List<TareaSolicitud> ts = new ArrayList<>();
 
@@ -165,8 +167,15 @@ public class SolicitudService {
         // 1. Crear empresa desde la solicitud de radicacion
         Empresa empresa = new Empresa();
         empresa.setRazonSocial(sp.getSolicitudRadicacion().getRazonSocial());
+        empresa.setTelefono(Long.valueOf(sp.getSolicitudRadicacion().getTelefonoEmpresa()));
+        empresa.setIngresoBrutos(sp.getSolicitudRadicacion().getIngresoBrutos());
+        empresa.setDescripcionBienServicio(sp.getSolicitudRadicacion().getDescripcionBienServicio());
         empresa.setCuit(sp.getSolicitudRadicacion().getCuitEmpresa());
         empresa.setRubro(sp.getSolicitudRadicacion().getRubro());
+        empresa.setTipoIndustria(sp.getSolicitudRadicacion().getTipoEmpresa());
+        empresa.setEmail(sp.getSolicitudRadicacion().getEmailEmpresa());
+        empresa.setTipoIndustria(sp.getSolicitudRadicacion().getTipoIndustria());
+        empresa.setDireccion(sp.getSolicitudRadicacion().getDireccion());
         empresa = empresaRepository.save(empresa);
 
         // 2. Dar rol representante al usuario y asociarlo a la empresa
@@ -175,70 +184,10 @@ public class SolicitudService {
                 .findByCuit(usuario.getCuit())
                 .orElseThrow(() -> new RuntimeException("Usuario No encontrado"));
         usuarioRepository.save(usuario);
-        // TODO ESTO SE HACE EN LA ETAPA 2 AHORA AL APROBAR EL PROYECTO
-
-//        Lote lote = loteService.obtenerPorId(idLote);
-
-//        List<Tarea> tareasProyecto = new ArrayList<>();
-
-//        for (TareaSolicitud tareaSolicitud: solicitud.getTareas()){
-//            tareasProyecto.add(new Tarea(
-//                    tareaSolicitud.getTitulo(),
-//                    tareaSolicitud.getDescripcion()
-//            ));
-//        }
-
-//        //Creacion de Proyecto
-//        Proyecto proyecto = new Proyecto(
-//                solicitud.getActividadPrincipal(),
-//                solicitud.getObjetivoProyecto(),
-//                LocalDate.now(),
-//                solicitud.getPersonalAOcupar()
-//        );
-
-//        proyecto.agregarTareas(tareasProyecto);
-        //proyecto.setFechaFin(LocalDate.now().plus(solicitud.getTiempoDeRadicacion()));
-
-        //creacion de empresa
-//        Empresa empresa = new Empresa();
-//        empresa.setRazonSocial(solicitud.getRazonSocial());
-//        empresa.setCuit(solicitud.getCuitEmpresa());
-//        empresa.setRubro(solicitud.getRubro());
-//        empresa.setEmail(solicitud.getEmailEmpresa());
-//        empresa.setTelefono(Long.valueOf(solicitud.getTelefonoEmpresa()));
-//        empresa.setDireccion(solicitud.getDireccion());
-//        empresa.setIngresoBrutos(solicitud.getIngresoBrutos());
-//        empresa.setDescripcionBienServicio(solicitud.getDescripcionBienServicio());
-//        empresa.setTipoIndustria(solicitud.getTipoIndustria());
-
-        //asociar Proyecto a empresa
-//        empresa.agregarProyecto(proyecto);
-
-//        empresa.setEstadoEmpresa(EstadoEmpresa.ADJUDICADA);//por ahora interesada hasta que tenga la adjudicacion
-
-
-//        Usuario usuario = solicitud.getUsuario();
-
-//        usuarioService.asignarRol(
-//                usuario.getCuit(),
-//                NombreRol.ROL_REPRESENTANTE_EMPRESA
-//        );
-
-        //creacion y asignacion de representante
-//        RepresentanteEmpresa representante =
-//                representanteService.buscarPorCuit(usuario.getCuit());
-//
-////        proyecto.setRepresentanteEmpresa(representante);
-//        representanteService.asignarEmpresa(representante, empresa);
-//        empresaRepository.saveAndFlush(empresa);
-//
-//
-//        //cambio de estado de la solicitud
-//        solicitud.setEstado(EstadoSolicitud.APROBADA);
-//
-//        solicitudRepository.save(solicitud);
 
         RepresentanteEmpresa representanteEmpresa = representanteService.buscarPorCuit(usuario.getCuit());
+        representanteEmpresa.setEmpresa(empresa);
+        representanteRepository.save(representanteEmpresa);
 
         // 3. Crear proyecto copiando todos los campos de SolicitudProyecto
         Proyecto proyecto = new Proyecto();
@@ -259,9 +208,15 @@ public class SolicitudService {
         proyecto.setDescripcionResiduos(sp.getDescripcionResiduos());
         proyecto.setProduccionEstimada(sp.getProduccionEstimada());
         proyecto.setServiciosRequeridos(sp.getServiciosRequeridos());
+        proyecto.setFechaInicio(LocalDate.now());
+        proyecto.setEmpresa(empresa);
         proyecto.setRepresentanteEmpresa(representanteEmpresa);
-        empresa.agregarProyecto(proyecto);
-        empresaRepository.save(empresa);
+        proyecto.setServiciosRequeridos(
+                new ArrayList<>(sp.getServiciosRequeridos())
+        );
+        proyecto = proyectoRepository.save(proyecto);
+
+
 
         // 4. Convertir TareaSolicitud → Tarea del proyecto
         for (TareaSolicitud ts : sp.getTareas()) {
@@ -277,20 +232,6 @@ public class SolicitudService {
         sp.setEstado(EstadoSolicitudProyecto.APROBADA);
         solicitudProyectoRepository.save(sp);
 
-    }
-
-    public SolicitudProyecto obtenerSolicitudProyecto(String cuit){
-        Usuario usuario = usuarioRepository.findByCuit(cuit)
-                .orElseThrow(() ->
-                        new RuntimeException("Usuario no encontrado"));
-
-        SolicitudRadicacion solicitudRadicacion = solicitudRadicacionRepository
-                        .findFirstByUsuarioIdAndEstadoIn(usuario.getId(),
-                                List.of(EstadoSolicitud.PENDIENTE_PROYECTO, EstadoSolicitud.APROBADA)
-                        );
-
-        if(solicitudRadicacion == null) return null;
-        return solicitudRadicacion.getSolicitudProyecto();
     }
 
 
@@ -410,4 +351,30 @@ public class SolicitudService {
 
         return new SolicitudResponseDTO(actual);
     }
+
+    public void rechazarSolicitudProyecto(Long id, String motivo) {
+        SolicitudProyecto sp = solicitudProyectoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+        sp.setEstado(EstadoSolicitudProyecto.RECHAZADA);
+        sp.setMotivoRechazo(motivo);
+        solicitudProyectoRepository.save(sp);
+    }
+
+    public void requiereModificacionProyecto(Long id, String motivo) {
+        SolicitudProyecto sp = solicitudProyectoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+        sp.setEstado(EstadoSolicitudProyecto.REQUIERE_MODIFICACION);
+        sp.setMotivoRechazo(motivo);
+        solicitudProyectoRepository.save(sp);
+    }
+
+    public List<SolicitudProyecto> listarTodosProyectos() {
+        return solicitudProyectoRepository.findAll();
+    }
+    public SolicitudProyecto obtenerProyectoPorId(Long id) {
+        return solicitudProyectoRepository.findByIdConTareas(id)
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+    }
+
+
 }

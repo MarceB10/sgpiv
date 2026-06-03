@@ -77,6 +77,9 @@ public class GerenteController {
                 solicitudService.listarPendientes()
         );
 
+        model.addAttribute("proyectos",
+                solicitudService.listarTodosProyectos());
+
         model.addAttribute("pagina", "solicitudes-gerente");
 
         return "solicitudesGerente";
@@ -168,4 +171,44 @@ public class GerenteController {
             return "redirect:/solicitudesGerente?error=" + e.getMessage();
         }
     }
+
+
+    @GetMapping("/proyectos/{id}")
+    public String detalleProyecto(@PathVariable Long id,
+                                  Model model,
+                                  HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/login";
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("proyecto", solicitudService.obtenerProyectoPorId(id));
+        model.addAttribute("pagina", "detalle-proyecto");
+
+        return "gerente/detalleProyecto";
+    }
+
+    @PostMapping("/proyectos/{id}/rechazar")
+    public String rechazarProyecto(@PathVariable Long id,
+                                   @RequestParam String motivo) {
+        solicitudService.rechazarSolicitudProyecto(id, motivo);
+        return "redirect:/solicitudesGerente";
+
+    }
+
+    @PostMapping("/proyectos/{id}/modificar")
+    public String solicitarModificacionProyecto(@PathVariable Long id,
+                                                @RequestParam String motivo) {
+        solicitudService.requiereModificacionProyecto(id, motivo);
+        return "redirect:/solicitudesGerente";
+
+    }
+
+    @PostMapping("/proyectos/{id}/aceptar")
+    public String aceptarProyecto(@PathVariable Long id) {
+        solicitudService.aprobarSolicitudProyecto(id);
+        return "redirect:/solicitudesGerente";
+
+    }
+
+
 }

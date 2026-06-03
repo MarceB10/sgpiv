@@ -41,6 +41,9 @@ body {
     border-radius: 18px;
     padding: 25px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    margin-bottom: 40px;
+    max-height: 400px;       /* altura máxima visible */
+    overflow-y: auto;        /* scroll vertical interno por si entran muchas solicitudes*/
 }
 
 /* TOP TABLA */

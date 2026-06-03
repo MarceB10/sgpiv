@@ -70,6 +70,8 @@
     <form th:action="@{/solicitudProyecto}"
           th:object="${solicitudProyectoDTO}"
           method="post">
+      <input type="hidden" name="solicitudRadicacionId" th:value="${solicitudRadicacionId}" />
+
 
       <input type="hidden"
              name="solicitudRadicacionId"
