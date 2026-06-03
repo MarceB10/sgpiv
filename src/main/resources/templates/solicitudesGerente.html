@@ -125,7 +125,7 @@
             <tr th:each="proyecto : ${proyectos}">
                 <td th:text="${proyecto.id}"></td>
                 <td th:text="${proyecto.titulo}" style="font-weight: 500;"></td>
-                <td th:text="${proyecto.solicitudRadicacion.razonSocial}"></td>
+                <td th:text="${proyecto.razonSocial}"></td>
                 <td>
         <span th:text="${proyecto.estado}"
               th:classappend="${proyecto.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :

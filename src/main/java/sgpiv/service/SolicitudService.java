@@ -1,16 +1,16 @@
 package sgpiv.service;
 
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sgpiv.dtos.request.SolicitudProyectoRequestDTO;
 import sgpiv.dtos.request.SolicitudRequestDTO;
 import sgpiv.dtos.request.TareaSoliDTORequest;
+import sgpiv.dtos.response.ProyectoResponseDTO;
+import sgpiv.dtos.response.SolicitudProyectoResponseDTO;
 import sgpiv.dtos.response.SolicitudResponseDTO;
-import sgpiv.enums.EstadoEmpresa;
-import sgpiv.enums.EstadoSolicitud;
-import sgpiv.enums.EstadoSolicitudProyecto;
-import sgpiv.enums.NombreRol;
+import sgpiv.enums.*;
 import sgpiv.model.*;
 import sgpiv.repository.*;
 
@@ -131,8 +131,6 @@ public class SolicitudService {
         solicitud.setSupExpansionM2(dto.getSupExpansionM2());
         solicitud.setTienePlanos(dto.getTienePlanos());
         solicitud.setTiempoDeRadicacion(dto.getTiempoDeRadicacion());
-        solicitud.setFechaEnvio(LocalDate.now());
-
 
         List<TareaSolicitud> ts = new ArrayList<>();
 
@@ -176,6 +174,8 @@ public class SolicitudService {
         empresa.setEmail(sp.getSolicitudRadicacion().getEmailEmpresa());
         empresa.setTipoIndustria(sp.getSolicitudRadicacion().getTipoIndustria());
         empresa.setDireccion(sp.getSolicitudRadicacion().getDireccion());
+        empresa.setEstadoEmpresa(EstadoEmpresa.PENDIENTE_LOTE);
+
         empresa = empresaRepository.save(empresa);
 
         // 2. Dar rol representante al usuario y asociarlo a la empresa
@@ -217,7 +217,6 @@ public class SolicitudService {
         proyecto = proyectoRepository.save(proyecto);
 
 
-
         // 4. Convertir TareaSolicitud → Tarea del proyecto
         for (TareaSolicitud ts : sp.getTareas()) {
             Tarea tarea = new Tarea();
@@ -232,6 +231,20 @@ public class SolicitudService {
         sp.setEstado(EstadoSolicitudProyecto.APROBADA);
         solicitudProyectoRepository.save(sp);
 
+    }
+
+    public SolicitudProyecto obtenerSolicitudProyecto(String cuit){
+        Usuario usuario = usuarioRepository.findByCuit(cuit)
+                .orElseThrow(() ->
+                        new RuntimeException("Usuario no encontrado"));
+
+        SolicitudRadicacion solicitudRadicacion = solicitudRadicacionRepository
+                        .findFirstByUsuarioIdAndEstadoIn(usuario.getId(),
+                                List.of(EstadoSolicitud.PENDIENTE_PROYECTO, EstadoSolicitud.APROBADA)
+                        );
+
+        if(solicitudRadicacion == null) return null;
+        return solicitudRadicacion.getSolicitudProyecto();
     }
 
 
@@ -376,5 +389,66 @@ public class SolicitudService {
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
     }
 
+
+    public List<SolicitudProyectoResponseDTO> listarProyectosPendientes() {
+        List<SolicitudProyectoResponseDTO> proyectoResponseDTOS = new ArrayList<>();
+        List<SolicitudProyecto> proyectos =  solicitudProyectoRepository.findByEstado(EstadoSolicitudProyecto.PENDIENTE);
+
+        for (SolicitudProyecto sp: proyectos){
+            proyectoResponseDTOS.add(
+                    new SolicitudProyectoResponseDTO(sp)
+            );
+        }
+        return proyectoResponseDTOS;
+    }
+
+    public SolicitudProyectoRequestDTO convertirARequestDTO(SolicitudProyecto proyecto) {
+        SolicitudProyectoRequestDTO dto = new SolicitudProyectoRequestDTO();
+
+        // Relación con la solicitud de radicación
+        if (proyecto.getSolicitudRadicacion() != null) {
+            dto.setSolicitudRadicacionId(proyecto.getSolicitudRadicacion().getId());
+        }
+
+        // Datos generales
+        dto.setTitulo(proyecto.getTitulo());                // título del proyecto
+        dto.setDescripcion(proyecto.getDescripcion());      // descripción del proyecto
+        dto.setObjetivo(proyecto.getObjetivo());
+        dto.setRubro(proyecto.getRubro());
+        dto.setActividadPrincipal(proyecto.getActividadPrincipal());
+        dto.setActividadSecundaria(proyecto.getActividadSecundaria());
+        dto.setInversionEstimada(proyecto.getInversionEstimada());
+        dto.setProduccionEstimada(proyecto.getProduccionEstimada());
+
+        // Personal a ocupar
+        dto.setPersonalAOcupar(proyecto.getPersonalAOcupar());
+
+        // Superficies
+        dto.setSupCubiertaTrabajoM2(proyecto.getSupCubiertaTrabajoM2());
+        dto.setSupCubiertaDepositoM2(proyecto.getSupCubiertaDepositoM2());
+        dto.setSupExpansionM2(proyecto.getSupExpansionM2());
+
+        // Otros datos
+        dto.setTienePlanos(proyecto.getTienePlanos());
+        dto.setGeneraResiduos(proyecto.isGeneraResiduos());
+        dto.setDescripcionResiduos(proyecto.getDescripcionResiduos());
+
+        // Servicios seleccionados (enum)
+        if (proyecto.getServiciosRequeridos() != null && !proyecto.getServiciosRequeridos().isEmpty()) {
+            dto.setServiciosRequeridos(new ArrayList<>(proyecto.getServiciosRequeridos()));
+        }
+
+
+        // Tareas → usamos TareaSoliDTORequest
+        if (proyecto.getTareas() != null && !proyecto.getTareas().isEmpty()) {
+            dto.setTareas(
+                    proyecto.getTareas().stream()
+                            .map(t -> new TareaSoliDTORequest(t.getTitulo(), t.getDescripcion()))
+                            .collect(Collectors.toList())
+            );
+        }
+
+        return dto;
+    }
 
 }

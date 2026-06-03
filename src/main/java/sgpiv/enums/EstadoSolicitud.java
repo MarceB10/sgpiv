@@ -6,5 +6,5 @@ public enum EstadoSolicitud {
     EN_REVISION,
     RECHAZADA,
     REQUIERE_MODIFICACION,
-    PENDIENTE_PROYECTO
+    PENDIENTE_PROYECTO,
 }
