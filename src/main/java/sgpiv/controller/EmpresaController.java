@@ -10,10 +10,14 @@ import org.springframework.web.bind.annotation.*;
 
 import sgpiv.dtos.request.EmpresaRequestDTO;
 import sgpiv.dtos.response.EmpresaResponseDTO;
+import sgpiv.dtos.response.TareaResponseDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
+import sgpiv.model.Proyecto;
 import sgpiv.model.RepresentanteEmpresa;
+import sgpiv.repository.ProyectoRepository;
 import sgpiv.service.EmpresaService;
+import sgpiv.service.ProyectoService;
 import sgpiv.service.RepresentanteService;
 
 import java.util.List;
@@ -25,6 +29,7 @@ public class EmpresaController {
 
     private final EmpresaService empresaService;
     private final RepresentanteService representanteService;
+    private final ProyectoService proyectoService;
 
     @GetMapping
     public String listarEmpresas(
@@ -154,5 +159,37 @@ public class EmpresaController {
             model.addAttribute("error", e.getMessage());
             return "registrarMiEmpresa";
         }
+    }
+
+    @GetMapping("/proyectos")
+    public String verProyectosEmpresa(Model model, HttpSession session){
+
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+
+        if(usuario == null) return "redirect:/";
+
+        EmpresaResponseDTO empresa = empresaService.buscarEmpresaDelRepresentante(usuario.getCuit());
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("empresa", empresa);
+        model.addAttribute("proyectos",empresa.getProyectos());
+        model.addAttribute("pagina","proyecto-empresa");
+
+        return "representante_empresa/proyectosEmpresa";
+    }
+
+    @GetMapping("/proyecto/{id}")
+    public String detalleProyecto(@PathVariable Long id, Model model, HttpSession session){
+
+        UsuarioResponseDTO usuario =(UsuarioResponseDTO) session.getAttribute("usuario");
+        if(usuario == null) return "redirect:/";
+
+        Proyecto proyecto = proyectoService.obtenerPorId(id);
+
+        model.addAttribute("usuario",usuario);
+        model.addAttribute("proyecto",proyecto);
+        model.addAttribute("pagina","proyecto-empresa");
+
+        return "representante_empresa/proyectoEmpresa";
     }
 }

@@ -48,6 +48,7 @@ public class SolicitudProyectoController {
             UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
             model.addAttribute("usuario", usuario);
             model.addAttribute("solicitudRadicacionId", solicitudRadicacionId);
+            model.addAttribute("solicitudProyectoDTO", dto);
             return "solicitudProyecto";
         }
 
@@ -56,5 +57,16 @@ public class SolicitudProyectoController {
         return "redirect:/home";
     }
 
+    @GetMapping("/miSolicitudProyecto")
+    public String verMiSolicitudProyecto(HttpSession session, Model model){
 
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if(usuario == null) return "redirect:/";
+
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("solicitudProyecto",
+                solicitudService.obtenerSolicitudProyecto(usuario.getCuit()));
+        model.addAttribute("pagina","mi-solicitud-proyecto");
+        return "representante_empresa/miSolicitudProyecto";
+    }
 }

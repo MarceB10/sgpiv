@@ -131,8 +131,6 @@ public class SolicitudService {
         solicitud.setSupExpansionM2(dto.getSupExpansionM2());
         solicitud.setTienePlanos(dto.getTienePlanos());
         solicitud.setTiempoDeRadicacion(dto.getTiempoDeRadicacion());
-        solicitud.setFechaEnvio(LocalDate.now());
-
 
         List<TareaSolicitud> ts = new ArrayList<>();
 
@@ -217,7 +215,6 @@ public class SolicitudService {
         proyecto = proyectoRepository.save(proyecto);
 
 
-
         // 4. Convertir TareaSolicitud → Tarea del proyecto
         for (TareaSolicitud ts : sp.getTareas()) {
             Tarea tarea = new Tarea();
@@ -232,6 +229,20 @@ public class SolicitudService {
         sp.setEstado(EstadoSolicitudProyecto.APROBADA);
         solicitudProyectoRepository.save(sp);
 
+    }
+
+    public SolicitudProyecto obtenerSolicitudProyecto(String cuit){
+        Usuario usuario = usuarioRepository.findByCuit(cuit)
+                .orElseThrow(() ->
+                        new RuntimeException("Usuario no encontrado"));
+
+        SolicitudRadicacion solicitudRadicacion = solicitudRadicacionRepository
+                        .findFirstByUsuarioIdAndEstadoIn(usuario.getId(),
+                                List.of(EstadoSolicitud.PENDIENTE_PROYECTO, EstadoSolicitud.APROBADA)
+                        );
+
+        if(solicitudRadicacion == null) return null;
+        return solicitudRadicacion.getSolicitudProyecto();
     }
 
 

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mi Proyecto</title>
+
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<!-- CONTENIDO -->
+<div class="main-content">
+
+    <div class="header">
+        <div>
+            <h1>Mi Proyecto</h1>
+            <p>Información del proyecto presentado</p>
+        </div>
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>Objetivo</h3>
+            <h2 th:text="${solicitudProyecto.objetivo}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Rubro</h3>
+            <h2 th:text="${solicitudProyecto.rubro}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Actividad principal</h3>
+            <h2 th:text="${solicitudProyecto.actividadPrincipal}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Actividad secundaria</h3>
+            <h2 th:text="${solicitudProyecto.actividadSecundaria}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Inversión estimada</h3>
+            <h2 th:text="${solicitudProyecto.inversionEstimada}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Producción estimada</h3>
+            <h2 th:text="${solicitudProyecto.produccionEstimada}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Superficie trabajo</h3>
+            <h2 th:text="${solicitudProyecto.supCubiertaTrabajoM2 + ' m²'}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Superficie depósito</h3>
+            <h2 th:text="${solicitudProyecto.supCubiertaDepositoM2 + ' m²'}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Superficie expansión</h3>
+            <h2 th:text="${solicitudProyecto.supExpansionM2 + ' m²'}"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Planos</h3>
+            <h2 th:text="${solicitudProyecto.tienePlanos} ? 'Sí' : 'No'"></h2>
+        </div>
+
+        <div class="card">
+            <h3>Genera residuos</h3>
+            <h2 th:text="${solicitudProyecto.generaResiduos} ? 'Sí' : 'No'"></h2>
+        </div>
+
+        <div class="card"
+             th:if="${solicitudProyecto.generaResiduos}">
+            <h3>Descripción residuos</h3>
+            <h2 th:text="${solicitudProyecto.descripcionResiduos}"></h2>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
