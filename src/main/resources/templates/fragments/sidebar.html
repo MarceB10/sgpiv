@@ -37,14 +37,24 @@
 
         <!-- ROL_GERENTE -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'}">
+
+            <!--Gestion de infraestructuras-->
+            <a th:href="@{/infraestructuras}"
+               th:classappend="${pagina == 'infraestructuras'} ? ' active' : ''">
+                <span>🛠️</span>
+                Gestión de Infraestructura
+            </a>
+            <!--Empresas del parque a gestionar-->
             <a th:href="@{/empresas}"
                th:classappend="${pagina == 'empresas'} ? ' active' : ''">
                 <i class="fa-solid fa-building"></i> Empresas
             </a>
+            <!--Usuarios del parque a gestionar-->
             <a th:href="@{/gerente/usuarios}"
                th:classappend="${pagina == 'usuarios'} ? ' active' : ''">
                 <i class="fa-solid fa-users"></i> Usuarios
             </a>
+            <!--Lotes del parque a gestionar-->
             <a th:href="@{/gerente/lotes}"
                th:classappend="${pagina == 'lotes'} ? ' active' : ''">
                 <i class="fa-solid fa-map-location-dot"></i> Lotes
