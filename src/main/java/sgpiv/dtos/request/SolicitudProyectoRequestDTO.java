@@ -73,4 +73,7 @@ public class SolicitudProyectoRequestDTO {
     @NotNull(message = "Debe agregar al menos una tarea")
     @Size(min = 1, message = "Debe agregar al menos una tarea")
     private List<TareaSoliDTORequest> tareas = new ArrayList<>();
+
+
 }
+
