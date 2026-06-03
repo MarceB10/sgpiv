@@ -33,7 +33,8 @@ public class SolicitudService {
     private final UsuarioService usuarioService;
     private final RepresentanteService representanteService;
     private final LoteService loteService;
-    private final EmailService emailService;
+//    private final EmailService emailService;
+    private final NotificacionService notificacionService;
 
     public void enviarSolicitud(SolicitudRequestDTO dto, String cuitUsuario) {
 
@@ -109,10 +110,17 @@ public class SolicitudService {
 
         System.out.println("Cant Tareas: " + tareas.size());
 
-        emailService.enviarSolicitudRecibida(
-                solicitud.getEmailEmpresa(),
-                solicitud.getRazonSocial()
-        );
+//        emailService.enviarSolicitudRecibida(
+//                solicitud.getEmailEmpresa(),
+//                solicitud.getRazonSocial()
+//        );
+        List<Usuario> gerentes = usuarioRepository.findByRol(NombreRol.ROL_GERENTE);
+        for (Usuario gerente : gerentes) {
+            notificacionService.crearNotificacion(
+                    "Nueva solicitud de radicación de: " + solicitud.getRazonSocial(),
+                    gerente
+            );
+        }
 
         solicitudRepository.save(solicitud);
     }
@@ -183,9 +191,14 @@ public class SolicitudService {
         //cambio de estado de la solicitud
         solicitud.setEstado(EstadoSolicitud.APROBADA);
 
-        emailService.enviarSolicitudAprobada(
-                solicitud.getEmailEmpresa(),
-                solicitud.getRazonSocial()
+//        emailService.enviarSolicitudAprobada(
+//                solicitud.getEmailEmpresa(),
+//                solicitud.getRazonSocial()
+//        );
+
+        notificacionService.crearNotificacion(
+                "Tu solicitud de radicación fue aprobada.",
+                solicitud.getUsuario()
         );
 
         solicitudRepository.save(solicitud);
@@ -201,10 +214,15 @@ public class SolicitudService {
         solicitud.setEstado(EstadoSolicitud.RECHAZADA);
         solicitud.setMotivoRechazo(motivo);
 
-        emailService.enviarSolicitudRechazada(
-                solicitud.getEmailEmpresa(),
-                solicitud.getRazonSocial(),
-                motivo
+//        emailService.enviarSolicitudRechazada(
+//                solicitud.getEmailEmpresa(),
+//                solicitud.getRazonSocial(),
+//                motivo
+//        );
+
+        notificacionService.crearNotificacion(
+                "Tu solicitud de radicación fue rechazada. Motivo: " + motivo,
+                solicitud.getUsuario()
         );
         solicitudRepository.save(solicitud);
         // Si se rechaza se puede desactivar el usuario
@@ -249,10 +267,15 @@ public class SolicitudService {
         solicitud.setEstado(EstadoSolicitud.REQUIERE_MODIFICACION);
         solicitud.setMotivoRechazo(motivo);
 
-        emailService.enviarRequiereModificacion(
-                solicitud.getEmailEmpresa(),
-                solicitud.getRazonSocial(),
-                motivo
+//        emailService.enviarRequiereModificacion(
+//                solicitud.getEmailEmpresa(),
+//                solicitud.getRazonSocial(),
+//                motivo
+//        );
+
+        notificacionService.crearNotificacion(
+                "Tu solicitud requiere modificaciones. Motivo: " + motivo,
+                solicitud.getUsuario()
         );
 
         solicitudRepository.save(solicitud);

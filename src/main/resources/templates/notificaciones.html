@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notificaciones</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="container-fluid">
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <div class="main-content">
+        <h2>Notificaciones</h2>
+
+        <div th:if="${#lists.isEmpty(notificaciones)}">
+            <p>No tenés notificaciones.</p>
+        </div>
+
+        <div th:each="notif : ${notificaciones}" class="notificacion-item">
+            <p th:text="${notif.mensaje}"></p>
+            <small th:text="${notif.fecha}"></small>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

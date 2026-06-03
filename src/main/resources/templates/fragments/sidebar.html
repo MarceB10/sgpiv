@@ -121,6 +121,47 @@
 
         </th:block>
 
+        <!-- CAMPANITA DE NOTIFICACIONES -->
+        <div style="position: relative;">
+            <a href="#" onclick="toggleNotificaciones(event)" style="position: relative; display: flex; align-items: center; gap: 8px;">
+                <i class="fa-solid fa-bell"></i> Notificaciones
+                <span id="badge-notificaciones"
+                      th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}"
+                      th:text="${notificacionesNoLeidas}"
+                      style="background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px; font-weight: bold;">
+        </span>
+            </a>
+
+            <div id="dropdown-notificaciones"
+                 style="display:none; position: absolute; left: 0; top: 100%; background: white; color: black;
+                border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); width: 200px; z-index: 999; padding: 10px;">
+                <p style="font-weight: bold; margin-bottom: 8px;">Notificaciones</p>
+                <div th:each="notif : ${notificaciones}" style="border-bottom: 1px solid #eee; padding: 6px 0;">
+                    <p th:text="${notif.mensaje}" style="margin: 0; font-size: 13px;"></p>
+                </div>
+                <div th:if="${#lists.isEmpty(notificaciones)}">
+                    <p style="font-size: 13px;">No tenés notificaciones.</p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function toggleNotificaciones(e) {
+             e.preventDefault();
+             var d = document.getElementById('dropdown-notificaciones');
+             if (d.style.display === 'none') {
+                 d.style.display = 'block';
+                 // Marcar como leídas
+                 fetch('/notificaciones/marcar-leidas', { method: 'POST' });
+                  // Quitar el numerito
+                 var badge = document.getElementById('badge-notificaciones');
+                 if (badge) badge.style.display = 'none';
+                 } else {
+                         d.style.display = 'none';
+    }
+}
+        </script>
+
     </div>
 
 </div>
