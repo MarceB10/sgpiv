@@ -18,7 +18,7 @@ public class OcupacionLoteResponseDTO {
     // Lote
     private Long idLote;
     private String ubicacionLote;
-    private Float superficieLote;
+    private Double superficieLote;
 
     // Empresa (via proyecto)
     private String razonSocialEmpresa;

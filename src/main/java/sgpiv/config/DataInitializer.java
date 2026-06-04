@@ -295,31 +295,31 @@ public class DataInitializer implements CommandLineRunner {
     private void precargarLotes() {
         if (loteRepository.count() == 0) {
             Lote lote1 = new Lote(
-                    1200f,
+                    1200D,
                     "Sector A - Lote 1",
                     4500000f,
                     "Uso industrial liviano"
             );
             Lote lote2 = new Lote(
-                    1800f,
+                    1800D,
                     "Sector A - Lote 2",
                     6200000f,
                     "Sin restricciones"
             );
             Lote lote3 = new Lote(
-                    950f,
+                    950D,
                     "Sector B - Lote 3",
                     3900000f,
                     "No apto almacenamiento químico"
             );
             Lote lote4 = new Lote(
-                    2500f,
+                    2500D,
                     "Sector C - Lote 4",
                     9100000f,
                     "Uso industrial pesado"
             );
             Lote lote5 = new Lote(
-                    1500f,
+                    1500D,
                     "Sector D - Lote 5",
                     5400000f,
                     "Altura máxima 12m"

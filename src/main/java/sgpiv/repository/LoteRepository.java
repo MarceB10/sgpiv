@@ -21,7 +21,7 @@ public interface LoteRepository extends JpaRepository<Lote, Long> {
     }
 
     @Query("SELECT l FROM Lote l WHERE l.superficie >= :superficie AND l.estadoLote = EstadoLote.DISPONIBLE")
-    Optional<List<Lote>> findLotesDisponiblesConSuperficieMinima(@Param("superficie") Float superficie);
+    Optional<List<Lote>> findLotesDisponiblesConSuperficieMinima(@Param("superficie") Double superficie);
 
     // Buscar por ubicación (contiene, ignorando mayúsculas)
     List<Lote> findByUbicacionContainingIgnoreCase(String ubicacion);

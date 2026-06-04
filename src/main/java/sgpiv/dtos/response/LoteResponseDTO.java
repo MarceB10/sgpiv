@@ -16,7 +16,7 @@ import java.util.Set;
 public class LoteResponseDTO {
 
     private Long id;
-    private Float superficie;
+    private Double superficie;
     private String ubicacion;
     private Float precio;
     private LocalDate fechaUso;
