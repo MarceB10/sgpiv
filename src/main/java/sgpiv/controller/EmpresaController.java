@@ -15,10 +15,14 @@ import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
 import sgpiv.model.Proyecto;
 import sgpiv.model.RepresentanteEmpresa;
+import sgpiv.model.SolicitudProyecto;
+import sgpiv.model.SolicitudRadicacion;
 import sgpiv.repository.ProyectoRepository;
+import sgpiv.repository.SolicitudProyectoRepository;
 import sgpiv.service.EmpresaService;
 import sgpiv.service.ProyectoService;
 import sgpiv.service.RepresentanteService;
+import sgpiv.service.SolicitudService;
 
 import java.util.List;
 
@@ -30,53 +34,40 @@ public class EmpresaController {
     private final EmpresaService empresaService;
     private final RepresentanteService representanteService;
     private final ProyectoService proyectoService;
+    private final SolicitudService solicitudService;
+    private final SolicitudProyectoRepository solicitudProyectoRepository;
 
     @GetMapping
     public String listarEmpresas(
             @RequestParam(required = false) String buscar,
             @RequestParam(required = false) EstadoEmpresa estado,
-            Model model,
-            HttpSession session
-    ){
+            Model model, HttpSession session){
 
-        UsuarioResponseDTO usuario =
-                (UsuarioResponseDTO) session.getAttribute("usuario");
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
 
-        if(usuario == null){
-            return "redirect:/";
-        }
+        if(usuario == null) return "redirect:/";
         model.addAttribute("usuario", usuario);
-
         List<EmpresaResponseDTO> empresas;
-
         if(buscar != null && !buscar.isBlank()){
-
             empresas = empresaService.listarPorRazonSocial(buscar);//razon social == nombre
-
         }else if (estado != null ){
             empresas = empresaService.listarPorEstado(estado);
         } else {
-
             empresas = empresaService.listarTodas();
-
         }
 
         long interesadas = empresas.stream()
                 .filter(e -> EstadoEmpresa.INTERESADA.toString().equals(e.getEstadoEmpresa()))
                 .count();
-
         long radicadas = empresas.stream()
                 .filter(e -> EstadoEmpresa.RADICADA.toString().equals(e.getEstadoEmpresa()))
                 .count();
-
         long adjudicadas = empresas.stream()
                 .filter(e -> EstadoEmpresa.ADJUDICADA.toString().equals(e.getEstadoEmpresa()))
                 .count();
 
         model.addAttribute("empresas", empresas);
-
         model.addAttribute("buscar", buscar);
-
         model.addAttribute("totalEmpresas", empresas.size());
         model.addAttribute("interesadas", interesadas);
         model.addAttribute("radicadas", radicadas);
@@ -104,20 +95,28 @@ public class EmpresaController {
     public String miEmpresa(Model model, HttpSession session){
 
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-
-        if (usuario == null) {
-            return "redirect:/";
-        }
-
+        if (usuario == null) return "redirect:/";
         model.addAttribute("usuario", usuario);
         model.addAttribute("pagina", "mi-empresa");
 
+        SolicitudRadicacion solicitudActiva = solicitudService.obtenerSolicitudActiva(usuario.getCuit());
+
+        model.addAttribute("solicitudActiva", solicitudActiva);
+
+        SolicitudProyecto solicitudProyectoActiva = null;
+
+        if (solicitudActiva != null) {
+            solicitudProyectoActiva = solicitudProyectoRepository
+                    .findBySolicitudRadicacionId(solicitudActiva.getId())
+                    .orElse(null);
+        }
+
+        model.addAttribute("solicitudProyectoActiva", solicitudProyectoActiva);
         try {
             EmpresaResponseDTO empresa = empresaService.buscarEmpresaDelRepresentante(usuario.getCuit());
             model.addAttribute("empresa", empresa);
         } catch (Exception e) {
-            // Si no hay empresa, mandamos el atributo como null o un mensaje
-            System.out.println("Error al buscar empresa: " + e.getMessage()); // temporal
+            System.out.println("Error al buscar empresa: " + e.getMessage());
             model.addAttribute("empresa", null);
             model.addAttribute("mensaje", "Aún no has registrado ninguna empresa en el sistema.");
         }
@@ -169,11 +168,23 @@ public class EmpresaController {
         if(usuario == null) return "redirect:/";
 
         EmpresaResponseDTO empresa = empresaService.buscarEmpresaDelRepresentante(usuario.getCuit());
+        SolicitudRadicacion solicitudActiva = solicitudService.obtenerSolicitudActiva(usuario.getCuit());
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("empresa", empresa);
         model.addAttribute("proyectos",empresa.getProyectos());
         model.addAttribute("pagina","proyecto-empresa");
+        model.addAttribute("solicitudActiva", solicitudActiva);
+
+        SolicitudProyecto solicitudProyectoActiva = null;
+
+        if (solicitudActiva != null) {
+            solicitudProyectoActiva = solicitudProyectoRepository
+                    .findBySolicitudRadicacionId(solicitudActiva.getId())
+                    .orElse(null);
+        }
+
+        model.addAttribute("solicitudProyectoActiva", solicitudProyectoActiva);
 
         return "representante_empresa/proyectosEmpresa";
     }
@@ -189,6 +200,21 @@ public class EmpresaController {
         model.addAttribute("usuario",usuario);
         model.addAttribute("proyecto",proyecto);
         model.addAttribute("pagina","proyecto-empresa");
+
+        SolicitudRadicacion solicitudActiva =
+                solicitudService.obtenerSolicitudActiva(usuario.getCuit());
+
+        model.addAttribute("solicitudActiva", solicitudActiva);
+
+        SolicitudProyecto solicitudProyectoActiva = null;
+
+        if (solicitudActiva != null) {
+            solicitudProyectoActiva = solicitudProyectoRepository
+                    .findBySolicitudRadicacionId(solicitudActiva.getId())
+                    .orElse(null);
+        }
+
+        model.addAttribute("solicitudProyectoActiva", solicitudProyectoActiva);
 
         return "representante_empresa/proyectoEmpresa";
     }

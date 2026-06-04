@@ -1,9 +1,6 @@
 package sgpiv.dtos.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import sgpiv.enums.EstadoProyecto;
+import lombok.Getter;
 import sgpiv.enums.ServicioLote;
 import sgpiv.model.Proyecto;
 import sgpiv.model.Tarea;
@@ -12,9 +9,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class ProyectoResponseDTO {
     private Long id;
     private String titulo;
@@ -34,19 +29,10 @@ public class ProyectoResponseDTO {
     private String descripcionResiduos;
     private String produccionEstimada;
     private List<ServicioLote> serviciosRequeridos;
-
     private String razonSocialEmpresa;
     private String cuitEmpresa;
-
     private List<TareaResponseDTO> tareas = new ArrayList<>();
     private long tareasCompletadas;
-    private Double necesidadM2;
-
-    private EstadoProyecto estado;
-
-    private String nombreRepresentante;
-    private String apellidoRepresentante;
-    private String cuitRepresentante;
     private double progreso;
 
     public ProyectoResponseDTO(Proyecto p) {
@@ -68,21 +54,17 @@ public class ProyectoResponseDTO {
         this.descripcionResiduos = p.getDescripcionResiduos();
         this.produccionEstimada  = p.getProduccionEstimada();
         this.serviciosRequeridos = p.getServiciosRequeridos();
-        this.necesidadM2         = p.getNecesidadM2();
-
-        this.estado              = p.getEstadoProyecto();
-
 
         if (p.getEmpresa() != null) {
             this.razonSocialEmpresa = p.getEmpresa().getRazonSocial();
             this.cuitEmpresa        = p.getEmpresa().getCuit();
         }
 
-        if (p.getRepresentanteEmpresa() != null) {
-            this.nombreRepresentante   = p.getRepresentanteEmpresa().getUsuario().getNombre();
-            this.apellidoRepresentante = p.getRepresentanteEmpresa().getUsuario().getApellido();
-            this.cuitRepresentante     = p.getRepresentanteEmpresa().getUsuario().getCuit();
-        }
+//        if (p.getRepresentanteEmpresa() != null) {
+//            this.nombreRepresentante   = p.getRepresentanteEmpresa().getUsuario().getNombre();
+//            this.apellidoRepresentante = p.getRepresentanteEmpresa().getUsuario().getApellido();
+//            this.cuitRepresentante     = p.getRepresentanteEmpresa().getUsuario().getCuit();
+//        }
 
         for (Tarea t : p.getTareas()) {
             this.tareas.add(new TareaResponseDTO(t));

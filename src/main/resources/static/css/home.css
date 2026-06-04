@@ -1,15 +1,3 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-
-body {
-    background: #f4f6f9;
-    display: flex;
-}
-
 /* ========================= */
 /* MAIN */
 /* ========================= */
@@ -84,91 +72,6 @@ body {
     color: #0f172a;
 }
 
-/* ========================= */
-/* AVISO PENDIENTE */
-/* ========================= */
-
-.aviso-pendiente {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-    background: white;
-    border-left: 5px solid #f59e0b;
-    border-radius: 18px;
-    padding: 25px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-
-.aviso-icono {
-    font-size: 36px;
-}
-
-.aviso-texto h3 {
-    color: #0f172a;
-    margin-bottom: 8px;
-    font-size: 18px;
-}
-
-.aviso-texto p {
-    color: #64748b;
-    line-height: 1.7;
-    font-size: 15px;
-}
-
-/* ========================= */
-/* PANEL USUARIO SIDEBAR */
-/* ========================= */
-
-.user-panel{
-
-    display: flex;
-    align-items: center;
-
-    gap: 12px;
-
-    background: rgba(255,255,255,0.08);
-
-    padding: 15px;
-
-    border-radius: 14px;
-
-    margin-top: 25px;
-    margin-bottom: 35px;
-
-}
-
-.user-avatar{
-
-    width: 50px;
-    height: 50px;
-
-    border-radius: 50%;
-
-    background: #2563eb;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-size: 24px;
-
-}
-
-.user-info h4{
-
-    color: white;
-    font-size: 15px;
-    margin-bottom: 4px;
-
-}
-
-.user-info p{
-
-    color: #9ca3af;
-    font-size: 13px;
-
-}
 /* ========================= */
 /* VIDEO */
 /* ========================= */

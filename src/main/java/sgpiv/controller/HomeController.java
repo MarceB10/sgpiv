@@ -34,10 +34,16 @@ public class HomeController {
         model.addAttribute("usuario", usuario);
         model.addAttribute("pagina", "home");
 
-        SolicitudRadicacion solicitudActiva =
-                solicitudService.obtenerSolicitudActiva(usuario.getCuit());
-
+        SolicitudRadicacion solicitudActiva = solicitudService.obtenerSolicitudActiva(usuario.getCuit());
         model.addAttribute("solicitudActiva", solicitudActiva);
+
+        SolicitudProyecto solicitudProyectoActiva = null;
+        if (solicitudActiva != null) {
+            solicitudProyectoActiva = solicitudProyectoRepository
+                    .findBySolicitudRadicacionId(solicitudActiva.getId())
+                    .orElse(null);
+        }
+        model.addAttribute("solicitudProyectoActiva", solicitudProyectoActiva);
 
         return "home";
     }
