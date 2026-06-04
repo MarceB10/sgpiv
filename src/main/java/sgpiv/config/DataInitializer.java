@@ -32,6 +32,7 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
 
+//        Infraestructura precargada
         if (infraestructuraRepository.count() > 0) {
             return;
         }
