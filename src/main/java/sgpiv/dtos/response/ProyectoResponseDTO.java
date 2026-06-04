@@ -1,5 +1,9 @@
 package sgpiv.dtos.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import sgpiv.enums.EstadoProyecto;
 import sgpiv.enums.ServicioLote;
 import sgpiv.model.Proyecto;
 import sgpiv.model.Tarea;
@@ -36,7 +40,6 @@ public class ProyectoResponseDTO {
 
     private List<TareaResponseDTO> tareas = new ArrayList<>();
     private long tareasCompletadas;
-    private double porcentajeCompletado;
     private Double necesidadM2;
 
     private EstadoProyecto estado;
