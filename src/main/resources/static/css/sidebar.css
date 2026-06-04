@@ -97,3 +97,27 @@
     color: #9ca3af;
     font-size: 13px;
 }
+
+/*SCROLLEAR EN EL SIDEBAR*/
+.sidebar {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #1e293b #0f172a;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
