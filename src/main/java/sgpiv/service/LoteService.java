@@ -35,7 +35,7 @@ public class LoteService {
 
     public List<LoteResponseDTO> obtenerLotesParaSolicitud(Float superficie){
         List<Lote> lotes = loteRepository
-                .findLotesDisponiblesConSuperficieMinima(superficie)
+                .findLotesDisponiblesConSuperficieMinima(Double.valueOf(superficie))
                 .orElse(Collections.emptyList()); //devuelvo lista vacia para mostrar un mensaje en front
         List<LoteResponseDTO> lotesDTOS = new ArrayList<>();
 
