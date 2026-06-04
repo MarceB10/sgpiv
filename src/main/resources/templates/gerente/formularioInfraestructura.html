@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nueva Infraestructura</title>
+
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/gestionInfraestructura.css}">
+</head>
+<body>
+
+<!-- SIDEBAR EXISTENTE -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<main class="main-content">
+
+    <section class="page-header">
+        <div>
+            <h1>Nueva Infraestructura</h1>
+            <p>Registre una nueva infraestructura física del Parque Industrial.</p>
+        </div>
+
+        <a th:href="@{/infraestructuras}" class="btn-primary">
+            Volver
+        </a>
+    </section>
+
+    <section class="table-section">
+
+        <div class="section-header">
+            <div>
+                <h2>Datos de la infraestructura</h2>
+                <p>Complete la información principal del activo físico.</p>
+            </div>
+        </div>
+
+        <form th:action="@{/infraestructuras}"
+              th:object="${infraestructura}"
+              method="post"
+              class="form-infraestructura">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text"
+                           th:field="*{nombre}"
+                           placeholder="Ej: Red de Agua Sector Norte"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <select th:field="*{tipo}" required>
+                        <option value="">Seleccione un tipo</option>
+                        <option th:each="tipo : ${tipos}"
+                                th:value="${tipo}"
+                                th:text="${tipo}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Estado</label>
+                    <select th:field="*{estado}" required>
+                        <option value="">Seleccione un estado</option>
+                        <option th:each="estado : ${estados}"
+                                th:value="${estado}"
+                                th:text="${estado}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Sector</label>
+                    <input type="text"
+                           th:field="*{sector}"
+                           placeholder="Ej: Sector A"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label>Ubicación</label>
+                    <input type="text"
+                           th:field="*{ubicacion}"
+                           placeholder="Ej: Calle interna 3"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label>Último mantenimiento</label>
+                    <input type="date"
+                           th:field="*{ultimoMantenimiento}">
+                </div>
+
+                <div class="form-group">
+                    <label>Próximo mantenimiento</label>
+                    <input type="date"
+                           th:field="*{proximoMantenimiento}">
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Descripción</label>
+                    <textarea th:field="*{descripcion}"
+                              rows="4"
+                              placeholder="Describa la función o características de la infraestructura..."
+                              required></textarea>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/infraestructuras}" class="btn-secondary">
+                    Cancelar
+                </a>
+
+                <button type="submit" class="btn-primary">
+                    Guardar infraestructura
+                </button>
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+</html>

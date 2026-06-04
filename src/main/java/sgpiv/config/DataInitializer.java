@@ -3,10 +3,7 @@ package sgpiv.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import sgpiv.enums.EstadoEmpresa;
-import sgpiv.enums.EstadoLote;
-import sgpiv.enums.EstadoSolicitud;
-import sgpiv.enums.NombreRol;
+import sgpiv.enums.*;
 import sgpiv.model.*;
 import sgpiv.repository.*;
 
@@ -24,6 +21,7 @@ public class DataInitializer implements CommandLineRunner {
 /// Pruebas
     private final EmpresaRepository empresaRepository;
     private final LoteRepository loteRepository;
+    private final InfraestructuraRepository infraestructuraRepository;
 //    private final SolicitudRepository solicitudRadicacionRepository;
 /// /
     @Override
@@ -33,6 +31,121 @@ public class DataInitializer implements CommandLineRunner {
                 rolRepository.save(new Rol(nombreRol));
             }
         }
+
+//        Infraestructura precargada
+        if (infraestructuraRepository.count() > 0) {
+            return;
+        }
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Estación Transformadora 1",
+                TipoInfraestructura.ELECTRICA,
+                EstadoInfraestructura.OPERATIVA,
+                "Sector A",
+                "Ingreso principal",
+                "Estación encargada de distribuir energía eléctrica a los lotes del Sector A.",
+                LocalDate.of(2025, 5, 10),
+                LocalDate.of(2025, 8, 10)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Red de Agua Norte",
+                TipoInfraestructura.AGUA_POTABLE,
+                EstadoInfraestructura.OPERATIVA,
+                "Sector B",
+                "Zona norte del parque",
+                "Red de distribución de agua potable para empresas ubicadas en el Sector B.",
+                LocalDate.of(2025, 5, 5),
+                LocalDate.of(2025, 8, 5)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Alumbrado Calle 3",
+                TipoInfraestructura.ALUMBRADO_PUBLICO,
+                EstadoInfraestructura.EN_MANTENIMIENTO,
+                "Sector A",
+                "Calle interna 3",
+                "Sistema de iluminación pública sobre la calle interna número 3.",
+                LocalDate.of(2025, 5, 15),
+                LocalDate.of(2025, 7, 15)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Red de Gas Principal",
+                TipoInfraestructura.GAS_NATURAL,
+                EstadoInfraestructura.OPERATIVA,
+                "Sector D",
+                "Troncal principal del parque",
+                "Red principal de distribución de gas natural hacia los lotes industriales.",
+                LocalDate.of(2025, 4, 20),
+                LocalDate.of(2025, 7, 20)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Fibra Óptica Sector B",
+                TipoInfraestructura.TELECOMUNICACIONES,
+                EstadoInfraestructura.EN_MANTENIMIENTO,
+                "Sector B",
+                "Canalización subterránea Sector B",
+                "Tendido de fibra óptica para conexión a internet de las empresas.",
+                LocalDate.of(2025, 5, 1),
+                LocalDate.of(2025, 7, 1)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Planta de Tratamiento",
+                TipoInfraestructura.AGUA_RESIDUAL,
+                EstadoInfraestructura.OPERATIVA,
+                "Sector C",
+                "Zona posterior del parque",
+                "Planta destinada al tratamiento de líquidos residuales industriales.",
+                LocalDate.of(2025, 4, 12),
+                LocalDate.of(2025, 7, 12)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Red Cloacal Sector C",
+                TipoInfraestructura.RED_CLOACAL,
+                EstadoInfraestructura.OPERATIVA,
+                "Sector C",
+                "Calles internas del Sector C",
+                "Sistema cloacal que conecta los lotes del sector con la planta de tratamiento.",
+                LocalDate.of(2025, 4, 18),
+                LocalDate.of(2025, 7, 18)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Calle Interna Principal",
+                TipoInfraestructura.VIAL,
+                EstadoInfraestructura.REQUIERE_MANTENIMIENTO,
+                "Sector General",
+                "Acceso principal hasta rotonda central",
+                "Calle principal de circulación interna del parque industrial.",
+                LocalDate.of(2025, 3, 25),
+                LocalDate.of(2025, 6, 25)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Cerco Perimetral Este",
+                TipoInfraestructura.SEGURIDAD,
+                EstadoInfraestructura.OPERATIVA,
+                "Sector Este",
+                "Límite este del parque",
+                "Cerramiento perimetral destinado al control y seguridad del predio.",
+                LocalDate.of(2025, 4, 8),
+                LocalDate.of(2025, 7, 8)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Cámara Acceso Principal",
+                TipoInfraestructura.SEGURIDAD,
+                EstadoInfraestructura.FUERA_DE_SERVICIO,
+                "Ingreso",
+                "Portón de acceso principal",
+                "Cámara de vigilancia ubicada en el ingreso principal del parque.",
+                LocalDate.of(2025, 4, 1),
+                null
+        ));
 
         // crea el gerente inicial si no existe
         precargarGerente();

@@ -35,8 +35,5 @@ public class LoteRequestDTO {
 
     private String restricciones;
 
-    private Set<ServicioLote> servicios =
-            new HashSet<>();
-
-
+    private Set<ServicioLote> servicios = new HashSet<>();
 }

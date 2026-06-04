@@ -4,8 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Mi Empresa - SGPIV</title>
+
+    <link rel="stylesheet" th:href="@{/css/global.css}">
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
-    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/miEmpresa.css}">
+
+    <!-- Font Awesome para los íconos -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
@@ -14,47 +20,201 @@
 
 <div class="main-content">
 
-    <div class="header">
+    <div class="empresa-header">
         <div>
             <h1>Mi Empresa</h1>
-            <p>Datos de radicación de tu organización en el Parque Industrial.</p>
+            <p>Información de radicación y estado actual de tu organización en el Parque Industrial.</p>
         </div>
     </div>
 
-    <div class="cards" th:if="${empresa != null}">
+    <div th:if="${empresa != null}">
 
-        <div class="card">
-            <h3>Razón Social</h3>
-            <h2 th:text="${empresa.razonSocial}"></h2>
-        </div>
+        <section class="empresa-hero-card">
 
-        <div class="card">
-            <h3>CUIT</h3>
-            <h2 th:text="${empresa.cuit}"></h2>
-        </div>
+            <div class="estado-card">
+                <div class="estado-icono">
+                    <i class="fa-solid fa-check"></i>
+                </div>
 
-        <div class="card">
-            <h3>Rubro</h3>
-            <h2 th:text="${empresa.rubro}"></h2>
-        </div>
+                <h2>Empresa radicada</h2>
 
-        <div class="card">
-            <h3>Email</h3>
-            <h2 th:text="${empresa.email}"></h2>
-        </div>
+                <p>
+                    Tu solicitud ha sido aprobada y tu empresa está radicada
+                    en el Parque Industrial.
+                </p>
+            </div>
 
-        <div class="card">
-            <h3>Estado</h3>
-            <h2 th:text="${empresa.estadoEmpresa}"></h2>
-        </div>
+            <div class="empresa-datos-grid">
+
+                <div class="empresa-dato">
+                    <div class="dato-icono">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+
+                    <div>
+                        <span>Razón Social</span>
+                        <strong th:text="${empresa.razonSocial}">Empresa 1</strong>
+                    </div>
+                </div>
+
+                <div class="empresa-dato">
+                    <div class="dato-icono">
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+
+                    <div>
+                        <span>CUIT</span>
+                        <strong th:text="${empresa.cuit}">20111111113</strong>
+                    </div>
+                </div>
+
+                <div class="empresa-dato">
+                    <div class="dato-icono">
+                        <i class="fa-solid fa-industry"></i>
+                    </div>
+
+                    <div>
+                        <span>Rubro</span>
+                        <strong th:text="${empresa.rubro}">Rubro de proyectos industriales</strong>
+                    </div>
+                </div>
+
+                <div class="empresa-dato">
+                    <div class="dato-icono">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+
+                    <div>
+                        <span>Email</span>
+                        <strong th:text="${empresa.email}">2@gmail.com</strong>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="empresa-layout">
+
+            <div class="resumen-card">
+                <h2>Resumen de radicación</h2>
+
+                <div class="resumen-grid">
+
+                    <div class="resumen-item">
+                        <div class="resumen-icono">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+
+                        <div>
+                            <span>Estado de radicación</span>
+
+                            <strong class="badge-success"
+                                    th:if="${empresa.estadoEmpresa != null}"
+                                    th:text="${empresa.estadoEmpresa}">
+                                Empresa radicada
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="resumen-item">
+                        <div class="resumen-icono">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+
+                        <div>
+                            <span>Fecha de aprobación</span>
+                            <strong>No registrada</strong>
+                        </div>
+                    </div>
+
+                    <div class="resumen-item">
+                        <div class="resumen-icono">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+
+                        <div>
+                            <span>Parque Industrial</span>
+                            <strong>Parque Industrial</strong>
+                        </div>
+                    </div>
+
+                    <div class="resumen-item">
+                        <div class="resumen-icono">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+
+                        <div>
+                            <span>Tipo de usuario</span>
+                            <strong>Representante</strong>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="info-box">
+                    <i class="fa-solid fa-circle-info"></i>
+
+                    <p>
+                        Tu empresa ya forma parte del Parque Industrial.
+                        Podés comenzar a gestionar tus proyectos y habilitaciones.
+                    </p>
+                </div>
+            </div>
+
+            <div class="acciones-card">
+                <h2>Acciones rápidas</h2>
+
+                <a href="#" class="accion-item">
+                    <div>
+                        <i class="fa-solid fa-file-lines"></i>
+                        <span>Ver constancia de radicación</span>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+
+                <a th:href="@{/solicitud-radicacion}" class="accion-item">
+                    <div>
+                        <i class="fa-solid fa-clipboard-list"></i>
+                        <span>Ver detalles de mi solicitud</span>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+
+                <a th:href="@{/proyectos}" class="accion-item">
+                    <div>
+                        <i class="fa-solid fa-briefcase"></i>
+                        <span>Ir a mis proyectos</span>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+
+                <a href="#" class="accion-item">
+                    <div>
+                        <i class="fa-solid fa-pen"></i>
+                        <span>Actualizar datos de la empresa</span>
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right"></i>
+                </a>
+
+            </div>
+
+        </section>
 
     </div>
 
     <div class="aviso-pendiente" th:unless="${empresa != null}">
-        <div class="aviso-icono">⚠️</div>
+        <div class="aviso-icono">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+
         <div class="aviso-texto">
             <h3>Sin empresa vinculada</h3>
-            <p th:text="${mensaje}"></p>
+            <p th:text="${mensaje}">No tienes una empresa asignada en el sistema.</p>
             <p>Actualmente no tienes una empresa asignada en el sistema.</p>
         </div>
     </div>
