@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SolicitudService {
 
+    private final NotificacionService notificacionService;
+
     private final SolicitudRadicacionRepository solicitudRadicacionRepository;
     private final SolicitudProyectoRepository solicitudProyectoRepository;
 
@@ -94,6 +96,19 @@ public class SolicitudService {
         // LIMPIAR MOTIVO ANTERIOR
         solicitud.setMotivoRechazo(null);
 
+        //NOTIFICACION A GERENTE
+        List<Usuario> gerentes = usuarioRepository.findByRol(NombreRol.ROL_GERENTE);
+        for (Usuario gerente : gerentes) {
+            notificacionService.crearNotificacion(
+                    "Nueva solicitud de radicación de: " + solicitud.getRazonSocial(),
+                    gerente
+            );
+        }
+
+        notificacionService.crearNotificacion(
+                "Tu solicitud fue enviada para la evaluacion de la gerencia del parque industrial",
+                usuario
+        );
 
         solicitudRadicacionRepository.save(solicitud);
     }
@@ -104,6 +119,17 @@ public class SolicitudService {
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
         // Cambiar estado a pendiente_proyecto
         solicitud.setEstado(EstadoSolicitud.PENDIENTE_PROYECTO);
+
+        Usuario usuario = usuarioRepository
+                .findByCuit(solicitud.getUsuario().getCuit())
+                .orElseThrow(() -> new RuntimeException("Usuario No encontrado"));
+
+        notificacionService.crearNotificacion(
+                "Tu solicitud de radicación fue aprobada. Ahora debes presentar un proyecto",
+                usuario
+
+        );
+
         solicitudRadicacionRepository.save(solicitud);
     }
 
@@ -257,6 +283,11 @@ public class SolicitudService {
         solicitud.setEstado(EstadoSolicitud.RECHAZADA);
         solicitud.setMotivoRechazo(motivo);
         solicitudRadicacionRepository.save(solicitud);
+
+        notificacionService.crearNotificacion(
+                "Tu solicitud de radicación fue rechazada. Motivo: " + motivo,
+                solicitud.getUsuario()
+        );
         // Si se rechaza se puede desactivar el usuario
 //        Usuario usuario = solicitud.getUsuario();
 //        usuario.desactivar();
@@ -299,6 +330,10 @@ public class SolicitudService {
                 .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
         solicitud.setEstado(EstadoSolicitud.REQUIERE_MODIFICACION);
         solicitud.setMotivoRechazo(motivo);
+        notificacionService.crearNotificacion(
+                "Tu solicitud requiere modificaciones. Motivo: " + motivo,
+                solicitud.getUsuario()
+        );
         solicitudRadicacionRepository.save(solicitud);
     }
 

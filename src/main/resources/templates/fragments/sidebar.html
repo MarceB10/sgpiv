@@ -192,6 +192,17 @@
         </th:block>
 
 
+        <!-- NOTIFICACIONES -->
+
+        <a th:href="@{/notificaciones}" th:classappend="${activePage == 'notificaciones'} ? 'active'">
+            <i class="fa-solid fa-bell"></i> Notificaciones
+            <span th:if="${notificacionesNoLeidas > 0}" th:text="${notificacionesNoLeidas}"
+                  style="margin-left:auto; background:#ef4444; color:white; border-radius:10px; padding:1px 7px; font-size:11px;">
+            </span>
+        </a>
+
+        <!-- NOTIFICACIONES -->
+
 
         <!-- Boton cerrar sesion -->
         <div class="logout-container">
