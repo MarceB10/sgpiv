@@ -60,6 +60,12 @@ public class ProyectoResponseDTO {
             this.cuitEmpresa        = p.getEmpresa().getCuit();
         }
 
+//        if (p.getRepresentanteEmpresa() != null) {
+//            this.nombreRepresentante   = p.getRepresentanteEmpresa().getUsuario().getNombre();
+//            this.apellidoRepresentante = p.getRepresentanteEmpresa().getUsuario().getApellido();
+//            this.cuitRepresentante     = p.getRepresentanteEmpresa().getUsuario().getCuit();
+//        }
+
         for (Tarea t : p.getTareas()) {
             this.tareas.add(new TareaResponseDTO(t));
         }
