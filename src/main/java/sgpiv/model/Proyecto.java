@@ -101,7 +101,7 @@ public class Proyecto {
                 progreso++;
             }
         }
-        return progreso / this.tareas.size();
+        return 100 * (progreso / this.tareas.size());
     }
 
     public long cantTareasCompletadas(){

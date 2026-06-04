@@ -24,6 +24,8 @@ public class OcupacionLoteService {
     private final LoteRepository loteRepository;
     private final EmpresaRepository empresaRepository;
 
+    private final NotificacionService notificacionService;
+
     private final ProyectoService proyectoService;
 
 
@@ -62,6 +64,12 @@ public class OcupacionLoteService {
         empresaRepository.save(proyecto.getEmpresa());
         OcupacionLote ocupacionLote = new OcupacionLote(proyecto, lote, LocalDate.now());
         ocupacionLoteRepository.save(ocupacionLote);
+
+        notificacionService.crearNotificacion(
+                "Se te ha adjudicado un Lote: \n" +
+                        "Ubicacion: " + lote.getUbicacion(),
+                proyecto.getRepresentanteEmpresa().getUsuario()
+        );
     }
 
 
