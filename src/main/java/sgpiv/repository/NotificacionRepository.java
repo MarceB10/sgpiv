@@ -12,3 +12,4 @@ public interface NotificacionRepository extends JpaRepository<Notificacion, Long
 
     long countByUsuarioAndLeidaFalse(Usuario usuario);
 }
+

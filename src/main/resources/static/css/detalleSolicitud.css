@@ -8,15 +8,17 @@
 body {
     background: #f4f6f9;
     display: flex;
+    overflow-x: hidden;
 }
 
 .main-content {
     margin-left: 250px;
-    width: 100%;
+    width: calc(100vw - 250px);
     padding: 35px;
     display: flex;
     flex-direction: column;
     gap: 24px;
+    overflow-x: hidden;
 }
 
 /* HEADER */
@@ -77,6 +79,8 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 16px;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 .dato-item {
@@ -111,32 +115,34 @@ body {
 /* ACCIONES */
 /* ========================= */
 
-.acciones{
-
-    display:flex;
-    flex-direction:column;
-
-    gap:24px;
-
-    margin-top:10px;
-    margin-bottom:30px;
-
+.acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 100%;
 }
 
 /* CADA BLOQUE */
 
-.accion-grupo{
-
-    background:white;
-
-    border-radius:18px;
-
-    padding:24px;
-
-    box-shadow:0 4px 12px rgba(0,0,0,0.06);
-
+.accion-grupo {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    width: 100%;
+    max-width: 100%;
 }
-
+.accion-titulo {
+    font-size: 16px;
+    color: #0f172a;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 /* FORMULARIOS */
 
 .accion-grupo form{
@@ -147,7 +153,11 @@ body {
     gap:16px;
 
 }
-
+.accion-grupo p {
+    color: #475569;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
 /* TEXTAREA */
 
 .input-motivo{
@@ -190,33 +200,19 @@ body {
 .btn-modificar,
 .btn-adjudicar,
 .btn-cerrar{
-
     border:none;
-
     border-radius:14px;
-
     padding:14px 22px;
-
     font-size:15px;
-
     font-weight:700;
-
     cursor:pointer;
-
     transition:0.2s ease;
-
     text-decoration:none;
-
     display:inline-flex;
-
     align-items:center;
-
     justify-content:center;
-
     gap:10px;
-
     width:fit-content;
-
 }
 
 /* HOVER GENERAL */
@@ -272,18 +268,18 @@ body {
 
 }
 
-.btn-adjudicar{
+/*.btn-adjudicar{*/
 
-    background:#2563eb;
-    color:white;
+/*    background:#2563eb;*/
+/*    color:white;*/
 
-}
+/*}*/
 
-.btn-adjudicar:hover{
+/*.btn-adjudicar:hover{*/
 
-    background:#1d4ed8;
+/*    background:#1d4ed8;*/
 
-}
+/*}*/
 
 .btn-cerrar{
 
@@ -298,46 +294,46 @@ body {
 
 }
 
-/* LOTE */
+/*!* LOTE *!*/
 
-.lote-badge{
+/*.lote-badge{*/
 
-    background:#f0fdf4;
+/*    background:#f0fdf4;*/
 
-    border:1px solid #10b981;
+/*    border:1px solid #10b981;*/
 
-    color:#065f46;
+/*    color:#065f46;*/
 
-    padding:16px 18px;
+/*    padding:16px 18px;*/
 
-    border-radius:14px;
+/*    border-radius:14px;*/
 
-    font-size:15px;
+/*    font-size:15px;*/
 
-    font-weight:600;
+/*    font-weight:600;*/
 
-    margin-top:10px;
+/*    margin-top:10px;*/
 
-}
+/*}*/
 
-.lote-badge.sin-lote{
+/*.lote-badge.sin-lote{*/
 
-    background:#fef9c3;
+/*    background:#fef9c3;*/
 
-    border-color:#f59e0b;
+/*    border-color:#f59e0b;*/
 
-    color:#854d0e;
+/*    color:#854d0e;*/
 
-}
+/*}*/
 
-/* BOTON DESHABILITADO */
+/*!* BOTON DESHABILITADO *!*/
 
-.btn-aprobar.deshabilitado{
+/*.btn-aprobar.deshabilitado{*/
 
-    background:#94a3b8;
+/*    background:#94a3b8;*/
 
-    opacity:0.7;
+/*    opacity:0.7;*/
 
-    cursor:not-allowed;
+/*    cursor:not-allowed;*/
 
-}
+/*}*/

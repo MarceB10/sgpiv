@@ -31,4 +31,17 @@ public class NotificacionService {
         notificaciones.forEach(n -> n.setLeida(true));
         notificacionRepository.saveAll(notificaciones);
     }
+
+    /**
+     * Marca una notificación individual como leída.
+     * Sólo la marca si pertenece al usuario de la sesión (seguridad básica).
+     */
+    public void marcarLeida(Long id, Usuario usuario) {
+        notificacionRepository.findById(id).ifPresent(n -> {
+            if (n.getUsuario().getId().equals(usuario.getId())) {
+                n.setLeida(true);
+                notificacionRepository.save(n);
+            }
+        });
+    }
 }

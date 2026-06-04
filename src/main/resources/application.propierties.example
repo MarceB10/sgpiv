@@ -39,13 +39,5 @@ server.port=8080
 #    background:#2563eb;
 #}
 
-# --- Mailtrap ---
-#spring.mail.host=sandbox.smtp.mailtrap.io
-#spring.mail.port=2525
-#spring.mail.username=91cbfe530bec26
-#spring.mail.password=e57398690ef7a3
-#spring.mail.properties.mail.smtp.auth=true
-#spring.mail.properties.mail.smtp.starttls.enable=true
-
-#mail.from=noreply@sgpiv.com
-
+database usada
+spring.datasource.url=jdbc:h2:file:./data/sgpiv2

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import sgpiv.dtos.response.UsuarioResponseDTO;
-import sgpiv.model.Usuario;
 import sgpiv.repository.UsuarioRepository;
 import sgpiv.service.NotificacionService;
 
@@ -35,6 +34,8 @@ public class NotificacionInterceptor implements HandlerInterceptor {
 
         usuarioRepository.findByCuit(usuarioDTO.getCuit()).ifPresent(usuario -> {
             long noLeidas = notificacionService.contarNoLeidas(usuario);
+
+            modelAndView.addObject("usuario", usuarioDTO);
             modelAndView.addObject("notificacionesNoLeidas", noLeidas);
             modelAndView.addObject("notificaciones", notificacionService.obtenerNotificaciones(usuario));
         });

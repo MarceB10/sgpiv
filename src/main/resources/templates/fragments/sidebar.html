@@ -37,14 +37,24 @@
 
         <!-- ROL_GERENTE -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'}">
+
+            <!--Gestion de infraestructuras-->
+            <a th:href="@{/infraestructuras}"
+               th:classappend="${pagina == 'infraestructuras'} ? ' active' : ''">
+                <span>🛠️</span>
+                Gestión de Infraestructura
+            </a>
+            <!--Empresas del parque a gestionar-->
             <a th:href="@{/empresas}"
                th:classappend="${pagina == 'empresas'} ? ' active' : ''">
                 <i class="fa-solid fa-building"></i> Empresas
             </a>
+            <!--Usuarios del parque a gestionar-->
             <a th:href="@{/gerente/usuarios}"
                th:classappend="${pagina == 'usuarios'} ? ' active' : ''">
                 <i class="fa-solid fa-users"></i> Usuarios
             </a>
+            <!--Lotes del parque a gestionar-->
             <a th:href="@{/gerente/lotes}"
                th:classappend="${pagina == 'lotes'} ? ' active' : ''">
                 <i class="fa-solid fa-map-location-dot"></i> Lotes
@@ -58,14 +68,65 @@
 
         <!-- ROL_REPRESENTANTE_EMPRESA -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">
+
             <a th:href="@{/empresas/mi-empresa}"
                th:classappend="${pagina == 'mi-empresa'} ? ' active' : ''">
                 <i class="fa-solid fa-industry"></i> Mi Empresa
             </a>
-            <a th:href="@{/solicitudRadicacion}"
+
+            <!-- Solicitud inicial -->
+            <a th:if="${solicitudActiva == null}"
+               th:href="@{/solicitudRadicacion}"
                th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
                 <i class="fa-solid fa-file-signature"></i> Solicitud de Radicación
             </a>
+
+            <a th:if="${solicitudActiva != null}"
+               th:href="@{/miSolicitud}"
+               th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
+                <i class="fa-solid fa-clock"></i> Ver mi solicitud
+            </a>
+
+            <!-- Proyecto productivo -->
+            <th:block th:if="${solicitudProyectoActiva != null}">
+
+                <!-- REQUIERE MODIFICACION -->
+                <a th:if="${solicitudProyectoActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
+                   th:href="@{/solicitudProyecto}"
+                   th:classappend="${pagina == 'solicitud-proyecto'} ? ' active' : ''">
+                    <i class="fa-solid fa-pen-to-square"></i> Modificar proyecto
+                </a>
+
+                <!-- RECHAZADO -->
+                <a th:if="${solicitudProyectoActiva.estado.name() == 'RECHAZADA'}"
+                   th:href="@{/miProyecto}"
+                   th:classappend="${pagina == 'mi-proyecto'} ? ' active' : ''">
+                    <i class="fa-solid fa-folder-open"></i> Ver mi proyecto
+                </a>
+
+                <!-- PENDIENTE o EN_REVISION -->
+                <a th:if="${solicitudProyectoActiva.estado.name() == 'PENDIENTE' or solicitudProyectoActiva.estado.name() == 'EN_REVISION'}"
+                   th:href="@{/miProyecto}"
+                   th:classappend="${pagina == 'mi-proyecto'} ? ' active' : ''">
+                    <i class="fa-solid fa-folder-open"></i> Ver mi proyecto
+                </a>
+
+                <!-- APROBADA → no mostrar nada, porque ya se crea la empresa -->
+            </th:block>
+
+            <!-- Si la solicitud inicial fue aceptada y aún no presentó proyecto -->
+            <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO' and solicitudProyectoActiva == null}"
+               th:href="@{/solicitudProyecto}"
+               th:classappend="${pagina == 'solicitud-proyecto'} ? ' active' : ''">
+                <i class="fa-solid fa-folder-plus"></i> Presentar proyecto
+            </a>
+
+            <!--Lista de proyectos-->
+            <a th:href="@{/empresas/proyectos}"
+               th:classappend="${pagina == 'proyectos-empresa'} ? ' active' : ''">
+                <i class="fa-solid fa-diagram-project"></i> Mis Proyectos
+            </a>
+
         </th:block>
 
         <!-- ROL_PROVEEDOR -->
@@ -91,77 +152,77 @@
             <a th:if="${solicitudActiva == null}"
                th:href="@{/solicitudRadicacion}"
                th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
-
                 <i class="fa-solid fa-file-signature"></i>
                 Solicitud de Radicación
-
             </a>
 
-            <!-- SOLICITUD NORMAL -->
-            <a th:if="${solicitudActiva != null
-            and solicitudActiva.estado.name() != 'REQUIERE_MODIFICACION'}"
-               th:href="@{/miSolicitud}"
-               th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
-
-                <i class="fa-solid fa-clock"></i>
-                Ver mi solicitud
-
-            </a>
-
-            <!-- REQUIERE MODIFICACION -->
-            <a th:if="${solicitudActiva != null
-            and solicitudActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
+            <!-- REQUIERE MODIFICACION → solo mostrar Modificar -->
+            <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
                th:href="@{/solicitudRadicacion}"
                th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
-
                 <i class="fa-solid fa-pen-to-square"></i>
                 Modificar solicitud
-
             </a>
 
+            <!-- RECHAZADA → solo mostrar Ver mi solicitud -->
+            <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'RECHAZADA'}"
+               th:href="@{/miSolicitud}"
+               th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
+                <i class="fa-solid fa-clock"></i>
+                Ver mi solicitud
+            </a>
+
+            <!-- CUALQUIER OTRO ESTADO (PENDIENTE, EN_REVISION, APROBADA, PENDIENTE_PROYECTO) → Ver mi solicitud -->
+            <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() != 'REQUIERE_MODIFICACION' and solicitudActiva.estado.name() != 'RECHAZADA'}"
+               th:href="@{/miSolicitud}"
+               th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
+                <i class="fa-solid fa-clock"></i>
+                Ver mi solicitud
+            </a>
+
+            <!-- ACEPTADA → puede presentar proyecto -->
+            <th:block th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO'}">
+
+                <!-- Si NO presentó proyecto -->
+                <a th:if="${solicitudProyectoActiva == null}"
+                   th:href="@{/solicitudProyecto}"
+                   th:classappend="${pagina == 'solicitud-proyecto'} ? ' active' : ''">
+                    <i class="fa-solid fa-folder-plus"></i>
+                    Presentar proyecto
+                </a>
+
+                <!-- Si YA presentó proyecto -->
+                <a th:if="${solicitudProyectoActiva != null}"
+                   th:href="@{/solicitudProyecto/miSolicitudProyecto}"
+                   th:classappend="${pagina == 'mi-proyecto'} ? ' active' : ''">
+                    <i class="fa-solid fa-folder-open"></i>
+                    Ver mi proyecto
+                </a>
+            </th:block>
         </th:block>
 
-        <!-- CAMPANITA DE NOTIFICACIONES -->
-        <div style="position: relative;">
-            <a href="#" onclick="toggleNotificaciones(event)" style="position: relative; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-bell"></i> Notificaciones
-                <span id="badge-notificaciones"
-                      th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}"
-                      th:text="${notificacionesNoLeidas}"
-                      style="background: red; color: white; border-radius: 50%; padding: 2px 7px; font-size: 12px; font-weight: bold;">
-        </span>
+
+        <!-- NOTIFICACIONES -->
+
+        <a th:href="@{/notificaciones}" th:classappend="${activePage == 'notificaciones'} ? 'active'">
+            <i class="fa-solid fa-bell"></i> Notificaciones
+            <span th:if="${notificacionesNoLeidas > 0}" th:text="${notificacionesNoLeidas}"
+                  style="margin-left:auto; background:#ef4444; color:white; border-radius:10px; padding:1px 7px; font-size:11px;">
+            </span>
+        </a>
+
+        <!-- NOTIFICACIONES -->
+
+
+        <!-- Boton cerrar sesion -->
+        <div class="logout-container">
+
+            <a th:href="@{/cerrarSesion}" class="logout-link">
+                <i class="fa fa-sign-out"> </i>
+                Cerrar Sesión
+
             </a>
-
-            <div id="dropdown-notificaciones"
-                 style="display:none; position: absolute; left: 0; top: 100%; background: white; color: black;
-                border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); width: 200px; z-index: 999; padding: 10px;">
-                <p style="font-weight: bold; margin-bottom: 8px;">Notificaciones</p>
-                <div th:each="notif : ${notificaciones}" style="border-bottom: 1px solid #eee; padding: 6px 0;">
-                    <p th:text="${notif.mensaje}" style="margin: 0; font-size: 13px;"></p>
-                </div>
-                <div th:if="${#lists.isEmpty(notificaciones)}">
-                    <p style="font-size: 13px;">No tenés notificaciones.</p>
-                </div>
-            </div>
         </div>
-
-        <script>
-            function toggleNotificaciones(e) {
-             e.preventDefault();
-             var d = document.getElementById('dropdown-notificaciones');
-             if (d.style.display === 'none') {
-                 d.style.display = 'block';
-                 // Marcar como leídas
-                 fetch('/notificaciones/marcar-leidas', { method: 'POST' });
-                  // Quitar el numerito
-                 var badge = document.getElementById('badge-notificaciones');
-                 if (badge) badge.style.display = 'none';
-                 } else {
-                         d.style.display = 'none';
-    }
-}
-        </script>
-
     </div>
 
 </div>

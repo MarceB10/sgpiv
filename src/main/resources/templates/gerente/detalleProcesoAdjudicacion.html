@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Detalle de Proyecto</title>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/detalleSolicitud.css}"/>
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-text">
+            <h1>Detalle de Proyecto</h1>
+            <p>Revisá los datos del proyecto productivo y adjudicá un lote</p>
+        </div>
+        <button onclick="window.history.back()" class="btn-volver">← Volver</button>
+    </div>
+
+    <!-- SECCION: DATOS GENERALES -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">📋 Datos generales</h2>
+        <div class="datos-grid">
+
+            <div class="dato-item">
+                <span class="dato-label">Nombre</span>
+                <span class="dato-valor" th:text="${proyecto.titulo}">-</span>
+            </div>
+
+            <div class="dato-item full-width">
+                <span class="dato-label">Descripción</span>
+                <span class="dato-valor" th:text="${proyecto.descripcion}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Objetivo</span>
+                <span class="dato-valor" th:text="${proyecto.objetivo}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Rubro</span>
+                <span class="dato-valor" th:text="${proyecto.rubro}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Inversión estimada</span>
+                <span class="dato-valor" th:text="${proyecto.inversionEstimada} + ' $'">-</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SECCION: EMPRESA Y REPRESENTANTE -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">🏢 Empresa y representante</h2>
+        <div class="datos-grid">
+
+            <div class="dato-item">
+                <span class="dato-label">Razón social</span>
+                <span class="dato-valor" th:text="${proyecto.razonSocialEmpresa}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">CUIT empresa</span>
+                <span class="dato-valor" th:text="${proyecto.cuitEmpresa}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Representante</span>
+                <span class="dato-valor"
+                      th:text="${proyecto.nombreRepresentante + ' ' + proyecto.apellidoRepresentante}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">CUIT representante</span>
+                <span class="dato-valor" th:text="${proyecto.cuitRepresentante}">-</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SECCION: ACTIVIDADES -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">🏭 Actividades</h2>
+        <div class="datos-grid">
+
+            <div class="dato-item">
+                <span class="dato-label">Actividad principal</span>
+                <span class="dato-valor" th:text="${proyecto.actividadPrincipal}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Actividad secundaria</span>
+                <span class="dato-valor"
+                      th:text="${proyecto.actividadSecundaria != null ? proyecto.actividadSecundaria : '-'}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Personal a ocupar</span>
+                <span class="dato-valor" th:text="${proyecto.personalAOcupar} + ' personas'">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Tiempo de radicación</span>
+                <span class="dato-valor" th:text="${proyecto.tiempoDeRadicacion} + ' meses'">-</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SECCION: SUPERFICIES -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">📐 Superficies</h2>
+        <div class="datos-grid">
+
+            <div class="dato-item">
+                <span class="dato-label">Trabajo cubierto</span>
+                <span class="dato-valor" th:text="${proyecto.supCubiertaTrabajoM2} + ' m²'">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Depósito cubierto</span>
+                <span class="dato-valor" th:text="${proyecto.supCubiertaDepositoM2} + ' m²'">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Expansión</span>
+                <span class="dato-valor"
+                      th:text="${proyecto.supExpansionM2 != null ? proyecto.supExpansionM2 + ' m²' : '-'}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Tiene planos</span>
+                <span class="dato-valor" th:text="${proyecto.tienePlanos ? 'Sí' : 'No'}">-</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SECCION: RESIDUOS -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">♻️ Residuos</h2>
+        <div class="datos-grid">
+
+            <div class="dato-item">
+                <span class="dato-label">Genera residuos</span>
+                <span class="dato-valor" th:text="${proyecto.generaResiduos ? 'Sí' : 'No'}">-</span>
+            </div>
+
+            <div class="dato-item full-width" th:if="${proyecto.generaResiduos}">
+                <span class="dato-label">Descripción de residuos</span>
+                <span class="dato-valor" th:text="${proyecto.descripcionResiduos}">-</span>
+            </div>
+
+            <div class="dato-item">
+                <span class="dato-label">Producción estimada</span>
+                <span class="dato-valor"
+                      th:text="${proyecto.produccionEstimada != null ? proyecto.produccionEstimada : '-'}">-</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SECCION: TAREAS -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">📌 Tareas del proyecto</h2>
+
+        <div th:if="${#lists.isEmpty(proyecto.tareas)}" class="dato-valor">
+            No hay tareas cargadas
+        </div>
+
+        <div th:each="tarea : ${proyecto.tareas}" class="tarea-item">
+            <div class="dato-item">
+                <span class="dato-label">Título</span>
+                <span class="dato-valor" th:text="${tarea.titulo}">-</span>
+            </div>
+            <div class="dato-item full-width">
+                <span class="dato-label">Descripción</span>
+                <span class="dato-valor" th:text="${tarea.descripcion}">-</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCIONES -->
+    <div class="acciones">
+
+        <button onclick="window.history.back()" class="btn-cerrar">
+            Cerrar
+        </button>
+
+        <!-- LOTE SELECCIONADO -->
+        <div th:if="${session.loteSeleccionado != null}" class="lote-badge">
+            ✅ Lote #<span th:text="${session.loteSeleccionado.id}"></span>
+            — <span th:text="${session.loteSeleccionado.ubicacion}"></span>
+            (<span th:text="${session.loteSeleccionado.superficie}"></span> m²)
+            seleccionado
+        </div>
+        <div th:if="${session.loteSeleccionado == null}" class="lote-badge sin-lote">
+            ⚠️ No hay lote seleccionado — adjudicá uno antes de confirmar
+        </div>
+
+        <!-- BOTON SELECCIONAR LOTE -->
+        <a th:href="@{/gerente/proyectos/{id}/adjudicarLote(id=${proyecto.id})}"
+           class="btn-adjudicar">
+            <i class="fa-solid fa-map-pin"></i> Seleccionar lote
+        </a>
+
+        <!-- BOTON CONFIRMAR ADJUDICACION -->
+        <form th:if="${session.loteSeleccionado != null}"
+              th:action="@{/gerente/proyectos/{id}/confirmarLote(id=${proyecto.id})}"
+              method="post">
+            <button type="submit" class="btn-aprobar">
+                <i class="fa-solid fa-check"></i> Confirmar adjudicación
+            </button>
+        </form>
+
+        <button th:if="${session.loteSeleccionado == null}"
+                class="btn-aprobar deshabilitado"
+                disabled>
+            Confirmar adjudicación (seleccioná un lote primero)
+        </button>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -7,48 +7,17 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-//            throws Exception {
-//
-//        http
-//
-//                .authorizeHttpRequests(auth -> auth
-//                        //Aca abajo habilitas los html como publicos
-//                        .requestMatchers(
-//                                "/login",
-//                                "/registro",
-//                                "/css/**"
-//                        ).permitAll()
-//
-//                        .anyRequest().authenticated()
-//                )
-//
-//                .formLogin(form -> form
-//
-//                        .loginPage("/login")
-//
-//                        .defaultSuccessUrl("/empresas", true)
-//
-//                        .permitAll()
-//                )
-//
-//                .logout(logout -> logout.permitAll());
-//
-//        return http.build();
-//    }
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http
-            .authorizeHttpRequests(auth -> auth
-                    .anyRequest().permitAll()
-            )
-            .csrf(csrf -> csrf.disable())
-            .headers(headers -> headers
-                    .frameOptions(frame -> frame.disable())
-            );
-    return http.build();
-}
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                )
+                .csrf(csrf -> csrf.disable())
+                .headers(headers -> headers
+                        .frameOptions(frame -> frame.disable())
+                );
+        return http.build();
+    }
 
 }

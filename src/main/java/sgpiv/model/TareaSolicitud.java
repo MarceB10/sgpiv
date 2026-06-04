@@ -2,9 +2,7 @@ package sgpiv.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "tareaSolicitud")
@@ -21,15 +19,17 @@ public class TareaSolicitud {
     @NotBlank
     private String descripcion;
 
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne
-    @JoinColumn(name = "solicitud_id")
-    private SolicitudRadicacion solicitud;
+    @JoinColumn(name = "solicitud_proyecto_id")
+    private SolicitudProyecto solicitudProyecto;
 
 
-    public TareaSolicitud(String titulo, String descripcion, SolicitudRadicacion solicitud){
+    public TareaSolicitud(String titulo, String descripcion, SolicitudProyecto solicitud){
         this.titulo = titulo;
         this.descripcion = descripcion;
-        this.solicitud = solicitud;
+        this.solicitudProyecto = solicitud;
     }
 
 }

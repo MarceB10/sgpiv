@@ -8,8 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import sgpiv.enums.EstadoProyecto;
+import sgpiv.enums.ServicioLote;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +37,42 @@ public class Proyecto {
     @Enumerated(EnumType.STRING)
     private EstadoProyecto estadoProyecto;
 
+    private String objetivo;
+    private String rubro;
+    private String actividadPrincipal;
+    private String actividadSecundaria;
+    private BigDecimal inversionEstimada;
+    private String produccionEstimada;
+
+    private Double supCubiertaTrabajoM2;
+    private Double supCubiertaDepositoM2;
+    private Double supExpansionM2;
+
+    private Boolean tienePlanos;
+
+    // Residuos
+    private boolean generaResiduos;
+    private String descripcionResiduos;
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    private List<ServicioLote> serviciosRequeridos = new ArrayList<>();
+
     @NotNull(message = "La fecha de inicio del proyecto no puede estar vacia")
     private LocalDate fechaInicio;
+
+    private Integer tiempoDeRadicacion;
 
     private LocalDate fechaFin; // sino no hay fecha fin entonces no termino
 
     @Min(value = 1, message = "minimo 1 persona debe trabajar en el proyecto")
-    private Long personalAOcupar;
+    private Integer personalAOcupar;
 
     @OneToMany(mappedBy = "proyecto", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Tarea> tareas = new ArrayList<>();
+
+    @NotNull
+    private Double necesidadM2;
 
     @ManyToOne
     @JoinColumn(name = "empresa_id")
@@ -54,7 +82,7 @@ public class Proyecto {
     @JoinColumn(name = "representante_id")
     private RepresentanteEmpresa representanteEmpresa;
 
-    public Proyecto(String titulo, String descripcion, LocalDate fechaInicio, Long personalAOcupar){
+    public Proyecto(String titulo, String descripcion, LocalDate fechaInicio, Integer personalAOcupar){
 
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -76,6 +104,11 @@ public class Proyecto {
         return progreso / this.tareas.size();
     }
 
+    public long cantTareasCompletadas(){
+
+        return this.tareas.stream().filter(Tarea ::isCompleta).count();
+    }
+
     public void borrarTarea(Tarea tarea){
         this.tareas.remove(tarea);
     }
@@ -91,6 +124,12 @@ public class Proyecto {
         return this.tareas;
     }
 
+
+    public void agregarServiciosRequeridos(List<ServicioLote> serviciosRequeridos){
+        this.serviciosRequeridos.addAll(serviciosRequeridos);
+    }
+
+
     public void iniciarProyecto(){
         this.estadoProyecto = EstadoProyecto.ACTIVO;
     }
@@ -99,6 +138,7 @@ public class Proyecto {
         this.fechaFin = fechaFin;
         this.estadoProyecto = EstadoProyecto.COMPLETADO;
     }
+
 
     public void modificarTiulo(String titulo){
         this.titulo = titulo;
@@ -114,7 +154,7 @@ public class Proyecto {
 
 
 
-    public void modificarCantPersonal(Long personalAOcupar){
+    public void modificarCantPersonal(Integer personalAOcupar){
         this.personalAOcupar = personalAOcupar;
     }
 
@@ -122,4 +162,6 @@ public class Proyecto {
     public void agregarTareas(List<Tarea> tareasProyecto) {
         this.tareas.addAll(tareasProyecto);
     }
+
+
 }

@@ -30,6 +30,7 @@
         <h3>No hay lotes disponibles</h3>
         <p>No se encontraron lotes con superficie mayor o igual a
             <strong th:text="${superficie} + ' m²'"></strong>.
+            o con los servicios requeridos
         </p>
     </div>
 
@@ -54,6 +55,18 @@
                         <span class="dato-label">Precio</span>
                         <span class="dato-valor" th:text="'$' + ${lote.precio}"></span>
                     </div>
+
+                    <div class="dato">
+                        <span class="dato-label">Servicios</span>
+                            <div class="services-list">
+                                <span
+                                    th:each="servicio : ${lote.servicios}"
+                                    th:text="${servicio}"
+                                    class="service-badge">
+                                </span>
+                        </div>
+                    </div>
+
                     <div class="dato">
                         <span class="dato-label">Restricciones</span>
                         <span class="dato-valor"
@@ -63,7 +76,7 @@
             </div>
 
             <div class="lote-card-footer">
-                <a th:href="@{/gerente/lotes/seleccionar/{idLote}(idLote=${lote.id}, idSolicitud=${idSolicitud})}"
+                <a th:href="@{/gerente/lotes/seleccionar/{idLote}(idLote=${lote.id}, idProyecto=${idProyecto})}"
                    class="btn-adjudicar">
                     Adjudicar Lote
                 </a>

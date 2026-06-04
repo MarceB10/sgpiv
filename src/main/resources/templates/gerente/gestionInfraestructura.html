@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Infraestructura</title>
+
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/gestionInfraestructura.css}">
+</head>
+<body>
+
+<!-- SIDEBAR EXISTENTE -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<main class="main-content">
+
+    <!-- HEADER -->
+    <section class="page-header">
+        <div>
+            <h1>Gestión de Infraestructura</h1>
+            <p>Administre y supervise las infraestructuras físicas del Parque Industrial.</p>
+        </div>
+
+        <a th:href="@{/infraestructuras/nueva}" class="btn-primary">
+            + Nueva infraestructura
+        </a>
+    </section>
+
+    <!-- CARDS RESUMEN -->
+    <section class="cards-resumen">
+
+        <article class="card">
+            <div class="card-icon blue">🏭</div>
+            <div>
+                <h3>Total de infraestructuras</h3>
+                <h2 th:text="${totalInfraestructuras}">0</h2>
+                <p>Activos registrados</p>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-icon green">✅</div>
+            <div>
+                <h3>Operativas</h3>
+                <h2 th:text="${infraestructurasOperativas}">0</h2>
+                <p>Funcionando normalmente</p>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-icon yellow">🔧</div>
+            <div>
+                <h3>En mantenimiento</h3>
+                <h2 th:text="${infraestructurasMantenimiento}">0</h2>
+                <p>Requieren seguimiento</p>
+            </div>
+        </article>
+
+        <article class="card">
+            <div class="card-icon red">⚠️</div>
+            <div>
+                <h3>Fuera de servicio</h3>
+                <h2 th:text="${infraestructurasFueraServicio}">0</h2>
+                <p>Requieren atención urgente</p>
+            </div>
+        </article>
+
+    </section>
+
+    <!-- FILTROS -->
+    <section class="filters">
+
+        <form th:action="@{/infraestructuras}" method="get" class="filter-form">
+
+            <div class="form-group">
+                <label>Buscar</label>
+                <input type="text"
+                       name="buscar"
+                       placeholder="Nombre, sector o ubicación..."
+                       th:value="${buscar}">
+            </div>
+
+            <div class="form-group">
+                <label>Tipo</label>
+                <select name="tipo">
+                    <option value="">Todos</option>
+                    <option value="ELECTRICA" th:selected="${tipo == 'ELECTRICA'}">Eléctrica</option>
+                    <option value="AGUA_POTABLE" th:selected="${tipo == 'AGUA_POTABLE'}">Agua potable</option>
+                    <option value="GAS_NATURAL" th:selected="${tipo == 'GAS_NATURAL'}">Gas natural</option>
+                    <option value="ALUMBRADO_PUBLICO" th:selected="${tipo == 'ALUMBRADO_PUBLICO'}">Alumbrado público</option>
+                    <option value="RED_CLOACAL" th:selected="${tipo == 'RED_CLOACAL'}">Red cloacal</option>
+                    <option value="TELECOMUNICACIONES" th:selected="${tipo == 'TELECOMUNICACIONES'}">Telecomunicaciones</option>
+                    <option value="AGUA_RESIDUAL" th:selected="${tipo == 'AGUA_RESIDUAL'}">Agua residual</option>
+                    <option value="VIAL" th:selected="${tipo == 'VIAL'}">Vial</option>
+                    <option value="SEGURIDAD" th:selected="${tipo == 'SEGURIDAD'}">Seguridad</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Estado</label>
+                <select name="estado">
+                    <option value="">Todos</option>
+                    <option value="OPERATIVA" th:selected="${estado == 'OPERATIVA'}">Operativa</option>
+                    <option value="EN_REVISION" th:selected="${estado == 'EN_REVISION'}">En revisión</option>
+                    <option value="EN_MANTENIMIENTO" th:selected="${estado == 'EN_MANTENIMIENTO'}">En mantenimiento</option>
+                    <option value="REQUIERE_MANTENIMIENTO" th:selected="${estado == 'REQUIERE_MANTENIMIENTO'}">Requiere mantenimiento</option>
+                    <option value="FUERA_DE_SERVICIO" th:selected="${estado == 'FUERA_DE_SERVICIO'}">Fuera de servicio</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Sector</label>
+                <select name="sector">
+                    <option value="">Todos</option>
+                    <option value="Sector A" th:selected="${sector == 'Sector A'}">Sector A</option>
+                    <option value="Sector B" th:selected="${sector == 'Sector B'}">Sector B</option>
+                    <option value="Sector C" th:selected="${sector == 'Sector C'}">Sector C</option>
+                    <option value="Sector D" th:selected="${sector == 'Sector D'}">Sector D</option>
+                    <option value="Sector Este" th:selected="${sector == 'Sector Este'}">Sector Este</option>
+                    <option value="Sector General" th:selected="${sector == 'Sector General'}">Sector General</option>
+                    <option value="Ingreso" th:selected="${sector == 'Ingreso'}">Ingreso</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-filter">Filtrar</button>
+
+        </form>
+
+    </section>
+
+    <!-- TABLA DE INFRAESTRUCTURAS -->
+    <section class="table-section">
+
+        <div class="section-header">
+            <div>
+                <h2>Infraestructuras registradas</h2>
+                <p>Listado general de instalaciones y activos físicos del parque.</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Sector</th>
+                    <th>Ubicación</th>
+                    <th>Estado</th>
+                    <th>Último mantenimiento</th>
+                    <th>Próximo mantenimiento</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <!-- SI NO HAY INFRAESTRUCTURAS -->
+                <tr th:if="${infraestructuras == null or #lists.isEmpty(infraestructuras)}">
+                    <td colspan="8" style="text-align: center; padding: 30px;">
+                        No hay infraestructuras registradas.
+                    </td>
+                </tr>
+
+                <!-- INFRAESTRUCTURAS DESDE LA BASE DE DATOS -->
+                <tr th:each="infraestructura : ${infraestructuras}">
+                    <td>
+                        <div class="infra-name">
+                            <span class="infra-icon" th:switch="${infraestructura.tipo.name()}">
+                                <span th:case="'ELECTRICA'">⚡</span>
+                                <span th:case="'AGUA_POTABLE'">💧</span>
+                                <span th:case="'ALUMBRADO_PUBLICO'">💡</span>
+                                <span th:case="'GAS_NATURAL'">🔥</span>
+                                <span th:case="'TELECOMUNICACIONES'">🌐</span>
+                                <span th:case="'AGUA_RESIDUAL'">🏭</span>
+                                <span th:case="'RED_CLOACAL'">🚰</span>
+                                <span th:case="'VIAL'">🛣️</span>
+                                <span th:case="'SEGURIDAD'">🔒</span>
+                                <span th:case="*">🏭</span>
+                            </span>
+                            <div>
+                                <strong th:text="${infraestructura.nombre}">
+                                    Nombre infraestructura
+                                </strong>
+                                <small th:text="${infraestructura.descripcion}">
+                                    Descripción de la infraestructura
+                                </small>
+                            </div>
+                        </div>
+                    </td>
+                    <td th:text="${infraestructura.tipo}">Tipo</td>
+
+                    <td th:text="${infraestructura.sector}">Sector</td>
+
+                    <td th:text="${infraestructura.ubicacion}">Ubicación</td>
+
+                    <td>
+                        <span class="badge"
+                              th:classappend="${infraestructura.estado.name() == 'OPERATIVA'} ? ' success' :
+                                              (${infraestructura.estado.name() == 'EN_MANTENIMIENTO'} ? ' warning' :
+                                              (${infraestructura.estado.name() == 'REQUIERE_MANTENIMIENTO'} ? ' warning' :
+                                              (${infraestructura.estado.name() == 'FUERA_DE_SERVICIO'} ? ' danger' : ' info')))"
+                              th:text="${infraestructura.estado}">
+                            ESTADO
+                        </span>
+                    </td>
+
+                    <td th:text="${infraestructura.ultimoMantenimiento != null ? #temporals.format(infraestructura.ultimoMantenimiento, 'dd/MM/yyyy') : '-'}">
+                        -
+                    </td>
+
+                    <td th:text="${infraestructura.proximoMantenimiento != null ? #temporals.format(infraestructura.proximoMantenimiento, 'dd/MM/yyyy') : 'Urgente'}">
+                        -
+                    </td>
+
+                    <td>
+                        <div class="actions">
+                            <a th:href="@{/infraestructuras/{id}(id=${infraestructura.id})}"
+                               class="btn-action view">
+                                Ver
+                            </a>
+
+                            <a th:href="@{/infraestructuras/{id}/mantenimiento(id=${infraestructura.id})}"
+                               class="btn-action maintenance">
+                                Mant.
+                            </a>
+
+                            <a th:href="@{/infraestructuras/{id}/editar(id=${infraestructura.id})}"
+                               class="btn-action edit">
+                                Editar
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+
+    <!-- PANEL INFERIOR -->
+    <section class="bottom-panels">
+
+        <article class="panel">
+            <h2>Distribución por tipo</h2>
+
+            <div class="infra-type-list">
+
+                <div>
+                    <span>⚡ Eléctrica</span>
+                    <strong th:text="${cantidadElectricas}">0</strong>
+                </div>
+
+                <div>
+                    <span>💧 Agua potable</span>
+                    <strong th:text="${cantidadAguaPotable}">0</strong>
+                </div>
+
+                <div>
+                    <span>💡 Alumbrado público</span>
+                    <strong th:text="${cantidadAlumbradoPublico}">0</strong>
+                </div>
+
+                <div>
+                    <span>🔥 Gas natural</span>
+                    <strong th:text="${cantidadGasNatural}">0</strong>
+                </div>
+
+                <div>
+                    <span>🌐 Telecomunicaciones</span>
+                    <strong th:text="${cantidadTelecomunicaciones}">0</strong>
+                </div>
+
+                <div>
+                    <span>🏭 Agua residual</span>
+                    <strong th:text="${cantidadAguaResidual}">0</strong>
+                </div>
+
+                <div>
+                    <span>🚰 Red cloacal</span>
+                    <strong th:text="${cantidadRedCloacal}">0</strong>
+                </div>
+
+                <div>
+                    <span>🛣️ Vial</span>
+                    <strong th:text="${cantidadVial}">0</strong>
+                </div>
+
+                <div>
+                    <span>🔒 Seguridad</span>
+                    <strong th:text="${cantidadSeguridad}">0</strong>
+                </div>
+
+            </div>
+        </article>
+
+        <article class="panel">
+            <h2>Alertas recientes</h2>
+
+            <div class="alert-list">
+
+                <div th:if="${infraestructurasFueraServicio == 0 and infraestructurasMantenimiento == 0}"
+                     class="alert info">
+                    <strong>Sin alertas críticas</strong>
+                    <p>Todas las infraestructuras se encuentran operativas o sin novedades importantes.</p>
+                </div>
+
+                <div th:each="infraestructura : ${infraestructuras}"
+                     th:if="${infraestructura.estado.name() == 'FUERA_DE_SERVICIO'}"
+                     class="alert danger">
+                    <strong th:text="${infraestructura.nombre}">Infraestructura</strong>
+                    <p>Se encuentra fuera de servicio. Requiere revisión urgente.</p>
+                </div>
+
+                <div th:each="infraestructura : ${infraestructuras}"
+                     th:if="${infraestructura.estado.name() == 'EN_MANTENIMIENTO' or infraestructura.estado.name() == 'REQUIERE_MANTENIMIENTO'}"
+                     class="alert warning">
+                    <strong th:text="${infraestructura.nombre}">Infraestructura</strong>
+                    <p>Requiere mantenimiento o seguimiento técnico.</p>
+                </div>
+
+            </div>
+        </article>
+
+    </section>
+
+</main>
+
+</body>
+</html>

@@ -2,6 +2,7 @@ package sgpiv.dtos.response;
 
 import lombok.Data;
 import sgpiv.model.Empresa;
+import java.util.List;
 
 @Data
 public class EmpresaResponseDTO {
@@ -12,6 +13,7 @@ public class EmpresaResponseDTO {
     private String email;
     private String direccion;
     private String estadoEmpresa;
+    private List<ProyectoResponseDTO> proyectos;
 
     public EmpresaResponseDTO(Empresa empresa) {
         this.id = empresa.getId();
@@ -21,5 +23,9 @@ public class EmpresaResponseDTO {
         this.email = empresa.getEmail();
         this.direccion = empresa.getDireccion();
         this.estadoEmpresa = empresa.getEstadoEmpresa().name();
+        this.proyectos = empresa.getProyectos()
+                .stream()
+                .map(ProyectoResponseDTO::new)
+                .toList();
     }
 }

@@ -74,9 +74,7 @@
         <span class="dato-label">Descripción de bienes y servicios</span>
         <span class="dato-valor" th:text="${solicitud.descripcionBienServicio}">-</span>
       </div>
-
     </div>
-  </div>
 
   <!-- SECCION: DATOS PROYECTO -->
   <div class="seccion">
@@ -98,37 +96,37 @@
         <span class="dato-valor" th:text="${solicitud.actividadPrincipal}">-</span>
       </div>
 
-      <div class="dato-item">
-        <span class="dato-label">Actividad secundaria</span>
-        <span class="dato-valor"
-              th:text="${solicitud.actividadSecundaria != null ? solicitud.actividadSecundaria : '-'}">-</span>
-      </div>
+<!--      <div class="dato-item">-->
+<!--        <span class="dato-label">Actividad secundaria</span>-->
+<!--        <span class="dato-valor"-->
+<!--              th:text="${solicitud.actividadSecundaria != null ? solicitud.actividadSecundaria : '-'}">-</span>-->
+<!--      </div>-->
 
       <div class="dato-item">
         <span class="dato-label">Necesidad m²</span>
         <span class="dato-valor" th:text="${solicitud.necesidadM2} + ' m²'">-</span>
       </div>
 
-      <div class="dato-item">
-        <span class="dato-label">Superficie de trabajo</span>
-        <span class="dato-valor" th:text="${solicitud.supCubiertaTrabajoM2} + ' m²'">-</span>
-      </div>
+<!--      <div class="dato-item">-->
+<!--        <span class="dato-label">Superficie de trabajo</span>-->
+<!--        <span class="dato-valor" th:text="${solicitud.supCubiertaTrabajoM2} + ' m²'">-</span>-->
+<!--      </div>-->
 
-      <div class="dato-item">
-        <span class="dato-label">Superficie disponible</span>
-        <span class="dato-valor" th:text="${solicitud.supCubiertaDepositoM2} + ' m²'">-</span>
-      </div>
+<!--      <div class="dato-item">-->
+<!--        <span class="dato-label">Superficie disponible</span>-->
+<!--        <span class="dato-valor" th:text="${solicitud.supCubiertaDepositoM2} + ' m²'">-</span>-->
+<!--      </div>-->
 
-      <div class="dato-item">
-        <span class="dato-label">Expansión</span>
-        <span class="dato-valor"
-              th:text="${solicitud.supExpansionM2 != null ? solicitud.supExpansionM2 + ' m²' : '-'}">-</span>
-      </div>
+<!--      <div class="dato-item">-->
+<!--        <span class="dato-label">Expansión</span>-->
+<!--        <span class="dato-valor"-->
+<!--              th:text="${solicitud.supExpansionM2 != null ? solicitud.supExpansionM2 + ' m²' : '-'}">-</span>-->
+<!--      </div>-->
 
-      <div class="dato-item">
-        <span class="dato-label">Personal a ocupar</span>
-        <span class="dato-valor" th:text="${solicitud.personalAOcupar} + ' personas'">-</span>
-      </div>
+<!--      <div class="dato-item">-->
+<!--        <span class="dato-label">Personal a ocupar</span>-->
+<!--        <span class="dato-valor" th:text="${solicitud.personalAOcupar} + ' personas'">-</span>-->
+<!--      </div>-->
 
       <div class="dato-item">
         <span class="dato-label">Tiene planos</span>
@@ -136,43 +134,43 @@
               th:text="${solicitud.tienePlanos ? 'Sí' : 'No'}">-</span>
       </div>
 
-      <div class="dato-item">
-        <span class="dato-label">Tiempo de radicación</span>
-        <span class="dato-valor" th:text="${solicitud.tiempoDeRadicacion} + ' meses'">-</span>
+<!--      <div class="dato-item">-->
+<!--        <span class="dato-label">Tiempo de radicación</span>-->
+<!--        <span class="dato-valor" th:text="${solicitud.tiempoDeRadicacion} + ' meses'">-</span>-->
+<!--      </div>-->
+
+<!--      &lt;!&ndash; SECCION: TAREAS &ndash;&gt;-->
+<!--      <div class="seccion">-->
+<!--        <h2 class="seccion-titulo">📌 Tareas del proyecto</h2>-->
+
+<!--        <div th:if="${#lists.isEmpty(solicitud.tareas)}" class="dato-valor">-->
+<!--          No hay tareas cargadas-->
+<!--        </div>-->
+
+<!--        <div th:each="tarea : ${solicitud.tareas}" class="tarea-item">-->
+<!--          <div class="dato-item">-->
+<!--            <span class="dato-label">Título</span>-->
+<!--            <span class="dato-valor" th:text="${tarea.titulo}">-</span>-->
+<!--          </div>-->
+<!--          <div class="dato-item full-width">-->
+<!--            <span class="dato-label">Descripción</span>-->
+<!--            <span class="dato-valor" th:text="${tarea.descripcion}">-</span>-->
+<!--          </div>-->
+<!--        </div>-->
+
       </div>
 
-      <!-- SECCION: TAREAS -->
-      <div class="seccion">
-        <h2 class="seccion-titulo">📌 Tareas del proyecto</h2>
 
-        <div th:if="${#lists.isEmpty(solicitud.tareas)}" class="dato-valor">
-          No hay tareas cargadas
-        </div>
-
-        <div th:each="tarea : ${solicitud.tareas}" class="tarea-item">
-          <div class="dato-item">
-            <span class="dato-label">Título</span>
-            <span class="dato-valor" th:text="${tarea.titulo}">-</span>
-          </div>
-          <div class="dato-item full-width">
-            <span class="dato-label">Descripción</span>
-            <span class="dato-valor" th:text="${tarea.descripcion}">-</span>
-          </div>
-        </div>
-
-      </div>
-
-
-      <!-- LOTE SELECCIONADO -->
-      <div th:if="${session.loteSeleccionado != null}" class="lote-badge">
-        ✅ Lote #<span th:text="${session.loteSeleccionado.id}"></span>
-        <span th:text="${session.loteSeleccionado.ubicacion}"></span>
-        <span th:text="${session.loteSeleccionado.superficie}"></span> m²
-        seleccionado
-      </div>
-      <div th:if="${session.loteSeleccionado == null}" class="lote-badge sin-lote">
-        ⚠️ No hay lote seleccionado — adjudicá uno antes de aceptar
-      </div>
+<!--      &lt;!&ndash; LOTE SELECCIONADO &ndash;&gt;-->
+<!--      <div th:if="${session.loteSeleccionado != null}" class="lote-badge">-->
+<!--        ✅ Lote #<span th:text="${session.loteSeleccionado.id}"></span>-->
+<!--        <span th:text="${session.loteSeleccionado.ubicacion}"></span>-->
+<!--        <span th:text="${session.loteSeleccionado.superficie}"></span> m²-->
+<!--        seleccionado-->
+<!--      </div>-->
+<!--      <div th:if="${session.loteSeleccionado == null}" class="lote-badge sin-lote">-->
+<!--        ⚠️ No hay lote seleccionado — adjudicá uno antes de aceptar-->
+<!--      </div>-->
 
     </div>
   </div>
@@ -232,25 +230,47 @@
       </form>
 
     </div>
+    <div class="accion-grupo">
+      <h3 class="accion-titulo">
+        <i class="fa-solid fa-check"></i>
+        Aceptar solicitud (Etapa inicial)
+      </h3>
 
-    <!-- Aceptar solo si hay lote seleccionado -->
-    <form th:if="${session.loteSeleccionado != null}"
-          th:action="@{/solicitudesGerente/{id}/aprobar(id=${solicitud.id})}"
-          method="post">
-      <button type="submit" class="btn-aprobar">
-        <i class="fa-solid fa-check"></i>Aceptar
-      </button>
-    </form>
-    <button th:if="${session.loteSeleccionado == null}"
-            class="btn-aprobar deshabilitado" disabled>
-      Aceptar (Seleccioná un lote primero)
-    </button>
+      <form th:action="@{/gerente/solicitudes/{id}/aceptar(id=${solicitud.id})}"
+            method="post">
+        <input type="hidden"
+               th:if="${_csrf != null}"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}"
+        />
+        <p>Confirmá la aceptación de la solicitud inicial (esto habilita la siguiente etapa del proyecto).</p>
+
+        <button type="submit" class="btn-aprobar">
+          <i class="fa-solid fa-check"></i>
+          Aceptar solicitud
+        </button>
+
+      </form>
+    </div>
+
+<!--    &lt;!&ndash; Aceptar solo si hay lote seleccionado &ndash;&gt;-->
+<!--    <form th:if="${session.loteSeleccionado != null}"-->
+<!--          th:action="@{/solicitudesGerente/{id}/aprobar(id=${solicitud.id})}"-->
+<!--          method="post">-->
+<!--      <button type="submit" class="btn-aprobar">-->
+<!--        <i class="fa-solid fa-check"></i>Aceptar-->
+<!--      </button>-->
+<!--    </form>-->
+<!--    <button th:if="${session.loteSeleccionado == null}"-->
+<!--            class="btn-aprobar deshabilitado" disabled>-->
+<!--      Aceptar (Seleccioná un lote primero)-->
+<!--    </button>-->
 <!-------------------------------------------------------------------->
 
-    <a th:href="@{/gerente/lotes/disponibles(superficie=${solicitud.necesidadM2}, idSolicitud=${solicitud.id})}"
-       class="btn-adjudicar">
-        <i class="fa-solid fa-map-pin"></i>Adjudicar Lote
-    </a>
+<!--    <a th:href="@{/gerente/lotes/disponibles(superficie=${solicitud.necesidadM2}, idSolicitud=${solicitud.id})}"-->
+<!--       class="btn-adjudicar">-->
+<!--        <i class="fa-solid fa-map-pin"></i>Adjudicar Lote-->
+<!--    </a>-->
 
   </div>
 

@@ -75,6 +75,12 @@
                             th:field="*{email}"
                             placeholder="Email">
 
+<!--                    &lt;!&ndash; boton X &ndash;&gt;-->
+<!--                    <button type="button"-->
+<!--                            class="clear-btn"-->
+<!--                            onclick="limpiarEmail()">-->
+<!--                        ×-->
+<!--                    </button>-->
                     <!-- error de validación del campo email -->
                     <p th:if="${#fields.hasErrors('email')}"
                        th:errors="*{email}"
@@ -112,6 +118,15 @@
     </div>
 
 </div>
+<script>
+    function limpiarEmail() {
+        const input =
+            document.getElementById("emailInput");
 
+        input.value = "";
+        input.dispatchEvent(new Event('input'));
+        input.focus();
+    }
+</script>
 </body>
 </html>

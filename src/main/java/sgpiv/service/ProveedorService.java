@@ -8,9 +8,7 @@ import sgpiv.repository.ProveedorRepository;
 @Service
 @RequiredArgsConstructor
 public class ProveedorService {
-
     private final ProveedorRepository proveedorRepository;
-
     public void crearPerfil(Usuario usuario) {
 
     }

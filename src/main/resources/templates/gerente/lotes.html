@@ -6,6 +6,8 @@
     <title>Gestión de Lotes</title>
     <link rel="stylesheet" th:href="@{/css/lotes.css}"/>
     <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+    <!-- Iconos -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
 
@@ -28,17 +30,18 @@
     <!-- CARDS DE RESUMEN -->
     <div class="cards">
         <div class="card">
-            <div class="card-icon">🟩</div>
+            <i class="material-icons">layers</i> <!-- Icono de Lotes Disponibles -->
             <h3>Disponibles</h3>
             <h2 th:text="${totalDisponibles != null ? totalDisponibles : 0}">0</h2>
         </div>
         <div class="card">
-            <div class="card-icon">🔴</div>
+            <i class="material-icons">layers_clear</i> <!-- icono de layer para los lotes en uso -->
             <h3>En Uso</h3>
             <h2 th:text="${totalEnUso != null ? totalEnUso : 0}">0</h2>
         </div>
         <div class="card">
-            <div class="card-icon">📋</div>
+
+            <i class="material-icons">terrain</i> <!-- tengo que darle un nombre al icono --->
             <h3>Total de Lotes</h3>
             <h2 th:text="${totalLotes != null ? totalLotes : 0}">0</h2>
         </div>
@@ -119,6 +122,48 @@
 
     </div>
     <!-- /table-container -->
+
+
+
+    <!-- LISTADO DE PROYECTOS -->
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Proyecto</th>
+            <th>Empresa</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="proyecto : ${proyectos}">
+            <td th:text="${proyecto.id}"></td>
+            <td th:text="${proyecto.titulo}" style="font-weight: 500;"></td>
+            <td th:text="${proyecto.razonSocialEmpresa}"></td>
+            <td>
+        <span th:text="${proyecto.estado}">
+<!--              th:classappend="${proyecto.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :-->
+<!--                 (${proyecto.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">-->
+        </span>
+<!--            </td>-->
+<!--            <td th:text="${proyecto.fechaEnvio}"></td>-->
+<!--            <td>-->
+                <a class="btn btn-edit" th:href="@{/gerente/proyectos/{id}/detalle(id=${proyecto.id})}">
+                    <i class="fa-regular fa-eye"></i> Ver detalle
+                </a>
+            </td>
+
+        </tr>
+        </tbody>
+
+    </table>
+
+
+
+
+
 
 
 </div>

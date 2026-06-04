@@ -3,14 +3,12 @@ package sgpiv.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import sgpiv.enums.EstadoEmpresa;
-import sgpiv.enums.EstadoLote;
-import sgpiv.enums.EstadoSolicitud;
-import sgpiv.enums.NombreRol;
+import sgpiv.enums.*;
 import sgpiv.model.*;
 import sgpiv.repository.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +21,8 @@ public class DataInitializer implements CommandLineRunner {
 /// Pruebas
     private final EmpresaRepository empresaRepository;
     private final LoteRepository loteRepository;
-//    private final SolicitudRepository solicitudRepository;
+    private final InfraestructuraRepository infraestructuraRepository;
+//    private final SolicitudRepository solicitudRadicacionRepository;
 /// /
     @Override
     public void run(String... args) throws Exception {
@@ -33,87 +32,151 @@ public class DataInitializer implements CommandLineRunner {
             }
         }
 
+//        Infraestructura precargada
+        if (infraestructuraRepository.count() > 0) {
+            return;
+        }
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Estación Transformadora 1",
+                TipoInfraestructura.ELECTRICA,
+                EstadoInfraestructura.OPERATIVA,
+                "Sector A",
+                "Ingreso principal",
+                "Estación encargada de distribuir energía eléctrica a los lotes del Sector A.",
+                LocalDate.of(2025, 5, 10),
+                LocalDate.of(2025, 8, 10)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Red de Agua Norte",
+                TipoInfraestructura.AGUA_POTABLE,
+                EstadoInfraestructura.OPERATIVA,
+                "Sector B",
+                "Zona norte del parque",
+                "Red de distribución de agua potable para empresas ubicadas en el Sector B.",
+                LocalDate.of(2025, 5, 5),
+                LocalDate.of(2025, 8, 5)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Alumbrado Calle 3",
+                TipoInfraestructura.ALUMBRADO_PUBLICO,
+                EstadoInfraestructura.EN_MANTENIMIENTO,
+                "Sector A",
+                "Calle interna 3",
+                "Sistema de iluminación pública sobre la calle interna número 3.",
+                LocalDate.of(2025, 5, 15),
+                LocalDate.of(2025, 7, 15)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Red de Gas Principal",
+                TipoInfraestructura.GAS_NATURAL,
+                EstadoInfraestructura.OPERATIVA,
+                "Sector D",
+                "Troncal principal del parque",
+                "Red principal de distribución de gas natural hacia los lotes industriales.",
+                LocalDate.of(2025, 4, 20),
+                LocalDate.of(2025, 7, 20)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Fibra Óptica Sector B",
+                TipoInfraestructura.TELECOMUNICACIONES,
+                EstadoInfraestructura.EN_MANTENIMIENTO,
+                "Sector B",
+                "Canalización subterránea Sector B",
+                "Tendido de fibra óptica para conexión a internet de las empresas.",
+                LocalDate.of(2025, 5, 1),
+                LocalDate.of(2025, 7, 1)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Planta de Tratamiento",
+                TipoInfraestructura.AGUA_RESIDUAL,
+                EstadoInfraestructura.OPERATIVA,
+                "Sector C",
+                "Zona posterior del parque",
+                "Planta destinada al tratamiento de líquidos residuales industriales.",
+                LocalDate.of(2025, 4, 12),
+                LocalDate.of(2025, 7, 12)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Red Cloacal Sector C",
+                TipoInfraestructura.RED_CLOACAL,
+                EstadoInfraestructura.OPERATIVA,
+                "Sector C",
+                "Calles internas del Sector C",
+                "Sistema cloacal que conecta los lotes del sector con la planta de tratamiento.",
+                LocalDate.of(2025, 4, 18),
+                LocalDate.of(2025, 7, 18)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Calle Interna Principal",
+                TipoInfraestructura.VIAL,
+                EstadoInfraestructura.REQUIERE_MANTENIMIENTO,
+                "Sector General",
+                "Acceso principal hasta rotonda central",
+                "Calle principal de circulación interna del parque industrial.",
+                LocalDate.of(2025, 3, 25),
+                LocalDate.of(2025, 6, 25)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Cerco Perimetral Este",
+                TipoInfraestructura.SEGURIDAD,
+                EstadoInfraestructura.OPERATIVA,
+                "Sector Este",
+                "Límite este del parque",
+                "Cerramiento perimetral destinado al control y seguridad del predio.",
+                LocalDate.of(2025, 4, 8),
+                LocalDate.of(2025, 7, 8)
+        ));
+
+        infraestructuraRepository.save(new Infraestructura(
+                "Cámara Acceso Principal",
+                TipoInfraestructura.SEGURIDAD,
+                EstadoInfraestructura.FUERA_DE_SERVICIO,
+                "Ingreso",
+                "Portón de acceso principal",
+                "Cámara de vigilancia ubicada en el ingreso principal del parque.",
+                LocalDate.of(2025, 4, 1),
+                null
+        ));
+
         // crea el gerente inicial si no existe
         precargarGerente();
         precargarUsuarioNulo();
 
         /// Pruebas
-        precargarEmpresas();
+        var empresas = precargarEmpresas();
         precargarLotes();
+//        precargarSolicitudes(empresas);
         ///
+    }
 
-
-//        if (solicitudRepository.count() == 0) {
+//    private void precargarSolicitudes(List<Empresa> empresas) {
+//        if(solicitudRadicacionRepository.count() == 0){
 //
+//            Empresa empresa1 = empresas.get(0);
 //            SolicitudRadicacion s1 = new SolicitudRadicacion();
-//            s1.setTipoEmpresa("Solicitud de radicación");
-//            s1.setEstado(EstadoSolicitud.PENDIENTE);
 //
-//            SolicitudRadicacion s2 = new SolicitudRadicacion();
-//            s2.setTipoEmpresa("Ampliación de nave");
-//            s2.setEstado(EstadoSolicitud.APROBADA);
+//            s1.setRazonSocial(empresa1.getRazonSocial());
+//            s1.setCuitEmpresa(empresa1.getCuit());
+//            s1.setRubro(empresa1.getRubro());
+//            s1.setTipoIndustria(empresa1.getTipoIndustria());
+//            s1.setEmailEmpresa(empresa1.getEmail());
+//            s1.setDireccion(empresa1.getDireccion());
+//            s1.setDescripcionBienServicio(empresa1.getDescripcionBienServicio());
 //
-//            SolicitudRadicacion s3 = new SolicitudRadicacion();
-//            s3.setTipoEmpresa("Instalación eléctrica");
-//            s3.setEstado(EstadoSolicitud.EN_REVISION);
-//
-//            SolicitudRadicacion s4 = new SolicitudRadicacion();
-//            s4.setTipoEmpresa("Conexión eléctrica");
-//            s4.setEstado(EstadoSolicitud.RECHAZADA);
-//
-//            solicitudRepository.save(s1);
-//            solicitudRepository.save(s2);
-//            solicitudRepository.save(s3);
-//            solicitudRepository.save(s4);
-//
-//            System.out.println("Solicitudes de prueba cargadas");
+//            solicitudRadicacionRepository.save(s1);
 //        }
+//    }
 
-    }
-
-    private void precargarUsuarioNulo() {
-        if (!usuarioRepository.existsByCuit("00000000001")) {
-            Rol rolUsuarioNulo = rolRepository.findByNombre(NombreRol.ROL_NULO)
-                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
-
-            Usuario nulo = new Usuario(
-                    "Alan",
-                    "Turing",
-                    "alan@gmail.com",
-                    10001L,
-                    "1234",
-                    "00000000001"
-            );
-
-            nulo.getRoles().clear(); // saca ROL_NULO que agrega el constructor
-            nulo.getRoles().add(rolUsuarioNulo);
-
-            usuarioRepository.save(nulo);
-        }
-    }
-
-    private void precargarGerente() {
-        if (!usuarioRepository.existsByCuit("00000000000")) {
-            Rol rolGerente = rolRepository.findByNombre(NombreRol.ROL_GERENTE)
-                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
-
-            Usuario gerente = new Usuario(
-                    "Martin",
-                    "Lemos",
-                    "gerenteSGPIV@gmail.com",
-                    10000L,
-                    "sgpiv1234",
-                    "00000000000"
-            );
-
-            gerente.getRoles().clear(); // saca ROL_NULO que agrega el constructor
-            gerente.getRoles().add(rolGerente);
-
-            usuarioRepository.save(gerente);
-        }
-    }
-
-    private void precargarEmpresas() {
+    private List<Empresa> precargarEmpresas() {
         if (empresaRepository.count() == 0) {
 
             Empresa empresa1 = new Empresa();
@@ -167,36 +230,97 @@ public class DataInitializer implements CommandLineRunner {
 
             System.out.println("Empresas de prueba cargadas");
         }
+        return empresaRepository.findAll();
+    }
+
+    private void precargarUsuarioNulo() {
+        if (!usuarioRepository.existsByCuit("00000000001")) {
+            Rol rolUsuarioNulo = rolRepository.findByNombre(NombreRol.ROL_NULO)
+                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
+
+            Usuario nulo = new Usuario(
+                    "Alan",
+                    "Turing",
+                    "alan@gmail.com",
+                    10001L,
+                    "1234",
+                    "00000000001"
+            );
+
+            nulo.getRoles().clear(); // saca ROL_NULO que agrega el constructor
+            nulo.getRoles().add(rolUsuarioNulo);
+
+            usuarioRepository.save(nulo);
+        }
+        if (!usuarioRepository.existsByCuit("00000000002")) {
+            Rol rolUsuarioNulo = rolRepository.findByNombre(NombreRol.ROL_NULO)
+                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
+
+            Usuario nulo = new Usuario(
+                    "Rodrigo",
+                    "Quichan",
+                    "ro@gmail.com",
+                    10002L,
+                    "1234",
+                    "00000000002"
+            );
+
+            nulo.getRoles().clear(); // saca ROL_NULO que agrega el constructor
+            nulo.getRoles().add(rolUsuarioNulo);
+
+            usuarioRepository.save(nulo);
+        }
+    }
+
+    private void precargarGerente() {
+        if (!usuarioRepository.existsByCuit("00000000000")) {
+            Rol rolGerente = rolRepository.findByNombre(NombreRol.ROL_GERENTE)
+                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
+
+            Usuario gerente = new Usuario(
+                    "Martin",
+                    "Lemos",
+                    "gerenteSGPIV@gmail.com",
+                    10000L,
+                    "sgpiv1234",
+                    "00000000000"
+            );
+
+            gerente.getRoles().clear(); // saca ROL_NULO que agrega el constructor
+            gerente.getRoles().add(rolGerente);
+
+            usuarioRepository.save(gerente);
+        }
     }
 
     private void precargarLotes() {
         if (loteRepository.count() == 0) {
             Lote lote1 = new Lote(
-                    1200f,
+                    1200D,
                     "Sector A - Lote 1",
                     4500000f,
                     "Uso industrial liviano"
             );
             Lote lote2 = new Lote(
-                    1800f,
+                    1800D,
                     "Sector A - Lote 2",
                     6200000f,
                     "Sin restricciones"
             );
             Lote lote3 = new Lote(
-                    950f,
+                    950D,
                     "Sector B - Lote 3",
                     3900000f,
                     "No apto almacenamiento químico"
             );
             Lote lote4 = new Lote(
-                    2500f,
+                    2500D,
                     "Sector C - Lote 4",
                     9100000f,
                     "Uso industrial pesado"
             );
             Lote lote5 = new Lote(
-                    1500f,
+                    1500D,
                     "Sector D - Lote 5",
                     5400000f,
                     "Altura máxima 12m"
