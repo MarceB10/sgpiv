@@ -7,10 +7,7 @@ import sgpiv.dtos.request.LoteRequestDTO;
 import sgpiv.model.Lote;
 import sgpiv.repository.LoteRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -71,5 +68,44 @@ public class LoteService {
         return lotesResponseDTO;
     }
 
+    public LoteRequestDTO obtenerLoteParaEditar(Long id) {
 
+        Lote lote = loteRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Lote no encontrado")
+        );
+
+        LoteRequestDTO dto = new LoteRequestDTO();
+
+        dto.setSuperficie(lote.getSuperficie());
+        dto.setUbicacion(lote.getUbicacion());
+        dto.setPrecio(lote.getPrecio());
+        dto.setFechaUso(lote.getFechaUso());
+        dto.setFechaAdjudicacion(lote.getFechaAdjudicacion());
+        dto.setRestricciones(lote.getRestricciones());
+        dto.setServicios(lote.getServicios());
+
+        return dto;
+    }
+
+    public void actualizarLote(Long id, LoteRequestDTO dto) {
+
+        Lote lote = loteRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Lote no encontrado")
+        );
+
+        lote.setSuperficie(dto.getSuperficie());
+        lote.setUbicacion(dto.getUbicacion());
+        lote.setPrecio(dto.getPrecio());
+        lote.setFechaUso(dto.getFechaUso());
+        lote.setFechaAdjudicacion(dto.getFechaAdjudicacion());
+        lote.setRestricciones(dto.getRestricciones());
+
+        if (dto.getServicios() == null) {
+            lote.setServicios(new HashSet<>());
+        } else {
+            lote.setServicios(dto.getServicios());
+        }
+
+        loteRepository.save(lote);
+    }
 }

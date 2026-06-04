@@ -121,4 +121,45 @@ public class LoteController {
     }
     //-----------------------------------------------------------------------
 
+    @GetMapping("/gerente/lotes/{id}/editar")
+    public String mostrarFormularioEditarLote(@PathVariable Long id, Model model, HttpSession session) {
+
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/";
+
+        LoteRequestDTO loteRequestDTO = loteService.obtenerLoteParaEditar(id);
+
+        model.addAttribute("loteRequestDTO", loteRequestDTO);
+        model.addAttribute("idLote", id);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pagina", "lotes");
+
+        return "gerente/editarLote";
+    }
+
+    @PostMapping("/gerente/lotes/{id}/editar")
+    public String actualizarLote(@PathVariable Long id,
+                                 @Valid @ModelAttribute LoteRequestDTO loteRequestDTO,
+                                 BindingResult result, RedirectAttributes redirectAttributes,
+                                 HttpSession session, Model model) {
+
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+
+        if (usuario == null) return "redirect:/";
+
+        if (result.hasErrors()) {
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("pagina", "lotes");
+            model.addAttribute("idLote", id);
+            return "gerente/editarLote";
+        }
+
+        loteService.actualizarLote(id, loteRequestDTO);
+        redirectAttributes.addFlashAttribute(
+                "mensaje",
+                "Lote actualizado correctamente."
+        );
+
+        return "redirect:/gerente/lotes";
+    }
 }

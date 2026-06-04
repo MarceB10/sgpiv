@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+  <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+</head>
 <body>
 
 <div th:fragment="tablaLotes">
@@ -47,15 +51,16 @@
         <!-- /td servicios-->
         <td th:text="${lote.restricciones != null ? lote.restricciones : '-'}">-</td>
         <td>
-                        <span class="col-estado"
-                              th:text="${lote.estadoLote}"
-                              th:classappend="${lote.estadoLote.name() == 'DISPONIBLE'} ? 'estado disponible' :
-                                             (${lote.estadoLote.name() == 'EN_USO'} ? 'estado en-uso' : 'estado inactivo')">
-                        </span>
+          <span class="col-estado"
+                th:text="${lote.estadoLote}"
+                th:classappend="${lote.estadoLote.name() == 'DISPONIBLE'} ? 'estado disponible' :
+                (${lote.estadoLote.name() == 'EN_USO'} ? 'estado en-uso' : 'estado inactivo')">
+          </span>
         </td>
         <td>
-          <a th:href="@{/gerente/lotes/editar/{id}(id=${lote.id})}"
-             class="btn btn-edit">Editar</a>
+          <a th:href="@{/gerente/lotes/{id}/editar(id=${lote.id})}" class="btn btn-edit">
+            Editar
+          </a>
           <a th:href="@{/gerente/lotes/eliminar/{id}(id=${lote.id})}"
              class="btn btn-delete"
              onclick="return confirm('¿Seguro que deseas eliminar este lote?')">Eliminar</a>
