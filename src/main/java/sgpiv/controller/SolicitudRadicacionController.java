@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import sgpiv.dtos.request.SolicitudRequestDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.enums.EstadoSolicitud;
+import sgpiv.model.SolicitudProyecto;
 import sgpiv.model.SolicitudRadicacion;
+import sgpiv.repository.SolicitudProyectoRepository;
 import sgpiv.service.SolicitudService;
 
 @Controller
@@ -20,6 +22,7 @@ import sgpiv.service.SolicitudService;
 public class SolicitudRadicacionController {
 
     private final SolicitudService solicitudService;
+    private final SolicitudProyectoRepository solicitudProyectoRepository;
 
     @GetMapping("/solicitudRadicacion")
     public String mostrarFormulario(Model model, HttpSession session) {
@@ -106,6 +109,16 @@ public class SolicitudRadicacionController {
         model.addAttribute("solicitudActiva",solicitud);
         model.addAttribute("usuario", usuario);
         model.addAttribute("pagina", "mi-solicitud");
+
+        SolicitudProyecto solicitudProyectoActiva = null;
+
+        if (solicitud != null) {
+            solicitudProyectoActiva = solicitudProyectoRepository
+                    .findBySolicitudRadicacionId(solicitud.getId())
+                    .orElse(null);
+        }
+
+        model.addAttribute("solicitudProyectoActiva", solicitudProyectoActiva);
 
         return "representante_empresa/miSolicitud";
     }
