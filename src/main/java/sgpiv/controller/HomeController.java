@@ -9,6 +9,7 @@ import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.model.SolicitudProyecto;
 import sgpiv.model.SolicitudRadicacion;
 import sgpiv.repository.SolicitudProyectoRepository;
+import sgpiv.service.DashboardService;
 import sgpiv.service.SolicitudService;
 import sgpiv.service.UsuarioService;
 
@@ -19,6 +20,8 @@ public class HomeController {
     private final UsuarioService usuarioService;
     private final SolicitudService solicitudService;
     private final SolicitudProyectoRepository solicitudProyectoRepository;
+
+    private final DashboardService dashboardService;
 
     @GetMapping("/home")
     public String home(Model model,
@@ -33,6 +36,11 @@ public class HomeController {
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("pagina", "home");
+
+        model.addAttribute(
+                "dashboard",
+                dashboardService.obtenerMetricas());
+
 
         SolicitudRadicacion solicitudActiva = solicitudService.obtenerSolicitudActiva(usuario.getCuit());
         model.addAttribute("solicitudActiva", solicitudActiva);

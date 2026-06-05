@@ -11,6 +11,9 @@
     <!-- Aca vinculé el diseño de los botones -->
     <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
 
+    <!-- Scripts para los graficos--->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -29,6 +32,115 @@
         </div>
         <img src="https://i.ibb.co/mC8BgNX4/logobien.png" alt="Logo" class="logo" style="margin-left: auto;">
     </div>
+
+
+    <div th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'
+          or usuario.roles[0].nombre.name() == 'ROL_ORGANISMO_PUBLICO'}">
+
+        <!-- Dashboard ---------------- -->
+        <div class="dashboard-container">
+
+            <h2>Dashboard del Parque Industrial</h2>
+
+            <div class="dashboard-cards">
+
+                <div class="dashboard-card">
+                    <h3>Empresas Radicadas</h3>
+                    <span th:text="${dashboard.empresasRadicadas}">0</span>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Empresas Pendientes</h3>
+                    <span th:text="${dashboard.empresasPendientes}">0</span>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Lotes Disponibles</h3>
+                    <span th:text="${dashboard.lotesDisponibles}">0</span>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Lotes Ocupados</h3>
+                    <span th:text="${dashboard.lotesOcupados}">0</span>
+                </div>
+
+            </div>
+
+        </div>
+
+<!--        &lt;!&ndash; Ocupación &ndash;&gt;-->
+<!--        <div class="ocupacion-card">-->
+
+<!--            <h3>Ocupación del Parque</h3>-->
+
+<!--            <div class="progress-bar">-->
+<!--                <div class="progress-fill"-->
+<!--                     th:style="'width:' + ${dashboard.porcentajeOcupacion} + '%'">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <div class="chart-container">
+
+            <!----------- GRAFICO DE TORTA ------------------>
+
+            <canvas id="ocupacionChart"></canvas>
+
+            <div class="chart-center">
+                <span th:text="${dashboard.porcentajeOcupacion} + '%'">0%</span>
+
+                <span class="chart-label">ocupación</span>
+
+            </div>
+
+        </div>
+
+        <!--------------------- Grafico Barras ------------>
+
+        <div class="dashboard-container">
+
+            <h3>Empresas por Rubro</h3>
+
+            <canvas id="rubrosChart"></canvas>
+
+        </div>
+
+        <div class="dashboard-container">
+
+            <h2>Indicadores de Impacto</h2>
+
+            <div class="dashboard-cards">
+
+                <div class="dashboard-card">
+                    <h3>Inversión Total Estimada</h3>
+
+                    <span th:text="'$ ' + ${dashboard.inversionTotalEstimada}"> $0 </span>
+
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Empleo Proyectado</h3>
+
+                    <span th:text="${dashboard.empleoProyectado}"> 0 </span>
+
+                    <small>puestos de trabajo</small>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="dashboard-container">
+
+            <h3>Servicios más Demandados</h3>
+
+            <canvas id="serviciosChart"></canvas>
+
+        </div>
+
+
+</div>
+
 
     <!-- VIDEO DE FONDO CON CARDS ENCIMA -->
     <div class="video-container">
@@ -64,14 +176,107 @@
 
     </div>
 
-<!--    <button class="btn btn-regMiEmpresa"-->
-<!--            onclick="window.location.href='/empresas/registrarMiEmpresa'"-->
-<!--            th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">-->
-<!--        Registrar mi empresa-->
-<!--    </button>-->
-
-
 </div>
 
+<!--------SCRIPT GRAFICO TORTA---------->
+<script th:inline="javascript">
+
+    const ocupados =
+        [[${dashboard.lotesOcupados}]];
+
+    const disponibles =
+        [[${dashboard.lotesDisponibles}]];
+
+    new Chart(
+        document.getElementById('ocupacionChart'),
+        {
+            type: 'doughnut',
+
+            data: {
+                labels: ['Ocupados', 'Disponibles'],
+
+                datasets: [{
+                    data: [ocupados, disponibles]
+                }]
+            },
+        options: {
+            cutout: '70%',
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+</script>
+
+<!----------------------SCRIPT GRAFICO BARRAS ----------------->
+<script th:inline="javascript">
+
+    const rubros =
+        [[${dashboard.empresasPorRubro.keySet()}]];
+
+    const cantidades =
+        [[${dashboard.empresasPorRubro.values()}]];
+
+    new Chart(
+    document.getElementById('rubrosChart'),
+    {
+        type: 'bar',
+
+        data: {
+            labels: rubros,
+
+            datasets: [{
+                label: 'Empresas',
+                data: cantidades
+            }]
+        },
+
+        options: {
+            responsive: true
+        }
+    }
+);
+</script>
+
+<!--- Grafico de barras (Rubros) ----->
+
+<script th:inline="javascript">
+
+    const servicios =
+        [[${dashboard.serviciosDemandados.keySet()}]];
+
+    const cantidadesServicios =
+        [[${dashboard.serviciosDemandados.values()}]];
+
+    new Chart(
+        document.getElementById('serviciosChart'),
+        {
+            type: 'bar',
+
+            data: {
+                labels: servicios,
+
+                datasets: [{
+                    label: 'Cantidad de proyectos',
+                    data: cantidadesServicios
+                }]
+            },
+
+            options: {
+                indexAxis: 'y',
+
+                responsive: true,
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        }
+    );
+
+</script>
+
 </body>
+
 </html>
