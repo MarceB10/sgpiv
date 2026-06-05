@@ -31,7 +31,7 @@ public class Empresa {
     @Column(unique = true, nullable = false, length = 13)
     private String cuit;
 
-    private Long telefono;
+    private String telefono;
 
     private String ingresoBrutos;
 
