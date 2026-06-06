@@ -213,3 +213,22 @@
     color:#6b7280;
     font-size:13px;
 }
+
+.empty-card{
+    text-align:center;
+}
+
+.empty-icon{
+    display:block;
+    font-size:48px;
+    margin-bottom:15px;
+}
+
+.empty-card p{
+    font-weight:600;
+    margin-bottom:5px;
+}
+
+.empty-card small{
+    color:#666;
+}

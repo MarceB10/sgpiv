@@ -33,6 +33,7 @@
         <img src="https://i.ibb.co/mC8BgNX4/logobien.png" alt="Logo" class="logo" style="margin-left: auto;">
     </div>
 
+    <!------------------- DASHBOARD GERENTE Y ORG PUBLICO (Inicio) -------------------------------->
 
     <div th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'
           or usuario.roles[0].nombre.name() == 'ROL_ORGANISMO_PUBLICO'}">
@@ -68,17 +69,6 @@
 
         </div>
 
-<!--        &lt;!&ndash; Ocupación &ndash;&gt;-->
-<!--        <div class="ocupacion-card">-->
-
-<!--            <h3>Ocupación del Parque</h3>-->
-
-<!--            <div class="progress-bar">-->
-<!--                <div class="progress-fill"-->
-<!--                     th:style="'width:' + ${dashboard.porcentajeOcupacion} + '%'">-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
 
         <div class="chart-container">
 
@@ -94,6 +84,32 @@
             </div>
 
         </div>
+
+        <!---- Empresas radicadas por Mes -------------->
+
+        <div class="dashboard-container">
+
+            <div class="dashboard-header">
+
+                <h3>Empresas Radicadas por Mes</h3>
+
+                <select id="anioSelector">
+
+                    <option
+                            th:each="entry : ${dashboard.radicacionesPorAnio}"
+                            th:value="${entry.key}"
+                            th:text="${entry.key}">
+                    </option>
+
+                </select>
+
+            </div>
+
+            <canvas id="radicacionesChart"></canvas>
+
+        </div>
+
+
 
         <!--------------------- Grafico Barras ------------>
 
@@ -146,8 +162,82 @@
 
         </div>
 
+    </div>
 
-</div>
+    <!------------------- DASHBOARD GERENTE Y ORG PUBLICO (Fin)  -------------------------------->
+
+
+
+    <!------------------- DASHBOARD REPRESENTANTE DE EMPRESA (Inicio)  -------------------------------->
+
+    <div th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">
+
+        <div class="dashboard-card"
+             th:if="${dashboard.loteAdjudicado != null}">
+
+            <h3>🏭 Lote Adjudicado</h3>
+
+            <p>
+                <strong>Lote:</strong>
+                <span th:text="${dashboard.loteAdjudicado.id}"></span>
+            </p>
+
+            <p>
+                <strong>Ubicación:</strong>
+                <span th:text="${dashboard.loteAdjudicado.ubicacion}"></span>
+            </p>
+
+            <p>
+                <strong>Superficie:</strong>
+                <span th:text="${dashboard.loteAdjudicado.superficie} + ' m²'"></span>
+            </p>
+
+        </div>
+
+
+        <div class="dashboard-card empty-card"
+             th:if="${dashboard.loteAdjudicado == null}">
+
+            <h3>🏭 Lote Industrial</h3>
+
+            <div class="empty-state">
+
+                <span class="empty-icon">📋</span>
+
+                <p>
+                    Aún no tenés un lote adjudicado.
+                </p>
+
+                <small>
+                    Cuando el proceso de adjudicación finalice,
+                    la información del lote aparecerá aquí.
+                </small>
+
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
+    <!------------------- DASHBOARD REPRESENTANTE DE EMPRESA (Fin)  -------------------------------->
 
 
     <!-- VIDEO DE FONDO CON CARDS ENCIMA -->
@@ -314,6 +404,54 @@
             }
         }
     );
+
+</script>
+
+<!----- Empresas Raicadas por Mes ---->
+
+<script th:inline="javascript">
+
+    const radicacionesPorAnio =
+        [[${dashboard.radicacionesPorAnio}]];
+
+    const meses = [
+        'Ene', 'Feb', 'Mar', 'Abr',
+        'May', 'Jun', 'Jul', 'Ago',
+        'Sep', 'Oct', 'Nov', 'Dic'
+    ];
+
+    const selector =
+        document.getElementById('anioSelector');
+
+    const chart = new Chart(
+        document.getElementById('radicacionesChart'),
+        {
+            type: 'line',
+
+            data: {
+                labels: meses,
+
+                datasets: [{
+                    label: 'Empresas Radicadas',
+                    data: radicacionesPorAnio[selector.value]
+                }]
+            },
+
+            options: {
+                responsive: true,
+                tension: 0.3
+            }
+        }
+    );
+
+    selector.addEventListener('change', function() {
+
+        chart.data.datasets[0].data =
+            radicacionesPorAnio[this.value];
+
+        chart.update();
+
+    });
 
 </script>
 
