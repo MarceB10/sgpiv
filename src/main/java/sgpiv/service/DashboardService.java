@@ -14,6 +14,7 @@ import sgpiv.repository.ProyectoRepository;
 import sgpiv.repository.SolicitudRadicacionRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -87,6 +88,8 @@ public class DashboardService {
 
         BigDecimal inversionProyectada = obtenerInversionTotal();
 
+        Map<String, BigDecimal> inversionPorRubro = obtenerInversionPorRubro();
+
         return new DashboardDTO(
                 totalEmpresas,
                 totalProyectos,
@@ -99,7 +102,8 @@ public class DashboardService {
                 rubros,
                 empleoProyectado,
                 servicios,
-                inversionProyectada
+                inversionProyectada,
+                inversionPorRubro
         );
     }
 
@@ -132,4 +136,26 @@ public class DashboardService {
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    public Map<String, BigDecimal> obtenerInversionPorRubro() {
+
+        return proyectoRepository.findAll()
+                .stream()
+                .filter(p -> p.getRubro() != null)
+                .collect(Collectors.groupingBy(
+
+                        p -> p.getRubro().trim().toUpperCase(),
+
+                        Collectors.reducing(
+                                BigDecimal.ZERO,
+                                p -> p.getInversionEstimada() != null
+                                        ? p.getInversionEstimada()
+                                        : BigDecimal.ZERO,
+                                BigDecimal::add
+                        )
+                ));
+    }
+
+
+
 }

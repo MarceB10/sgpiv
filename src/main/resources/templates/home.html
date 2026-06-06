@@ -107,6 +107,14 @@
 
         <div class="dashboard-container">
 
+            <h3>Inversión por Rubro</h3>
+
+            <canvas id="inversionRubroChart"></canvas>
+
+        </div>
+
+        <div class="dashboard-container">
+
             <h2>Indicadores de Impacto</h2>
 
             <div class="dashboard-cards">
@@ -271,6 +279,38 @@
                         display: false
                     }
                 }
+            }
+        }
+    );
+
+</script>
+
+<!-- Inversion Por Rubros --->
+<script th:inline="javascript">
+
+    const rubrosInv =
+        [[${dashboard.inversionPorRubro.keySet()}]];
+
+    const inversiones =
+        [[${dashboard.inversionPorRubro.values()}]];
+
+    new Chart(
+        document.getElementById('inversionRubroChart'),
+        {
+            type: 'bar',
+
+            data: {
+                labels: rubrosInv,
+
+                datasets: [{
+                    label: 'Inversión Estimada ($)',
+                    data: inversiones
+                }]
+            },
+
+            options: {
+                indexAxis: 'y',
+                responsive: true
             }
         }
     );

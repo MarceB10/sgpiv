@@ -203,6 +203,9 @@
 #serviciosChart{
     max-height: 350px;
 }
+#rubrosChart{
+    max-height: 350px;
+}
 
 .dashboard-card small{
     display:block;

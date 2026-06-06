@@ -32,4 +32,6 @@ public class DashboardDTO {
 
     private BigDecimal inversionTotalEstimada;
 
+    private Map<String, BigDecimal> inversionPorRubro;
+
 }
