@@ -212,7 +212,7 @@ public class SolicitudService {
         // 1. Crear empresa desde la solicitud de radicacion
         Empresa empresa = new Empresa();
         empresa.setRazonSocial(sp.getSolicitudRadicacion().getRazonSocial());
-        empresa.setTelefono(Long.valueOf(sp.getSolicitudRadicacion().getTelefonoEmpresa()));
+        empresa.setTelefono(sp.getSolicitudRadicacion().getTelefonoEmpresa());
         empresa.setIngresoBrutos(sp.getSolicitudRadicacion().getIngresoBrutos());
         empresa.setDescripcionBienServicio(sp.getSolicitudRadicacion().getDescripcionBienServicio());
         empresa.setCuit(sp.getSolicitudRadicacion().getCuitEmpresa());
