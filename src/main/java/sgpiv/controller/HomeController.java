@@ -38,7 +38,8 @@ public class HomeController {
         model.addAttribute("usuario", usuario);
         model.addAttribute("pagina", "home");
 
-        if (usuario.getRoles().contains(NombreRol.ROL_REPRESENTANTE_EMPRESA)){
+        if (usuario.getRoles().stream()
+                .anyMatch(r -> r.getNombre() == NombreRol.ROL_REPRESENTANTE_EMPRESA)){
             model.addAttribute(
                     "dashboard",
                     dashboardService.obtenerMetricasDeMiEmpresa(usuario));

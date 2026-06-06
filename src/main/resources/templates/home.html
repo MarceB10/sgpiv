@@ -77,7 +77,7 @@
             <canvas id="ocupacionChart"></canvas>
 
             <div class="chart-center">
-                <span th:text="${dashboard.porcentajeOcupacion} + '%'">0%</span>
+                <span th:text="${#numbers.formatDecimal(dashboard.porcentajeOcupacion, 1, 2)} + '%'">0%</span>
 
                 <span class="chart-label">ocupación</span>
 
@@ -276,184 +276,196 @@
 
 </div>
 
-<!--------SCRIPT GRAFICO TORTA---------->
-<script th:inline="javascript">
 
-    const ocupados =
-        [[${dashboard.lotesOcupados}]];
+<th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'
+              or usuario.roles[0].nombre.name() == 'ROL_ORGANISMO_PUBLICO'}">
 
-    const disponibles =
-        [[${dashboard.lotesDisponibles}]];
 
-    new Chart(
-        document.getElementById('ocupacionChart'),
-        {
-            type: 'doughnut',
+    <!--------SCRIPT GRAFICO TORTA---------->
+    <script th:inline="javascript">
 
-            data: {
-                labels: ['Ocupados', 'Disponibles'],
+        const ocupados =
+            [[${dashboard.lotesOcupados}]];
 
-                datasets: [{
-                    data: [ocupados, disponibles]
-                }]
-            },
-        options: {
-            cutout: '70%',
-            responsive: true,
-            maintainAspectRatio: true
-        }
-    });
-</script>
+        const disponibles =
+            [[${dashboard.lotesDisponibles}]];
 
-<!----------------------SCRIPT GRAFICO BARRAS ----------------->
-<script th:inline="javascript">
+        new Chart(
+            document.getElementById('ocupacionChart'),
+            {
+                type: 'doughnut',
 
-    const rubros =
-        [[${dashboard.empresasPorRubro.keySet()}]];
+                data: {
+                    labels: ['Ocupados', 'Disponibles'],
 
-    const cantidades =
-        [[${dashboard.empresasPorRubro.values()}]];
-
-    new Chart(
-    document.getElementById('rubrosChart'),
-    {
-        type: 'bar',
-
-        data: {
-            labels: rubros,
-
-            datasets: [{
-                label: 'Empresas',
-                data: cantidades
-            }]
-        },
-
-        options: {
-            responsive: true
-        }
-    }
-);
-</script>
-
-<!--- Grafico de barras (Rubros) ----->
-
-<script th:inline="javascript">
-
-    const servicios =
-        [[${dashboard.serviciosDemandados.keySet()}]];
-
-    const cantidadesServicios =
-        [[${dashboard.serviciosDemandados.values()}]];
-
-    new Chart(
-        document.getElementById('serviciosChart'),
-        {
-            type: 'bar',
-
-            data: {
-                labels: servicios,
-
-                datasets: [{
-                    label: 'Cantidad de proyectos',
-                    data: cantidadesServicios
-                }]
-            },
-
+                    datasets: [{
+                        data: [ocupados, disponibles]
+                    }]
+                },
             options: {
-                indexAxis: 'y',
-
+                cutout: '70%',
                 responsive: true,
-
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
+                maintainAspectRatio: true
             }
-        }
-    );
+        });
+    </script>
 
-</script>
+    <!----------------------SCRIPT GRAFICO BARRAS ----------------->
+    <script th:inline="javascript">
 
-<!-- Inversion Por Rubros --->
-<script th:inline="javascript">
+        const rubros =
+            [[${dashboard.empresasPorRubro.keySet()}]];
 
-    const rubrosInv =
-        [[${dashboard.inversionPorRubro.keySet()}]];
+        const cantidades =
+            [[${dashboard.empresasPorRubro.values()}]];
 
-    const inversiones =
-        [[${dashboard.inversionPorRubro.values()}]];
-
-    new Chart(
-        document.getElementById('inversionRubroChart'),
+        new Chart(
+        document.getElementById('rubrosChart'),
         {
             type: 'bar',
 
             data: {
-                labels: rubrosInv,
+                labels: rubros,
 
                 datasets: [{
-                    label: 'Inversión Estimada ($)',
-                    data: inversiones
+                    label: 'Empresas',
+                    data: cantidades
                 }]
             },
 
             options: {
-                indexAxis: 'y',
                 responsive: true
             }
         }
     );
+    </script>
 
-</script>
+    <!--- Grafico de barras (Rubros) ----->
 
-<!----- Empresas Raicadas por Mes ---->
+    <script th:inline="javascript">
 
-<script th:inline="javascript">
+        const servicios =
+            [[${dashboard.serviciosDemandados.keySet()}]];
 
-    const radicacionesPorAnio =
-        [[${dashboard.radicacionesPorAnio}]];
+        const cantidadesServicios =
+            [[${dashboard.serviciosDemandados.values()}]];
 
-    const meses = [
-        'Ene', 'Feb', 'Mar', 'Abr',
-        'May', 'Jun', 'Jul', 'Ago',
-        'Sep', 'Oct', 'Nov', 'Dic'
-    ];
+        new Chart(
+            document.getElementById('serviciosChart'),
+            {
+                type: 'bar',
 
-    const selector =
-        document.getElementById('anioSelector');
+                data: {
+                    labels: servicios,
 
-    const chart = new Chart(
-        document.getElementById('radicacionesChart'),
-        {
-            type: 'line',
+                    datasets: [{
+                        label: 'Cantidad de proyectos',
+                        data: cantidadesServicios
+                    }]
+                },
 
-            data: {
-                labels: meses,
+                options: {
+                    indexAxis: 'y',
 
-                datasets: [{
-                    label: 'Empresas Radicadas',
-                    data: radicacionesPorAnio[selector.value]
-                }]
-            },
+                    responsive: true,
 
-            options: {
-                responsive: true,
-                tension: 0.3
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
             }
-        }
-    );
+        );
 
-    selector.addEventListener('change', function() {
+    </script>
 
-        chart.data.datasets[0].data =
-            radicacionesPorAnio[this.value];
+    <!-- Inversion Por Rubros --->
+    <script th:inline="javascript">
 
-        chart.update();
+        const rubrosInv =
+            [[${dashboard.inversionPorRubro.keySet()}]];
 
-    });
+        const inversiones =
+            [[${dashboard.inversionPorRubro.values()}]];
 
-</script>
+        new Chart(
+            document.getElementById('inversionRubroChart'),
+            {
+                type: 'bar',
+
+                data: {
+                    labels: rubrosInv,
+
+                    datasets: [{
+                        label: 'Inversión Estimada ($)',
+                        data: inversiones
+                    }]
+                },
+
+                options: {
+                    indexAxis: 'y',
+                    responsive: true
+                }
+            }
+        );
+
+    </script>
+
+    <!----- Empresas Raicadas por Mes ---->
+
+    <script th:inline="javascript">
+
+        const radicacionesPorAnio =
+            [[${dashboard.radicacionesPorAnio}]];
+
+        const meses = [
+            'Ene', 'Feb', 'Mar', 'Abr',
+            'May', 'Jun', 'Jul', 'Ago',
+            'Sep', 'Oct', 'Nov', 'Dic'
+        ];
+
+        const selector =
+            document.getElementById('anioSelector');
+
+        const chart = new Chart(
+            document.getElementById('radicacionesChart'),
+            {
+                type: 'line',
+
+                data: {
+                    labels: meses,
+
+                    datasets: [{
+                        label: 'Empresas Radicadas',
+                        data: radicacionesPorAnio[selector.value]
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    tension: 0.3
+                }
+            }
+        );
+
+        selector.addEventListener('change', function() {
+
+            chart.data.datasets[0].data =
+                radicacionesPorAnio[this.value];
+
+            chart.update();
+
+        });
+
+    </script>
+
+</th:block>
+
+
+
+
+
 
 </body>
 

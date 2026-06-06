@@ -1,6 +1,7 @@
 package sgpiv.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import sgpiv.dtos.response.DashboardDTO;
 import sgpiv.dtos.response.LoteResponseDTO;
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DashboardService {
@@ -124,16 +125,22 @@ public class DashboardService {
 
 
     public LoteResponseDTO obtenerLoteAdjudicado(UsuarioResponseDTO usuario){
+
+
         RepresentanteEmpresa representante = representanteRepository
                 .findByUsuario_Cuit(usuario.getCuit())
                 .orElseThrow(() -> new RuntimeException("Usuario No Encontrado"));
 
-        Proyecto proyecto = proyectoRepository
-                .findByEmpresaIdAndRepresentanteId(representante.getEmpresa().getId(), representante.getId())
-                .orElseThrow(() -> new RuntimeException("Proyecto No Encontrado"));
+        log.info("=== DEBUG ===");
+        log.info("CUIT usuario: {}", usuario.getCuit());
+        log.info("Representante ID: {}", representante.getId());
+        log.info("Empresa ID: {}", representante.getEmpresa().getId());
+
 
         Optional<OcupacionLote> ocupacionLote = ocupacionLoteRepository
-                .findByProyecto(proyecto);
+                .findOcupacionActiva(representante.getEmpresa().getId());
+
+        log.info("Ocupacion encontrada: " + ocupacionLote.isPresent());
 
         if (ocupacionLote.isEmpty()){
             return null;
