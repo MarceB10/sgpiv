@@ -192,6 +192,18 @@
                 <span th:text="${dashboard.loteAdjudicado.superficie} + ' m²'"></span>
             </p>
 
+
+            <p th:if="${dashboard.loteAdjudicado.restricciones != null
+           and !dashboard.loteAdjudicado.restricciones.isBlank()}">
+                <strong>Restricciones:</strong>
+                <span th:text="${dashboard.loteAdjudicado.restricciones != null
+                    and !dashboard.loteAdjudicado.restricciones.isBlank()
+                    ? dashboard.loteAdjudicado.restricciones
+                    : 'No Hay Restricciones'}">
+                </span>
+            </p>
+
+
             <p>
                 <strong>Fecha Adjudicacion:</strong>
                 <span th:text="${dashboard.loteAdjudicado.fechaAdjudicacion}"></span>
@@ -282,16 +294,18 @@
                     <span th:text="'$ ' + ${dashboard.inversionPorEmpleo}"></span>
                 </div>
 
-                <div class="dashboard-card impacto-card"
-                     th:if="${dashboard.metrosPorEmpleado != null}">
+                <div th:if="${dashboard.loteAdjudicado != null}">
+                    <div class="dashboard-card impacto-card"
+                        th:if="${dashboard.metrosPorEmpleado != null}">
 
-                    <h3>📐 Densidad Laboral</h3>
+                        <h3>📐 Densidad Laboral</h3>
 
-                    <span>1 empleado cada
-                        <strong th:text="${#numbers.formatDecimal(dashboard.metrosPorEmpleado,1,0)}"></strong>
-                        m²
-                    </span>
+                        <span>1 empleado cada
+                            <strong th:text="${#numbers.formatDecimal(dashboard.metrosPorEmpleado,1,0)}"></strong>
+                            m²
+                        </span>
 
+                    </div>
                 </div>
 
             </div>
@@ -302,12 +316,14 @@
 
 
 
-        <div class="dashboard-container">
+        <div th:if="${dashboard.loteAdjudicado != null}">
+            <div class="dashboard-container">
 
-            <h3>Inversión vs Valor del Lote</h3>
+                <h3>Inversión vs Valor del Lote</h3>
 
-            <canvas id="comparacionInversionChart"></canvas>
+                <canvas id="comparacionInversionChart"></canvas>
 
+            </div>
         </div>
 
 

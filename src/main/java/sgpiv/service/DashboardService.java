@@ -114,8 +114,6 @@ public class DashboardService {
 
     public DashboardEmpresaDTO obtenerMetricasDeMiEmpresa(UsuarioResponseDTO usuario){
 
-        LoteResponseDTO loteAdjudicado = obtenerLoteAdjudicado(usuario);
-
         RepresentanteEmpresa representante = representanteRepository
                 .findByUsuario_Cuit(usuario.getCuit())
                 .orElseThrow(() -> new RuntimeException("usuario no encontrado"));
@@ -124,28 +122,47 @@ public class DashboardService {
                 .findByEmpresa_Id(representante.getEmpresa().getId())
                 .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
 
-        OcupacionLote ocupacionLote = ocupacionLoteRepository.findOcupacionActiva(representante.getEmpresa().getId())
-                .orElseThrow();
+
+        LoteResponseDTO loteAdjudicado = obtenerLoteAdjudicado(usuario);
 
         BigDecimal inversionComprometida = proyecto.getInversionEstimada();
         Integer empleoProyectado = proyecto.getPersonalAOcupar();
 
-        Integer tiempoRadicada = tiempoRadicada(ocupacionLote);
-
-        Lote lote = loteRepository.findById(loteAdjudicado.getId()).orElseThrow();
-
-        Double metrosPorEmpleado = obtenerMetrosPorEmpleado(proyecto, lote);
-
-        BigDecimal inversionPorEmpleo = obtenerInversionPorEmpleo(proyecto);
-
         DashboardEmpresaDTO dashboardRepresentante = new DashboardEmpresaDTO();
+
         dashboardRepresentante.setLoteAdjudicado(loteAdjudicado);
         dashboardRepresentante.setInversionComprometida(inversionComprometida);
         dashboardRepresentante.setEmpleoProyectado(empleoProyectado);
-        dashboardRepresentante.setTiempoRadicada(tiempoRadicada);
-        dashboardRepresentante.setMetrosPorEmpleado(metrosPorEmpleado);
-        dashboardRepresentante.setInversionPorEmpleo(inversionPorEmpleo);
-        dashboardRepresentante.setValorLote(BigDecimal.valueOf(lote.getPrecio()));
+        dashboardRepresentante.setInversionPorEmpleo(
+                obtenerInversionPorEmpleo(proyecto)
+        );
+
+        if (loteAdjudicado != null) {
+
+            OcupacionLote ocupacionLote =
+                    ocupacionLoteRepository
+                            .findOcupacionActiva(representante.getEmpresa().getId())
+                            .orElseThrow();
+
+            Lote lote =
+                    loteRepository
+                            .findById(loteAdjudicado.getId())
+                            .orElseThrow();
+
+            dashboardRepresentante.setTiempoRadicada(
+                    tiempoRadicada(ocupacionLote)
+            );
+
+            dashboardRepresentante.setMetrosPorEmpleado(
+                    obtenerMetrosPorEmpleado(proyecto, lote)
+            );
+
+
+            dashboardRepresentante.setValorLote(
+                    BigDecimal.valueOf(lote.getPrecio())
+            );
+        }
+
 
         return dashboardRepresentante;
 
