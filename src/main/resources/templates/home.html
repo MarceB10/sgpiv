@@ -11,6 +11,9 @@
     <!-- Aca vinculé el diseño de los botones -->
     <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
 
+    <!-- Scripts para los graficos--->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -29,6 +32,295 @@
         </div>
         <img src="https://i.ibb.co/mC8BgNX4/logobien.png" alt="Logo" class="logo" style="margin-left: auto;">
     </div>
+
+    <!------------------- DASHBOARD GERENTE Y ORG PUBLICO (Inicio) -------------------------------->
+
+    <div th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'
+          or usuario.roles[0].nombre.name() == 'ROL_ORGANISMO_PUBLICO'}">
+
+        <!-- Dashboard ---------------- -->
+        <div class="dashboard-container">
+
+            <h2>Dashboard del Parque Industrial</h2>
+
+            <div class="dashboard-cards">
+
+                <div class="dashboard-card">
+                    <h3>Empresas Radicadas</h3>
+                    <span th:text="${dashboard.empresasRadicadas}">0</span>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Empresas Pendientes</h3>
+                    <span th:text="${dashboard.empresasPendientes}">0</span>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Lotes Disponibles</h3>
+                    <span th:text="${dashboard.lotesDisponibles}">0</span>
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Lotes Ocupados</h3>
+                    <span th:text="${dashboard.lotesOcupados}">0</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="chart-container">
+
+            <!----------- GRAFICO DE TORTA ------------------>
+
+            <canvas id="ocupacionChart"></canvas>
+
+            <div class="chart-center">
+                <span th:text="${#numbers.formatDecimal(dashboard.porcentajeOcupacion, 1, 2)} + '%'">0%</span>
+
+                <span class="chart-label">ocupación</span>
+
+            </div>
+
+        </div>
+
+        <!---- Empresas radicadas por Mes -------------->
+
+        <div class="dashboard-container">
+
+            <div class="dashboard-header">
+
+                <h3>Empresas Radicadas por Mes</h3>
+
+                <select id="anioSelector">
+
+                    <option
+                            th:each="entry : ${dashboard.radicacionesPorAnio}"
+                            th:value="${entry.key}"
+                            th:text="${entry.key}">
+                    </option>
+
+                </select>
+
+            </div>
+
+            <canvas id="radicacionesChart"></canvas>
+
+        </div>
+
+
+
+        <!--------------------- Grafico Barras ------------>
+
+        <div class="dashboard-container">
+
+            <h3>Empresas por Rubro</h3>
+
+            <canvas id="rubrosChart"></canvas>
+
+        </div>
+
+        <div class="dashboard-container">
+
+            <h3>Inversión por Rubro</h3>
+
+            <canvas id="inversionRubroChart"></canvas>
+
+        </div>
+
+        <div class="dashboard-container">
+
+            <h2>Indicadores de Impacto</h2>
+
+            <div class="dashboard-cards">
+
+                <div class="dashboard-card">
+                    <h3>Inversión Total Estimada</h3>
+
+                    <span th:text="'$ ' + ${dashboard.inversionTotalEstimada}"> $0 </span>
+
+                </div>
+
+                <div class="dashboard-card">
+                    <h3>Empleo Proyectado</h3>
+
+                    <span th:text="${dashboard.empleoProyectado}"> 0 </span>
+
+                    <small>puestos de trabajo</small>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="dashboard-container">
+
+            <h3>Servicios más Demandados</h3>
+
+            <canvas id="serviciosChart"></canvas>
+
+        </div>
+
+    </div>
+
+    <!------------------- DASHBOARD GERENTE Y ORG PUBLICO (Fin)  -------------------------------->
+
+
+
+    <!------------------- DASHBOARD REPRESENTANTE DE EMPRESA (Inicio)  -------------------------------->
+
+    <div th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">
+
+        <div class="dashboard-card"
+             th:if="${dashboard.loteAdjudicado != null}">
+
+            <h3>🏭 Lote Adjudicado</h3>
+
+            <p>
+                <strong>Lote:</strong>
+                <span th:text="${dashboard.loteAdjudicado.id}"></span>
+            </p>
+
+            <p>
+                <strong>Ubicación:</strong>
+                <span th:text="${dashboard.loteAdjudicado.ubicacion}"></span>
+            </p>
+
+            <p>
+                <strong>Superficie:</strong>
+                <span th:text="${dashboard.loteAdjudicado.superficie} + ' m²'"></span>
+            </p>
+
+            <p>
+                <strong>Fecha Adjudicacion:</strong>
+                <span th:text="${dashboard.loteAdjudicado.fechaAdjudicacion}"></span>
+            </p>
+
+            <p>
+                <strong>Tiempo Radicada:</strong>
+                <span th:text="${dashboard.tiempoRadicada}"></span>
+            </p>
+
+            <p>
+                <strong>Servicios:</strong>
+            </p>
+
+            <div class="services-list"
+                 th:if="${dashboard.loteAdjudicado.servicios != null
+                 and !dashboard.loteAdjudicado.servicios.isEmpty()}">
+
+                <span class="service-badge"
+                    th:each="servicio : ${dashboard.loteAdjudicado.servicios}"
+                    th:text="${servicio}">
+                </span>
+
+            </div>
+
+                <p th:if="${dashboard.loteAdjudicado.servicios == null
+                or dashboard.loteAdjudicado.servicios.isEmpty()}">
+                Sin servicios registrados
+                </p>
+
+        </div>
+
+
+        <div class="dashboard-card empty-card"
+             th:if="${dashboard.loteAdjudicado == null}">
+
+            <h3>🏭 Lote Industrial</h3>
+
+            <div class="empty-state">
+
+                <span class="empty-icon">📋</span>
+
+                <p>
+                    Aún no tenés un lote adjudicado.
+                </p>
+
+                <small>
+                    Cuando el proceso de adjudicación finalice,
+                    la información del lote aparecerá aquí.
+                </small>
+
+            </div>
+
+        </div>
+
+        <!--Datos de Empresa ---->
+
+        <div class="dashboard-container">
+
+            <h2>Indicadores de Mi Empresa</h2>
+
+            <div class="dashboard-cards">
+
+                <div class="dashboard-card impacto-card">
+                    <h3>Inversión Comprometida</h3>
+
+                    <span class="valor"
+                          th:text="'$ ' + ${dashboard.inversionComprometida}">
+                $0
+            </span>
+
+                    <small>Inversión declarada en el proyecto</small>
+                </div>
+
+                <div class="dashboard-card impacto-card">
+                    <h3>Empleo Proyectado</h3>
+
+                    <span class="valor"
+                          th:text="${dashboard.empleoProyectado}">
+                                0
+                    </span>
+
+                    <small>Puestos de trabajo previstos</small>
+                </div>
+
+                <div class="dashboard-card impacto-card">
+                    <h3>💰 Inversión por Empleo</h3>
+                    <span th:text="'$ ' + ${dashboard.inversionPorEmpleo}"></span>
+                </div>
+
+                <div class="dashboard-card impacto-card"
+                     th:if="${dashboard.metrosPorEmpleado != null}">
+
+                    <h3>📐 Densidad Laboral</h3>
+
+                    <span>1 empleado cada
+                        <strong th:text="${#numbers.formatDecimal(dashboard.metrosPorEmpleado,1,0)}"></strong>
+                        m²
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!------ --------------->
+
+
+
+        <div class="dashboard-container">
+
+            <h3>Inversión vs Valor del Lote</h3>
+
+            <canvas id="comparacionInversionChart"></canvas>
+
+        </div>
+
+
+
+
+
+
+
+
+    </div>
+
+    <!------------------- DASHBOARD REPRESENTANTE DE EMPRESA (Fin)  -------------------------------->
+
 
     <!-- VIDEO DE FONDO CON CARDS ENCIMA -->
     <div class="video-container">
@@ -64,14 +356,244 @@
 
     </div>
 
-<!--    <button class="btn btn-regMiEmpresa"-->
-<!--            onclick="window.location.href='/empresas/registrarMiEmpresa'"-->
-<!--            th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">-->
-<!--        Registrar mi empresa-->
-<!--    </button>-->
-
-
 </div>
 
+
+<th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'
+              or usuario.roles[0].nombre.name() == 'ROL_ORGANISMO_PUBLICO'}">
+
+
+    <!--------SCRIPT GRAFICO TORTA---------->
+    <script th:inline="javascript">
+
+        const ocupados =
+            [[${dashboard.lotesOcupados}]];
+
+        const disponibles =
+            [[${dashboard.lotesDisponibles}]];
+
+        new Chart(
+            document.getElementById('ocupacionChart'),
+            {
+                type: 'doughnut',
+
+                data: {
+                    labels: ['Ocupados', 'Disponibles'],
+
+                    datasets: [{
+                        data: [ocupados, disponibles]
+                    }]
+                },
+            options: {
+                cutout: '70%',
+                responsive: true,
+                maintainAspectRatio: true
+            }
+        });
+    </script>
+
+    <!----------------------SCRIPT GRAFICO BARRAS ----------------->
+    <script th:inline="javascript">
+
+        const rubros =
+            [[${dashboard.empresasPorRubro.keySet()}]];
+
+        const cantidades =
+            [[${dashboard.empresasPorRubro.values()}]];
+
+        new Chart(
+        document.getElementById('rubrosChart'),
+        {
+            type: 'bar',
+
+            data: {
+                labels: rubros,
+
+                datasets: [{
+                    label: 'Empresas',
+                    data: cantidades
+                }]
+            },
+
+            options: {
+                responsive: true
+            }
+        }
+    );
+    </script>
+
+    <!--- Grafico de barras (Rubros) ----->
+
+    <script th:inline="javascript">
+
+        const servicios =
+            [[${dashboard.serviciosDemandados.keySet()}]];
+
+        const cantidadesServicios =
+            [[${dashboard.serviciosDemandados.values()}]];
+
+        new Chart(
+            document.getElementById('serviciosChart'),
+            {
+                type: 'bar',
+
+                data: {
+                    labels: servicios,
+
+                    datasets: [{
+                        label: 'Cantidad de proyectos',
+                        data: cantidadesServicios
+                    }]
+                },
+
+                options: {
+                    indexAxis: 'y',
+
+                    responsive: true,
+
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        );
+
+    </script>
+
+    <!-- Inversion Por Rubros --->
+    <script th:inline="javascript">
+
+        const rubrosInv =
+            [[${dashboard.inversionPorRubro.keySet()}]];
+
+        const inversiones =
+            [[${dashboard.inversionPorRubro.values()}]];
+
+        new Chart(
+            document.getElementById('inversionRubroChart'),
+            {
+                type: 'bar',
+
+                data: {
+                    labels: rubrosInv,
+
+                    datasets: [{
+                        label: 'Inversión Estimada ($)',
+                        data: inversiones
+                    }]
+                },
+
+                options: {
+                    indexAxis: 'y',
+                    responsive: true
+                }
+            }
+        );
+
+    </script>
+
+    <!----- Empresas Raicadas por Mes ---->
+
+    <script th:inline="javascript">
+
+        const radicacionesPorAnio =
+            [[${dashboard.radicacionesPorAnio}]];
+
+        const meses = [
+            'Ene', 'Feb', 'Mar', 'Abr',
+            'May', 'Jun', 'Jul', 'Ago',
+            'Sep', 'Oct', 'Nov', 'Dic'
+        ];
+
+        const selector =
+            document.getElementById('anioSelector');
+
+        const chart = new Chart(
+            document.getElementById('radicacionesChart'),
+            {
+                type: 'line',
+
+                data: {
+                    labels: meses,
+
+                    datasets: [{
+                        label: 'Empresas Radicadas',
+                        data: radicacionesPorAnio[selector.value]
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+                    tension: 0.3
+                }
+            }
+        );
+
+        selector.addEventListener('change', function() {
+
+            chart.data.datasets[0].data =
+                radicacionesPorAnio[this.value];
+
+            chart.update();
+
+        });
+
+    </script>
+
+</th:block>
+
+<!----   GRAFICOS DEL REPRESENTANTE  ----------->
+
+<th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">
+
+
+    <script th:inline="javascript">
+
+        const valorLote =
+            [[${dashboard.valorLote}]];
+
+        const inversion =
+            [[${dashboard.inversionComprometida}]];
+
+        new Chart(
+            document.getElementById('comparacionInversionChart'),
+            {
+                type: 'bar',
+
+                data: {
+                    labels: [
+                        'Valor del Lote',
+                        'Inversión Comprometida'
+                    ],
+
+                    datasets: [{
+                        data: [
+                            valorLote,
+                            inversion
+                        ]
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        );
+
+    </script>
+
+</th:block>
+
+
+
 </body>
+
 </html>

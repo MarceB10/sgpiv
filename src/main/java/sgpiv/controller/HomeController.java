@@ -6,9 +6,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import sgpiv.dtos.response.UsuarioResponseDTO;
+import sgpiv.enums.NombreRol;
 import sgpiv.model.SolicitudProyecto;
 import sgpiv.model.SolicitudRadicacion;
 import sgpiv.repository.SolicitudProyectoRepository;
+import sgpiv.service.DashboardService;
 import sgpiv.service.SolicitudService;
 import sgpiv.service.UsuarioService;
 
@@ -19,6 +21,8 @@ public class HomeController {
     private final UsuarioService usuarioService;
     private final SolicitudService solicitudService;
     private final SolicitudProyectoRepository solicitudProyectoRepository;
+
+    private final DashboardService dashboardService;
 
     @GetMapping("/home")
     public String home(Model model,
@@ -33,6 +37,18 @@ public class HomeController {
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("pagina", "home");
+
+        if (usuario.getRoles().stream()
+                .anyMatch(r -> r.getNombre() == NombreRol.ROL_REPRESENTANTE_EMPRESA)){
+            model.addAttribute(
+                    "dashboard",
+                    dashboardService.obtenerMetricasDeMiEmpresa(usuario));
+        }else {
+            model.addAttribute(
+                    "dashboard",
+                    dashboardService.obtenerMetricasGenerales());
+        }
+
 
         SolicitudRadicacion solicitudActiva = solicitudService.obtenerSolicitudActiva(usuario.getCuit());
         model.addAttribute("solicitudActiva", solicitudActiva);

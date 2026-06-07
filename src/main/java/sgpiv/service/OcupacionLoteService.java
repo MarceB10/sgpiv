@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import sgpiv.dtos.response.OcupacionLoteResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
 import sgpiv.enums.EstadoLote;
+import sgpiv.enums.EstadoProyecto;
 import sgpiv.model.*;
 import sgpiv.repository.EmpresaRepository;
 import sgpiv.repository.LoteRepository;
@@ -23,6 +24,8 @@ public class OcupacionLoteService {
     private final RepresentanteRepository representanteRepository;
     private final LoteRepository loteRepository;
     private final EmpresaRepository empresaRepository;
+
+    private final NotificacionService notificacionService;
 
     private final ProyectoService proyectoService;
 
@@ -61,7 +64,14 @@ public class OcupacionLoteService {
         proyecto.getEmpresa().setEstadoEmpresa(EstadoEmpresa.RADICADA);
         empresaRepository.save(proyecto.getEmpresa());
         OcupacionLote ocupacionLote = new OcupacionLote(proyecto, lote, LocalDate.now());
+        proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
         ocupacionLoteRepository.save(ocupacionLote);
+
+        notificacionService.crearNotificacion(
+                "Se te ha adjudicado un Lote: \n" +
+                        "Ubicacion: " + lote.getUbicacion(),
+                proyecto.getRepresentanteEmpresa().getUsuario()
+        );
     }
 
 

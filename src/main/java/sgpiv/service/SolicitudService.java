@@ -120,17 +120,27 @@ public class SolicitudService {
         // Cambiar estado a pendiente_proyecto
         solicitud.setEstado(EstadoSolicitud.PENDIENTE_PROYECTO);
 
-        Usuario usuario = usuarioRepository
-                .findByCuit(solicitud.getUsuario().getCuit())
-                .orElseThrow(() -> new RuntimeException("Usuario No encontrado"));
+//        Usuario usuario = usuarioRepository
+//                .findByCuit(solicitud.getUsuario().getCuit())
+//                .orElseThrow(() -> new RuntimeException("Usuario No encontrado"));
 
-        notificacionService.crearNotificacion(
-                "Tu solicitud de radicación fue aprobada. Ahora debes presentar un proyecto",
-                usuario
-
-        );
+//        System.out.println(">>> Creando notificación para: " + usuario.getCuit());
 
         solicitudRadicacionRepository.save(solicitud);
+
+        try {
+            notificacionService.crearNotificacion(
+                    "Tu solicitud de radicación fue aprobada. Ahora debes presentar un proyecto",
+                    solicitud.getUsuario()
+
+            );
+            System.out.println(">>> Notificación creada OK");
+
+        }catch (Exception e){
+            System.out.println(">>> ERROR al crear notificación: " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 
     public void guardarSolicitudProyecto(SolicitudProyectoRequestDTO dto){
@@ -177,6 +187,17 @@ public class SolicitudService {
 
         solicitud.setEstado(EstadoSolicitudProyecto.PENDIENTE);
 
+
+        //NOTIFICACION A GERENTE
+        List<Usuario> gerentes = usuarioRepository.findByRol(NombreRol.ROL_GERENTE);
+        for (Usuario gerente : gerentes) {
+            notificacionService.crearNotificacion(
+                    "Nueva solicitud de Proyecto de: " + solicitud.getSolicitudRadicacion().getRazonSocial(),
+                    gerente
+            );
+        }
+
+
         solicitudProyectoRepository.save(solicitud);
         soliRadicacion.setSolicitudProyecto(solicitud);
         solicitudRadicacionRepository.save(soliRadicacion);
@@ -191,7 +212,7 @@ public class SolicitudService {
         // 1. Crear empresa desde la solicitud de radicacion
         Empresa empresa = new Empresa();
         empresa.setRazonSocial(sp.getSolicitudRadicacion().getRazonSocial());
-        empresa.setTelefono(Long.valueOf(sp.getSolicitudRadicacion().getTelefonoEmpresa()));
+        empresa.setTelefono(sp.getSolicitudRadicacion().getTelefonoEmpresa());
         empresa.setIngresoBrutos(sp.getSolicitudRadicacion().getIngresoBrutos());
         empresa.setDescripcionBienServicio(sp.getSolicitudRadicacion().getDescripcionBienServicio());
         empresa.setCuit(sp.getSolicitudRadicacion().getCuitEmpresa());
@@ -259,6 +280,11 @@ public class SolicitudService {
         // 5. Actualizar estado
         sp.setEstado(EstadoSolicitudProyecto.APROBADA);
         solicitudProyectoRepository.save(sp);
+
+        notificacionService.crearNotificacion(
+                "Tu solicitud fue Aceptada. ¡Bienvenido al Parque Industrial de Viedma!",
+                usuario
+        );
 
     }
 
@@ -374,6 +400,11 @@ public class SolicitudService {
         if (solicitud.getEstado() != EstadoSolicitud.PENDIENTE) {
             throw new RuntimeException("Solo se pueden aceptar solicitudes en estado PENDIENTE");
         }
+        notificacionService.crearNotificacion(
+                "Tu solicitud de radicación fue aprobada. Ahora debes presentar una solicitud de Proyecto",
+                solicitud.getUsuario()
+
+        );
 
         solicitud.setEstado(EstadoSolicitud.PENDIENTE_PROYECTO);
         solicitudRadicacionRepository.save(solicitud);
