@@ -3,17 +3,18 @@ package sgpiv.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import sgpiv.dtos.response.DashboardDTO;
+import sgpiv.dtos.response.DashboardGeneralDTO;
+import sgpiv.dtos.response.DashboardEmpresaDTO;
 import sgpiv.dtos.response.LoteResponseDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
-import sgpiv.enums.EstadoEmpresa;
-import sgpiv.enums.EstadoLote;
-import sgpiv.enums.EstadoSolicitud;
-import sgpiv.enums.ServicioLote;
+import sgpiv.enums.*;
 import sgpiv.model.*;
 import sgpiv.repository.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class DashboardService {
     private final OcupacionLoteRepository ocupacionLoteRepository;
     private final RepresentanteRepository representanteRepository;
 
-    public DashboardDTO obtenerMetricasGenerales() {
+    public DashboardGeneralDTO obtenerMetricasGenerales() {
 
         long totalEmpresas =
                 empresaRepository.count();
@@ -91,7 +92,7 @@ public class DashboardService {
 
         Map<Integer, long[]> radicacionesPorAnio = obtenerRadicacionesPorAnio();
 
-        DashboardDTO dashboard = new DashboardDTO();
+        DashboardGeneralDTO dashboard = new DashboardGeneralDTO();
 
         dashboard.setTotalEmpresas(totalEmpresas);
         dashboard.setTotalProyectos(totalProyectos);
@@ -111,13 +112,44 @@ public class DashboardService {
         return dashboard;
     }
 
-    public DashboardDTO obtenerMetricasDeMiEmpresa(UsuarioResponseDTO usuario){
+    public DashboardEmpresaDTO obtenerMetricasDeMiEmpresa(UsuarioResponseDTO usuario){
 
         LoteResponseDTO loteAdjudicado = obtenerLoteAdjudicado(usuario);
 
-        DashboardDTO dashboardRepresentante = new DashboardDTO();
+        RepresentanteEmpresa representante = representanteRepository
+                .findByUsuario_Cuit(usuario.getCuit())
+                .orElseThrow(() -> new RuntimeException("usuario no encontrado"));
 
+        Proyecto proyecto = proyectoRepository
+                .findByEmpresa_Id(representante.getEmpresa().getId())
+                .orElseThrow(() -> new RuntimeException("Proyecto no encontrado"));
+
+        OcupacionLote ocupacionLote = ocupacionLoteRepository.findOcupacionActiva(representante.getEmpresa().getId())
+                .orElseThrow();
+
+
+
+
+
+        BigDecimal inversionComprometida = proyecto.getInversionEstimada();
+        Integer empleoProyectado = proyecto.getPersonalAOcupar();
+
+        Integer tiempoRadicada = tiempoRadicada(ocupacionLote);
+
+        Lote lote = loteRepository.findById(loteAdjudicado.getId()).orElseThrow();
+
+        Double metrosPorEmpleado = obtenerMetrosPorEmpleado(proyecto, lote);
+
+        BigDecimal inversionPorEmpleo = obtenerInversionPorEmpleo(proyecto);
+
+        DashboardEmpresaDTO dashboardRepresentante = new DashboardEmpresaDTO();
         dashboardRepresentante.setLoteAdjudicado(loteAdjudicado);
+        dashboardRepresentante.setInversionComprometida(inversionComprometida);
+        dashboardRepresentante.setEmpleoProyectado(empleoProyectado);
+        dashboardRepresentante.setTiempoRadicada(tiempoRadicada);
+        dashboardRepresentante.setMetrosPorEmpleado(metrosPorEmpleado);
+        dashboardRepresentante.setInversionPorEmpleo(inversionPorEmpleo);
+        dashboardRepresentante.setValorLote(BigDecimal.valueOf(lote.getPrecio()));
 
         return dashboardRepresentante;
 
@@ -148,7 +180,7 @@ public class DashboardService {
 
         Lote lote = ocupacionLote.get().getLote();
 
-        return new LoteResponseDTO(lote);
+        return new LoteResponseDTO(lote, ocupacionLote.get().getFechaInicio());
     }
 
     public int obtenerEmpleoProyectado() {
@@ -219,5 +251,48 @@ public class DashboardService {
         return resultado;
     }
 
+
+    public Integer tiempoRadicada(OcupacionLote ocupacionLote){
+        if (ocupacionLote == null){
+            throw new RuntimeException("no existe un loteadjudicado a tu empresa");
+        }
+
+        return Math.toIntExact(ChronoUnit.DAYS.between(
+                ocupacionLote.getFechaInicio(),
+                LocalDate.now()
+        ));
+    }
+
+    public Double obtenerMetrosPorEmpleado(
+            Proyecto proyecto,
+            Lote lote){
+
+        if(proyecto.getPersonalAOcupar() == null
+                || proyecto.getPersonalAOcupar() == 0
+                || lote == null
+                || lote.getSuperficie() == null){
+            return null;
+        }
+
+        return lote.getSuperficie()
+                / proyecto.getPersonalAOcupar();
+    }
+
+    public BigDecimal obtenerInversionPorEmpleo(Proyecto proyecto){
+
+        if(proyecto.getPersonalAOcupar() == null
+                || proyecto.getPersonalAOcupar() == 0){
+            return BigDecimal.ZERO;
+        }
+
+        return proyecto.getInversionEstimada()
+                .divide(
+                        BigDecimal.valueOf(
+                                proyecto.getPersonalAOcupar()
+                        ),
+                        2,
+                        RoundingMode.HALF_UP
+                );
+    }
 
 }

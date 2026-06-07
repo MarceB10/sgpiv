@@ -5,13 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.Month;
 import java.util.Map;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DashboardDTO {
+public class DashboardGeneralDTO {
 
     //DATOS DE GERENTE, ORG PUBLICO----------------
     private long totalEmpresas;
@@ -38,12 +37,6 @@ public class DashboardDTO {
 
     // map de radicaciones por mes, dentro de un map con radicaciones anuales
     private Map<Integer, long[]> radicacionesPorAnio;
-
-    //--------------------------------------------------------------------------------
-    //DATOS DEL REPRESENTANTE
-
-    private LoteResponseDTO loteAdjudicado;
-
 
 
 }

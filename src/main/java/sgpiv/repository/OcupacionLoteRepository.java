@@ -25,6 +25,9 @@ public interface OcupacionLoteRepository extends JpaRepository<OcupacionLote, Lo
     @Query("SELECT o FROM OcupacionLote o WHERE o.proyecto.empresa.id = :empresaId AND o.fechaFin IS NULL")
     Optional<OcupacionLote> findOcupacionActiva(@Param("empresaId") Long empresaId);
 
+    @Query("SELECT o FROM OcupacionLote o WHERE o.lote.id = :loteId AND o.fechaFin IS NULL")
+    Optional<OcupacionLote> findOcupacionActivaPorLote(@Param("loteId") Long loteId);
+
     List<OcupacionLote> findAll();
 
 }

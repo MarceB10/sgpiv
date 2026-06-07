@@ -192,6 +192,36 @@
                 <span th:text="${dashboard.loteAdjudicado.superficie} + ' m²'"></span>
             </p>
 
+            <p>
+                <strong>Fecha Adjudicacion:</strong>
+                <span th:text="${dashboard.loteAdjudicado.fechaAdjudicacion}"></span>
+            </p>
+
+            <p>
+                <strong>Tiempo Radicada:</strong>
+                <span th:text="${dashboard.tiempoRadicada}"></span>
+            </p>
+
+            <p>
+                <strong>Servicios:</strong>
+            </p>
+
+            <div class="services-list"
+                 th:if="${dashboard.loteAdjudicado.servicios != null
+                 and !dashboard.loteAdjudicado.servicios.isEmpty()}">
+
+                <span class="service-badge"
+                    th:each="servicio : ${dashboard.loteAdjudicado.servicios}"
+                    th:text="${servicio}">
+                </span>
+
+            </div>
+
+                <p th:if="${dashboard.loteAdjudicado.servicios == null
+                or dashboard.loteAdjudicado.servicios.isEmpty()}">
+                Sin servicios registrados
+                </p>
+
         </div>
 
 
@@ -217,16 +247,68 @@
 
         </div>
 
+        <!--Datos de Empresa ---->
+
+        <div class="dashboard-container">
+
+            <h2>Indicadores de Mi Empresa</h2>
+
+            <div class="dashboard-cards">
+
+                <div class="dashboard-card impacto-card">
+                    <h3>Inversión Comprometida</h3>
+
+                    <span class="valor"
+                          th:text="'$ ' + ${dashboard.inversionComprometida}">
+                $0
+            </span>
+
+                    <small>Inversión declarada en el proyecto</small>
+                </div>
+
+                <div class="dashboard-card impacto-card">
+                    <h3>Empleo Proyectado</h3>
+
+                    <span class="valor"
+                          th:text="${dashboard.empleoProyectado}">
+                                0
+                    </span>
+
+                    <small>Puestos de trabajo previstos</small>
+                </div>
+
+                <div class="dashboard-card impacto-card">
+                    <h3>💰 Inversión por Empleo</h3>
+                    <span th:text="'$ ' + ${dashboard.inversionPorEmpleo}"></span>
+                </div>
+
+                <div class="dashboard-card impacto-card"
+                     th:if="${dashboard.metrosPorEmpleado != null}">
+
+                    <h3>📐 Densidad Laboral</h3>
+
+                    <span>1 empleado cada
+                        <strong th:text="${#numbers.formatDecimal(dashboard.metrosPorEmpleado,1,0)}"></strong>
+                        m²
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!------ --------------->
 
 
 
+        <div class="dashboard-container">
 
+            <h3>Inversión vs Valor del Lote</h3>
 
+            <canvas id="comparacionInversionChart"></canvas>
 
-
-
-
-
+        </div>
 
 
 
@@ -462,8 +544,53 @@
 
 </th:block>
 
+<!----   GRAFICOS DEL REPRESENTANTE  ----------->
+
+<th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}">
 
 
+    <script th:inline="javascript">
+
+        const valorLote =
+            [[${dashboard.valorLote}]];
+
+        const inversion =
+            [[${dashboard.inversionComprometida}]];
+
+        new Chart(
+            document.getElementById('comparacionInversionChart'),
+            {
+                type: 'bar',
+
+                data: {
+                    labels: [
+                        'Valor del Lote',
+                        'Inversión Comprometida'
+                    ],
+
+                    datasets: [{
+                        data: [
+                            valorLote,
+                            inversion
+                        ]
+                    }]
+                },
+
+                options: {
+                    responsive: true,
+
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        );
+
+    </script>
+
+</th:block>
 
 
 

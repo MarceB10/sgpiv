@@ -25,13 +25,13 @@ public class LoteResponseDTO {
     private EstadoLote estadoLote;
     private Set<ServicioLote> servicios;
 
-    public LoteResponseDTO(Lote lote) {
+    public LoteResponseDTO(Lote lote, LocalDate fechaAdjudicacion) {
         this.id               = lote.getId();
         this.superficie       = lote.getSuperficie();
         this.ubicacion        = lote.getUbicacion();
         this.precio           = lote.getPrecio();
         this.fechaUso         = lote.getFechaUso();
-        this.fechaAdjudicacion = lote.getFechaAdjudicacion();
+        this.fechaAdjudicacion = fechaAdjudicacion;
         this.restricciones    = lote.getRestricciones();
         this.estadoLote       = lote.getEstadoLote();
         this.servicios        = lote.getServicios();
