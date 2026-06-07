@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sgpiv.dtos.response.LoteResponseDTO;
 import sgpiv.dtos.request.LoteRequestDTO;
-import sgpiv.enums.ServicioLote;
 import sgpiv.model.Lote;
 import sgpiv.model.OcupacionLote;
 import sgpiv.model.Proyecto;
