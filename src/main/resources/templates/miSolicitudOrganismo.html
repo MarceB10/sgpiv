@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mi Solicitud - Organismo Público</title>
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+  <link rel="stylesheet" th:href="@{/css/detalleSolicitud.css}"/>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-text">
+      <h1>Mi Solicitud de Acceso</h1>
+      <p>Seguí el estado de tu solicitud como organismo público</p>
+    </div>
+  </div>
+
+  <!-- ESTADO PENDIENTE -->
+  <div th:if="${solicitud.estado.name() == 'PENDIENTE'}" class="info-box">
+    <div class="info-icon">
+      <i class="fa-solid fa-clock"></i>
+    </div>
+    <div class="info-text">
+      <h3>Solicitud en revisión</h3>
+      <p>Tu solicitud está siendo evaluada por el gerente del Parque Industrial.
+        Te notificaremos cuando haya una resolución.</p>
+    </div>
+  </div>
+
+  <!-- ESTADO RECHAZADA -->
+  <div th:if="${solicitud.estado.name() == 'RECHAZADA'}" class="motivo-box">
+    <h3><i class="fa-solid fa-triangle-exclamation"></i> Solicitud rechazada</h3>
+    <p th:text="${solicitud.motivoRechazo}"></p>
+    <a th:href="@{/solicitudOrganismo}" class="btn-primary"
+       style="display:inline-flex; align-items:center; gap:8px; margin-top:16px;
+                  padding: 12px 20px; border-radius:10px; text-decoration:none;
+                  background:#2f6df5; color:white; font-weight:600; font-size:15px;">
+      <i class="fa-solid fa-rotate-left"></i>
+      Presentar nueva solicitud
+    </a>
+  </div>
+
+  <!-- ESTADO APROBADA -->
+  <div th:if="${solicitud.estado.name() == 'APROBADA'}" class="info-box"
+       style="border-left-color: #22c55e;">
+    <div class="info-icon" style="background:#22c55e;">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <div class="info-text">
+      <h3 style="color:#15803d;">Solicitud aprobada</h3>
+      <p>Tu solicitud fue aprobada. Ya tenés acceso al sistema como organismo público.</p>
+    </div>
+  </div>
+
+  <!-- DATOS DE LA SOLICITUD -->
+  <div class="seccion">
+    <h2 class="seccion-titulo">🏛️ Datos del organismo</h2>
+    <div class="datos-grid">
+
+      <div class="dato-item">
+        <span class="dato-label">Nombre del organismo</span>
+        <span class="dato-valor" th:text="${solicitud.nombreOrganismo}">-</span>
+      </div>
+
+      <div class="dato-item">
+        <span class="dato-label">Tipo de organismo</span>
+        <span class="dato-valor" th:text="${solicitud.tipoOrganismo}">-</span>
+      </div>
+
+      <div class="dato-item">
+        <span class="dato-label">Cargo del solicitante</span>
+        <span class="dato-valor" th:text="${solicitud.cargoSolicitante}">-</span>
+      </div>
+
+      <div class="dato-item">
+        <span class="dato-label">Fecha de envío</span>
+        <span class="dato-valor" th:text="${solicitud.fechaEnvio}">-</span>
+      </div>
+
+      <div class="dato-item">
+        <span class="dato-label">Estado</span>
+        <span th:text="${solicitud.estado}"
+              th:class="${solicitud.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
+                                (${solicitud.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">
+                </span>
+      </div>
+
+      <div class="dato-item" th:if="${solicitud.nombreArchivo != null}">
+        <span class="dato-label">Informe adjunto</span>
+        <span class="dato-valor" th:text="${solicitud.nombreArchivo}">-</span>
+      </div>
+
+      <div class="dato-item full-width">
+        <span class="dato-label">Motivo de acceso</span>
+        <span class="dato-valor" th:text="${solicitud.motivoAcceso}">-</span>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
