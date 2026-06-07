@@ -2,6 +2,7 @@ package sgpiv.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sgpiv.dtos.response.OcupacionLoteResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
 import sgpiv.enums.EstadoLote;
@@ -74,5 +75,61 @@ public class OcupacionLoteService {
         );
     }
 
+    @Transactional
+    public void desadjudicar(Long empresaId, String motivo) {
+
+        // 1. Buscar la empresa
+        Empresa empresa = empresaRepository.findById(empresaId)
+                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+
+        // 2. Verificar estado
+        if (empresa.getEstadoEmpresa() != EstadoEmpresa.RADICADA &&
+                empresa.getEstadoEmpresa() != EstadoEmpresa.ADJUDICADA) {
+            throw new RuntimeException("La empresa no está radicada en el parque");
+        }
+
+//        Para implementar mas adelante
+//        // 3. Verificar que no tenga proyectos activos
+//        boolean tieneProyectosActivos = empresa.getProyectos().stream()
+//                .anyMatch(p -> p.getEstadoProyecto() == EstadoProyecto.ACTIVO);
+//
+//        if (tieneProyectosActivos) {
+//            throw new RuntimeException(
+//                    "La empresa tiene proyectos activos. Finalizalos antes de desadjudicar");
+//        }
+
+        // 4. Buscar la ocupacion activa
+        OcupacionLote ocupacionActiva = ocupacionLoteRepository
+                .findByProyecto_EmpresaAndFechaFinIsNull(empresa)
+                .orElseThrow(() -> new RuntimeException(
+                        "No hay ocupacion activa para esta empresa"));
+
+        // 5. Cerrar la ocupacion
+        ocupacionActiva.setFechaFin(LocalDate.now());
+        ocupacionActiva.setMotivoFinalizacion(motivo);
+        ocupacionLoteRepository.save(ocupacionActiva);
+
+        // 6. Liberar el lote
+        Lote lote = ocupacionActiva.getLote();
+        lote.habilitarDisponibilidad();
+        loteRepository.save(lote);
+
+        // Suspender todos los proyectos de la empresa
+        empresa.getProyectos().forEach(proyecto -> {
+            proyecto.setEstadoProyecto(EstadoProyecto.INACTIVO);
+        });
+        empresaRepository.save(empresa);
+
+        // 7. Dar de baja la empresa
+        empresa.setEstadoEmpresa(EstadoEmpresa.BAJA);
+        empresaRepository.save(empresa);
+
+        // 8. Desactivar representante
+        representanteRepository.findByEmpresa(empresa)
+                .ifPresent(rep -> {
+                    rep.getUsuario().desactivar();
+                    representanteRepository.save(rep);
+                });
+    }
 
 }

@@ -127,10 +127,6 @@ public class DashboardService {
         OcupacionLote ocupacionLote = ocupacionLoteRepository.findOcupacionActiva(representante.getEmpresa().getId())
                 .orElseThrow();
 
-
-
-
-
         BigDecimal inversionComprometida = proyecto.getInversionEstimada();
         Integer empleoProyectado = proyecto.getPersonalAOcupar();
 

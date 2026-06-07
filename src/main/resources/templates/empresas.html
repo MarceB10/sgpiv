@@ -151,13 +151,10 @@
                 </td>
 
                 <td>
-                    <button class="btn btn-edit">
-                        Editar
-                    </button>
-
-                    <button class="btn btn-delete">
-                        Eliminar
-                    </button>
+                    <a th:href="@{/empresas/{id}(id=${empresa.id})}"
+                       class="btn btn-edit">
+                        <i class="fa-solid fa-eye"></i> Ver detalle
+                    </a>
                 </td>
 
             </tr>

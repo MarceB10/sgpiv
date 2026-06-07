@@ -30,4 +30,6 @@ public interface OcupacionLoteRepository extends JpaRepository<OcupacionLote, Lo
 
     List<OcupacionLote> findAll();
 
+    Optional<OcupacionLote> findByProyecto_EmpresaAndFechaFinIsNull(Empresa empresa);
+
 }

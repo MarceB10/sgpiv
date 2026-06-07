@@ -19,10 +19,8 @@ import sgpiv.model.SolicitudProyecto;
 import sgpiv.model.SolicitudRadicacion;
 import sgpiv.repository.ProyectoRepository;
 import sgpiv.repository.SolicitudProyectoRepository;
-import sgpiv.service.EmpresaService;
-import sgpiv.service.ProyectoService;
-import sgpiv.service.RepresentanteService;
-import sgpiv.service.SolicitudService;
+import sgpiv.service.*;
+import sgpiv.enums.EstadoProyecto;
 
 import java.util.List;
 
@@ -31,6 +29,7 @@ import java.util.List;
 @RequestMapping("/empresas")
 public class EmpresaController {
 
+    private final OcupacionLoteService ocupacionLoteService;
     private final EmpresaService empresaService;
     private final RepresentanteService representanteService;
     private final ProyectoService proyectoService;
@@ -217,5 +216,49 @@ public class EmpresaController {
         model.addAttribute("solicitudProyectoActiva", solicitudProyectoActiva);
 
         return "representante_empresa/proyectoEmpresa";
+    }
+
+    @GetMapping("/{id}")
+    public String detalleEmpresa(@PathVariable Long id,
+                                 Model model,
+                                 HttpSession session) {
+        UsuarioResponseDTO usuario =
+                (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/";
+
+        EmpresaResponseDTO empresa = empresaService.buscarPorId(id);
+
+//        boolean tieneProyectosActivos = empresa.getProyectos().stream()
+//                .anyMatch(p -> p.getEstado() != null &&
+//                        p.getEstado() == EstadoProyecto.ACTIVO);
+
+        model.addAttribute("empresa", empresa);
+        model.addAttribute("tieneProyectosActivos", false);//cambiar a true mas adelante
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pagina", "empresas");
+        return "gerente/detalleEmpresa";
+    }
+
+    @PostMapping("/{id}/desadjudicar")
+    public String desadjudicar(@PathVariable Long id,
+                               @RequestParam String motivo,
+                               Model model,
+                               HttpSession session) {
+        UsuarioResponseDTO usuario =
+                (UsuarioResponseDTO) session.getAttribute("usuario");
+        try {
+            ocupacionLoteService.desadjudicar(id, motivo);
+            return "redirect:/empresas";
+        } catch (RuntimeException e) {
+            EmpresaResponseDTO empresa = empresaService.buscarPorId(id);
+            boolean tieneProyectosActivos = empresa.getProyectos().stream()
+                    .anyMatch(p -> p.getEstado().equals("ACTIVO"));
+            model.addAttribute("empresa", empresa);
+            model.addAttribute("tieneProyectosActivos", tieneProyectosActivos);
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("pagina", "empresas");
+            return "gerente/detalleEmpresa";
+        }
     }
 }
