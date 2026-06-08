@@ -189,7 +189,8 @@ public class DataInitializer implements CommandLineRunner {
 
         // ESTADO
         solicitud.setEstado(EstadoSolicitud.PENDIENTE);
-        solicitud.setFechaEnvio(LocalDate.now());
+//        solicitud.setFechaEnvio(LocalDate.now());
+        solicitud.setFechaEnvio(LocalDate.of(2025, 1, 1));
 
         // USUARIO NULO
         solicitud.setUsuario(alan);
@@ -430,7 +431,14 @@ public class DataInitializer implements CommandLineRunner {
 
         LoteResponseDTO loteSeleccionado = lotesDisponibles.get(0);
 
-        ocupacionLoteService.ocuparLote(loteSeleccionado.getId(), proyecto.getId());
+//        ocupacionLoteService.ocuparLote(
+//                loteSeleccionado.getId(),
+//                proyecto.getId());
+
+        ocupacionLoteService.ocuparLote(
+                loteSeleccionado.getId(),
+                proyecto.getId(),
+                LocalDate.of(2025, 8, 10));
 
         System.out.println("Lote adjudicado al proyecto de Alan Turing");
     }

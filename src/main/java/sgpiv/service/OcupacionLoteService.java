@@ -50,8 +50,11 @@ public class OcupacionLoteService {
         return resultado;
     }
 
+    public void ocuparLote(Long idLote, Long idProyecto) {
+        ocuparLote(idLote, idProyecto, LocalDate.now());
+    }
 
-    public void ocuparLote(Long idLote, Long idProyecto){
+    public void ocuparLote(Long idLote, Long idProyecto, LocalDate fechaAdjudicacion) {
         Lote lote = loteRepository
                 .findById(idLote)
                 .orElseThrow(() -> new RuntimeException("Lote no encontrado"));
@@ -59,12 +62,11 @@ public class OcupacionLoteService {
         Proyecto proyecto = proyectoService
                 .obtenerPorId(idProyecto);
 
-
         lote.setEstadoLote(EstadoLote.EN_USO);
         loteRepository.save(lote);
         proyecto.getEmpresa().setEstadoEmpresa(EstadoEmpresa.RADICADA);
         empresaRepository.save(proyecto.getEmpresa());
-        OcupacionLote ocupacionLote = new OcupacionLote(proyecto, lote, LocalDate.now());
+        OcupacionLote ocupacionLote = new OcupacionLote(proyecto, lote, fechaAdjudicacion);
         proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
         ocupacionLoteRepository.save(ocupacionLote);
 
