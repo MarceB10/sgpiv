@@ -4,7 +4,8 @@
 
 .main-content {
     margin-left: 250px;
-    width: 100%;
+    width: calc(100% - 250px);
+    min-height: 100vh;
     padding: 35px;
 }
 
@@ -16,23 +17,39 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    max-height: 80px;
+
     width: 100%;
+    margin-bottom: 34px;
+    padding: 24px 28px;
+
+    background: linear-gradient(135deg, #f8fbff, #eef5ff);
+    border: 1px solid #e5edf8;
+    border-radius: 22px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
 .header h1 {
-    font-size: 32px;
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
     color: #0f172a;
     margin-bottom: 8px;
 }
 
 .header p {
     color: #64748b;
+    font-size: 16px;
+}
+
+.logo {
+    height: 95px;
+    width: auto;
+    object-fit: contain;
+    margin-left: auto;
 }
 
 /* ========================= */
-/* CARDS */
+/* CARDS GENERALES */
 /* ========================= */
 
 .cards {
@@ -43,22 +60,16 @@
 }
 
 .card {
-    background: white;
+    background: #ffffff;
     padding: 25px;
     border-radius: 18px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     border-top: 4px solid #2563eb;
 
-    min-width: 0;           /* Evita que la card se estire más que su contenedor */
-    overflow: hidden;       /* Corta cualquier cosa que intente salir */
-    word-wrap: break-word;  /* Fuerza el salto de línea en palabras largas */
+    min-width: 0;
+    overflow: hidden;
+    word-wrap: break-word;
     overflow-wrap: break-word;
-}
-
-.card h2, .card p {
-    white-space: nowrap;    /* Primero intentamos que no salte */
-    overflow: hidden;       /* Si sobra, lo ocultamos */
-    text-overflow: ellipsis; /* ¡Y ponemos los tres puntitos (...)! */
 }
 
 .card h3 {
@@ -70,6 +81,13 @@
 .card h2 {
     font-size: 28px;
     color: #0f172a;
+}
+
+.card h2,
+.card p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* ========================= */
@@ -88,8 +106,10 @@
     position: absolute;
     top: 0;
     left: 0;
+
     width: 100%;
     height: 100%;
+
     object-fit: cover;
 }
 
@@ -97,8 +117,10 @@
     position: absolute;
     top: 0;
     left: 0;
+
     width: 100%;
     height: 100%;
+
     background: rgba(15, 23, 42, 0.6);
     z-index: 0;
 }
@@ -110,163 +132,482 @@
     margin-bottom: 0;
 }
 
-.logo {
-    height: 200px;
-    width: auto;
-    margin-left: auto;
+/* ========================= */
+/* DASHBOARD GENERAL */
+/* ========================= */
+
+.dashboard-container {
+    margin-top: 40px;
 }
 
-/*DASHBOARD*/
-.dashboard-container{
-    margin-top:40px;
+.dashboard-container h2 {
+    margin-bottom: 20px;
+    color: #0f172a;
 }
 
-.dashboard-container h2{
-    margin-bottom:20px;
+.dashboard-container h3 {
+    color: #0f172a;
 }
 
-.dashboard-cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
 }
 
-.dashboard-card{
-    background:white;
-    padding:25px;
-    border-radius:12px;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
+.dashboard-header select {
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #0f172a;
+    font-weight: 600;
 }
 
-.dashboard-card h3{
-    margin-bottom:10px;
-    color:#666;
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
 }
 
-.dashboard-card span{
-    font-size:32px;
-    font-weight:bold;
-    color:#1c4fd7;
+.dashboard-card {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08);
+    border: 1px solid #e5edf8;
 }
 
-.progress-bar{
-    height:20px;
-    background:#e5e7eb;
-    border-radius:20px;
-    overflow:hidden;
+.dashboard-card h3 {
+    margin-bottom: 10px;
+    color: #64748b;
+    font-size: 16px;
 }
 
-.progress-fill{
-    height:100%;
-    background:#2563eb;
-    transition:.4s;
+/* Importante:
+   Solo afecta a spans directos del dashboard-card.
+   Evita agrandar cualquier span interno accidentalmente. */
+.dashboard-card > span {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1d4ed8;
 }
 
-#ocupacionChart{
+.dashboard-card small {
+    display: block;
+    margin-top: 8px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+/* ========================= */
+/* GRÁFICOS */
+/* ========================= */
+
+.chart-container {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin: 30px auto;
+}
+
+#ocupacionChart {
     max-width: 250px;
     max-height: 250px;
     margin: 20px auto;
 }
-.chart-container{
-    position: relative;
-    width: 250px;
-    height: 250px;
-    margin: auto;
-}
 
-.chart-center{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%, -50%);
+.chart-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
     color: #1d4ed8;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
 }
 
-.chart-value{
-    font-size:32px;
-    font-weight:700;
-    color: #1d4ed8;
-    line-height:1;
-}
-
-.chart-label{
-    font-size:12px;
-    color: #1d4ed8;
-    text-transform:uppercase;
-    letter-spacing:1px;
-    margin-top:4px;
-}
-
-#serviciosChart{
-    max-height: 350px;
-}
-#rubrosChart{
-    max-height: 350px;
-}
-
-.dashboard-card small{
-    display:block;
-    margin-top:8px;
-    color:#6b7280;
-    font-size:13px;
-}
-
-.empty-card{
-    text-align:center;
-}
-
-.empty-icon{
-    display:block;
-    font-size:48px;
-    margin-bottom:15px;
-}
-
-.empty-card p{
-    font-weight:600;
-    margin-bottom:5px;
-}
-
-.empty-card small{
-    color:#666;
-}
-
-.impacto-card {
-    text-align: center;
-    min-width: 250px;
-}
-
-.impacto-card .valor {
-    display: block;
+.chart-center span:first-child {
     font-size: 32px;
-    font-weight: bold;
-    color: #2f6df5;
-    margin: 15px 0;
+    font-weight: 700;
+    color: #1d4ed8;
+    line-height: 1;
 }
 
-.impacto-card small {
-    color: #777;
+.chart-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1d4ed8;
+    line-height: 1;
+}
+
+.chart-label {
+    font-size: 12px;
+    color: #1d4ed8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+}
+
+#serviciosChart,
+#rubrosChart,
+#inversionRubroChart,
+#radicacionesChart,
+#comparacionInversionChart {
+    max-height: 350px;
+}
+
+/* ========================= */
+/* EMPTY STATE */
+/* ========================= */
+
+.empty-card {
+    text-align: center;
+}
+
+.empty-icon {
+    display: block;
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.empty-card p {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.empty-card small {
+    color: #666;
+}
+
+/* ========================= */
+/* LOTE ADJUDICADO */
+/* ========================= */
+
+.lote-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 28px 32px;
+    margin-bottom: 38px;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    border: 1px solid #e5edf8;
+}
+
+.lote-card-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.lote-icon {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+
+    background: #eef5ff;
+    color: #1d4ed8;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 28px;
+    box-shadow: inset 0 0 0 1px #d8e7ff;
+}
+
+.lote-card-header h2 {
+    color: #0f172a;
+    font-size: 26px;
+    margin-bottom: 4px;
+}
+
+.lote-card-header p {
+    color: #64748b;
+    font-size: 15px;
+}
+
+.lote-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 34px;
+
+    padding: 8px 0 28px;
+    border-bottom: 1px solid #e5edf8;
+}
+
+.lote-info-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.info-icon {
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    border-radius: 14px;
+
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #dbeafe;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+.lote-info-item small {
+    display: block;
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.lote-info-item strong {
+    display: block;
+    color: #1d4ed8;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.lote-services {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding-top: 22px;
+    flex-wrap: wrap;
+}
+
+.services-title {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.services-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.service-badge {
+    background: linear-gradient(135deg, #eff6ff, #ffffff);
+    color: #1d4ed8;
+
+    padding: 9px 16px;
+    border-radius: 999px;
+
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+
+    border: 1px solid #c7ddff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+}
+
+.no-services {
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* ========================= */
+/* TÍTULOS DE SECCIÓN */
+/* ========================= */
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.section-title span {
+    width: 46px;
+    height: 46px;
+    border-radius: 16px;
+
+    background: #eef5ff;
+    border: 1px solid #dbeafe;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+.section-title h2 {
+    color: #0f172a;
+    font-size: 24px;
+    margin: 0;
+}
+
+/* ========================= */
+/* INDICADORES REPRESENTANTE */
+/* ========================= */
+
+.metric-card {
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 24px;
+
+    display: flex;
+    align-items: center;
+    gap: 18px;
+
+    min-height: 135px;
+
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.07);
+    border: 1px solid #e5edf8;
+
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.1);
+}
+
+.metric-icon {
+    width: 58px;
+    height: 58px;
+    flex: 0 0 58px;
+    border-radius: 20px;
+
+    background: #eef5ff;
+    color: #1d4ed8;
+    border: 1px solid #dbeafe;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 26px;
+}
+
+.metric-card h3 {
+    color: #475569;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.metric-value {
+    display: block;
+    color: #1d4ed8;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+}
+
+.metric-card small {
+    display: block;
+    margin-top: 8px;
+    color: #64748b;
     font-size: 13px;
 }
-.services-list{
-    display:flex;
-    flex-wrap:wrap;
-    gap:8px;
+
+.metric-card small strong {
+    color: #1d4ed8;
 }
 
-.service-badge{
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
 
-    background:#eef4ff;
-    color:#2f6df5;
+@media (max-width: 900px) {
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 22px;
+    }
 
-    padding:4px 8px;
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
 
-    border-radius:999px;
+    .logo {
+        height: 75px;
+        margin-left: 0;
+    }
 
-    font-size:11px;
-    font-weight:600;
+    .lote-info-grid {
+        grid-template-columns: 1fr;
+    }
 
-    border:1px solid #cddcff;
+    .metric-card {
+        align-items: flex-start;
+    }
+
+    .video-container {
+        height: auto;
+        min-height: 500px;
+    }
+}
+
+@media (max-width: 520px) {
+    .main-content {
+        padding: 16px;
+    }
+
+    .header {
+        padding: 20px;
+        border-radius: 18px;
+    }
+
+    .header h1 {
+        font-size: 26px;
+    }
+
+    .header p {
+        font-size: 14px;
+    }
+
+    .lote-card {
+        padding: 22px;
+        border-radius: 20px;
+    }
+
+    .lote-card-header {
+        align-items: flex-start;
+    }
+
+    .lote-card-header h2 {
+        font-size: 22px;
+    }
+
+    .lote-info-item strong {
+        font-size: 18px;
+    }
+
+    .metric-value {
+        font-size: 24px;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-container {
+        width: 220px;
+        height: 220px;
+    }
+
+    #ocupacionChart {
+        max-width: 220px;
+        max-height: 220px;
+    }
 }
