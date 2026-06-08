@@ -66,6 +66,7 @@ public class SolicitudProyectoRequestDTO {
     // Solo obligatorio si generaResiduos es true, validarlo en el service
     private String descripcionResiduos;
 
+    @NotBlank(message = "Indique la produccion estimada")
     private String produccionEstimada;
 
     private List<ServicioLote> serviciosRequeridos = new ArrayList<>();

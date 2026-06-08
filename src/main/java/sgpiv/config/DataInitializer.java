@@ -52,8 +52,8 @@ public class DataInitializer implements CommandLineRunner {
         precargarInfraestructura();
         precargarLotes();
 
-//        precargarSolicitudRadicacionAlan();
-//        aceptarSolicitudRadicacionAlan();
+        precargarSolicitudRadicacionAlan();
+        aceptarSolicitudRadicacionAlan();
 //
 //        precargarSolicitudProyectoAlan();
 //        aprobarSolicitudProyectoAlan();
