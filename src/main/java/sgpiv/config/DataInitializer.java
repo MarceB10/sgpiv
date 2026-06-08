@@ -12,7 +12,9 @@ import sgpiv.service.SolicitudService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -34,6 +36,9 @@ public class DataInitializer implements CommandLineRunner {
     private final TareaRepository tareaRepository;
     private final TareaSolicitudRepository tareaSolicitudRepository;
 
+    private final SolicitudOrganismoPublicoRepository solicitudOrganismoPublicoRepository;
+    private final OrganismoPublicoRepository organismoPublicoRepository;
+
     private final SolicitudService solicitudService;
 
     @Override
@@ -52,6 +57,10 @@ public class DataInitializer implements CommandLineRunner {
         precargarSolicitudProyectoAlan();
         aprobarSolicitudProyectoAlan();
         convertirAlanEnRepresentante();
+
+        cargarFlujoOrgPublico();
+
+
     }
 
     private void precargarRoles() {
@@ -521,6 +530,18 @@ public class DataInitializer implements CommandLineRunner {
     private void precargarLotes() {
         if (loteRepository.count() > 0) return;
 
+        Set<ServicioLote> servicios1 = Set.of(ServicioLote.AGUA, ServicioLote.CLOACAS,
+                ServicioLote.ALUMBRADO_PUBLICO, ServicioLote.ELECTRICIDAD,
+                ServicioLote.CALLES_PAVIMENTADAS, ServicioLote.DESAGUE_PLUVIAL,
+                ServicioLote.GAS_NATURAL, ServicioLote.INTERNET, ServicioLote.SEGURIDAD_24HS);
+
+
+        Set<ServicioLote> servicios2 = Set.of(ServicioLote.AGUA, ServicioLote.ELECTRICIDAD,
+                ServicioLote.GAS_NATURAL, ServicioLote.INTERNET);
+
+        Set<ServicioLote> servicios3 = Set.of(ServicioLote.AGUA);
+
+
         Lote lote1 = new Lote(
                 1200D,
                 "Sector A - Lote 1",
@@ -557,16 +578,21 @@ public class DataInitializer implements CommandLineRunner {
         );
 
         lote1.setEstadoLote(EstadoLote.DISPONIBLE);
+        lote1.setServicios(servicios1);
 
         lote2.setEstadoLote(EstadoLote.EN_USO);
         lote2.setFechaUso(LocalDate.now().minusMonths(6));
+        lote2.setServicios(servicios2);
 
         lote3.setEstadoLote(EstadoLote.DISPONIBLE);
+        lote3.setServicios(servicios2);
 
         lote4.setEstadoLote(EstadoLote.EN_USO);
         lote4.setFechaAdjudicacion(LocalDate.now().minusMonths(2));
+        lote4.setServicios(servicios1);
 
         lote5.setEstadoLote(EstadoLote.DISPONIBLE);
+        lote5.setServicios(servicios3);
 
         loteRepository.save(lote1);
         loteRepository.save(lote2);
@@ -576,4 +602,131 @@ public class DataInitializer implements CommandLineRunner {
 
         System.out.println("Lotes de prueba cargados");
     }
+
+
+    public void cargarFlujoOrgPublico() {
+
+        // ── ETAPA 1: USUARIO NUEVO (ROL_NULO) con solicitud PENDIENTE ──
+        Usuario usuarioPendiente = new Usuario(
+                "María",
+                "Lopez",
+                "maria.lopez@municipalidad.gob.ar",
+                2920222222L,
+                "1234",
+                "27222222222"
+        );
+        usuarioRepository.save(usuarioPendiente);
+        asignarRol(usuarioPendiente, NombreRol.ROL_NULO);
+
+        SolicitudOrganismoPublico solicitudPendiente = new SolicitudOrganismoPublico();
+        solicitudPendiente.setUsuario(usuarioPendiente);
+        solicitudPendiente.setNombreOrganismo("Municipalidad de Viedma");
+        solicitudPendiente.setTipoOrganismo("Municipal");
+        solicitudPendiente.setCargoSolicitante("Directora de Industria y Comercio");
+        solicitudPendiente.setMotivoAcceso("Solicitamos acceso al sistema SGPIV para realizar seguimiento " +
+                "de las empresas radicadas en el Parque Industrial Viedma.");
+        solicitudPendiente.setEstado(EstadoSolicitudOrganismo.PENDIENTE);
+        solicitudPendiente.setFechaEnvio(LocalDate.now());
+        solicitudOrganismoPublicoRepository.save(solicitudPendiente);
+
+
+        // ── ETAPA 2: USUARIO CON SOLICITUD APROBADA → ROL_ORGANISMO_PUBLICO ──
+        Usuario usuarioAprobado = new Usuario(
+                "Roberto",
+                "Fernandez",
+                "roberto.fernandez@provincial.gob.ar",
+                2920333333L,
+                "1234",
+                "20333333333"
+        );
+        usuarioRepository.save(usuarioAprobado);
+        asignarRol(usuarioAprobado, NombreRol.ROL_ORGANISMO_PUBLICO);
+
+        SolicitudOrganismoPublico solicitudAprobada = new SolicitudOrganismoPublico();
+        solicitudAprobada.setUsuario(usuarioAprobado);
+        solicitudAprobada.setNombreOrganismo("Ministerio de Producción de Río Negro");
+        solicitudAprobada.setTipoOrganismo("Provincial");
+        solicitudAprobada.setCargoSolicitante("Subsecretario de Industria");
+        solicitudAprobada.setMotivoAcceso("El Ministerio de Producción requiere acceso para auditoría " +
+                "y seguimiento de los proyectos productivos radicados en el Parque Industrial.");
+        solicitudAprobada.setEstado(EstadoSolicitudOrganismo.APROBADA);
+        solicitudAprobada.setFechaEnvio(LocalDate.now().minusDays(10));
+        solicitudOrganismoPublicoRepository.save(solicitudAprobada);
+
+        OrganismoPublico organismoAprobado = new OrganismoPublico();
+        organismoAprobado.setUsuario(usuarioAprobado);
+        organismoAprobado.setNombreOrganismo("Ministerio de Producción de Río Negro");
+        organismoAprobado.setTipoOrganismo("Provincial");
+        organismoAprobado.setCargoSolicitante("Subsecretario de Industria");
+        organismoAprobado.setActivo(true);
+        organismoPublicoRepository.save(organismoAprobado);
+
+
+        // ── ETAPA 3: USUARIO CON SOLICITUD RECHAZADA → puede reintentar ──
+        Usuario usuarioRechazado = new Usuario(
+                "Ana",
+                "Gutierrez",
+                "ana.gutierrez@nacional.gob.ar",
+                2920444444L,
+                "1234",
+                "27444444444"
+        );
+        usuarioRepository.save(usuarioRechazado);
+        asignarRol(usuarioRechazado, NombreRol.ROL_NULO);
+
+        SolicitudOrganismoPublico solicitudRechazada = new SolicitudOrganismoPublico();
+        solicitudRechazada.setUsuario(usuarioRechazado);
+        solicitudRechazada.setNombreOrganismo("AFIP Delegación Viedma");
+        solicitudRechazada.setTipoOrganismo("Nacional");
+        solicitudRechazada.setCargoSolicitante("Jefa de Departamento");
+        solicitudRechazada.setMotivoAcceso("Solicito acceso para control fiscal de empresas radicadas.");
+        solicitudRechazada.setEstado(EstadoSolicitudOrganismo.RECHAZADA);
+        solicitudRechazada.setFechaEnvio(LocalDate.now().minusDays(5));
+        solicitudRechazada.setMotivoRechazo("La solicitud no adjunta documentación respaldatoria suficiente. " +
+                "Por favor reenviar con nota oficial y resolución que avale el acceso.");
+        solicitudOrganismoPublicoRepository.save(solicitudRechazada);
+
+
+        // ── ETAPA 4: ORGANISMO DADO DE BAJA ──
+        Usuario usuarioBaja = new Usuario(
+                "Luis",
+                "Martinez",
+                "luis.martinez@municipal.gob.ar",
+                2920555555L,
+                "1234",
+                "20555555555"
+        );
+        usuarioBaja.desactivar();
+        usuarioRepository.save(usuarioBaja);
+        asignarRol(usuarioBaja, NombreRol.ROL_ORGANISMO_PUBLICO);
+
+        SolicitudOrganismoPublico solicitudBaja = new SolicitudOrganismoPublico();
+        solicitudBaja.setUsuario(usuarioBaja);
+        solicitudBaja.setNombreOrganismo("Municipalidad de Guardia Mitre");
+        solicitudBaja.setTipoOrganismo("Municipal");
+        solicitudBaja.setCargoSolicitante("Secretario de Obras");
+        solicitudBaja.setMotivoAcceso("Acceso para seguimiento de obra en el parque industrial.");
+        solicitudBaja.setEstado(EstadoSolicitudOrganismo.APROBADA);
+        solicitudBaja.setFechaEnvio(LocalDate.now().minusDays(30));
+        solicitudOrganismoPublicoRepository.save(solicitudBaja);
+
+        OrganismoPublico organismoBaja = new OrganismoPublico();
+        organismoBaja.setUsuario(usuarioBaja);
+        organismoBaja.setNombreOrganismo("Municipalidad de Guardia Mitre");
+        organismoBaja.setTipoOrganismo("Municipal");
+        organismoBaja.setCargoSolicitante("Secretario de Obras");
+        organismoBaja.setActivo(false);
+        organismoPublicoRepository.save(organismoBaja);
+    }
+
+
+    private void asignarRol(Usuario usuario, NombreRol nombreRol) {
+        Rol rol = rolRepository.findByNombre(nombreRol).orElseThrow();
+        usuario.getRoles().clear();
+        usuario.getRoles().add(rol);
+        usuarioRepository.save(usuario);
+    }
+
+
+
 }
