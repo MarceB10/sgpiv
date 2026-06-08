@@ -52,9 +52,6 @@ public class DataInitializer implements CommandLineRunner {
         precargarSolicitudProyectoAlan();
         aprobarSolicitudProyectoAlan();
         convertirAlanEnRepresentante();
-
-//        precargarSolicitudesProyecto();
-//        precargarEmpresasRepresentantesYProyectosAceptados();
     }
 
     private void precargarRoles() {
