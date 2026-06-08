@@ -18,4 +18,6 @@ public interface SolicitudRadicacionRepository extends JpaRepository<SolicitudRa
             Long usuarioId,
             List<EstadoSolicitud> estados
     );
+
+    boolean existsByUsuarioCuit(String number);
 }

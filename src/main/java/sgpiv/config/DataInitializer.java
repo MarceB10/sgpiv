@@ -64,6 +64,14 @@ public class DataInitializer implements CommandLineRunner {
         aprobarSolicitudProyectoAlan();
         convertirAlanEnRepresentante();
 
+        //Nuevos Precargados
+        precargarSolicitudRadicacionLinus();
+        precargarSolicitudRadicacionTim();
+        precargarSolicitudProyectoDennis();
+        precargarSolicitudProyectoBjarne();
+        precargarEmpresaSinLoteJames();
+        precargarEmpresaConLoteGuido();
+
         cargarFlujoOrgPublico();
 
 
@@ -132,6 +140,15 @@ public class DataInitializer implements CommandLineRunner {
                 "1234",
                 "00000000004"
         );
+
+        /// nuevas incorporaciones
+        crearUsuarioNuloSiNoExiste("Linus",   "Torvalds", "linus@gmail.com",  10005L, "1234", "00000000005"); // SR pendiente
+        crearUsuarioNuloSiNoExiste("Tim",     "Berners",  "tim@gmail.com",    10006L, "1234", "00000000006"); // SR requiere modificacion
+        crearUsuarioNuloSiNoExiste("Dennis",  "Ritchie",  "dennis@gmail.com", 10007L, "1234", "00000000007"); // SP pendiente
+        crearUsuarioNuloSiNoExiste("Bjarne",  "Stroustrup","bjarne@gmail.com",10008L, "1234", "00000000008"); // SP requiere modificacion
+        crearUsuarioNuloSiNoExiste("James",   "Gosling",  "james@gmail.com",  10009L, "1234", "00000000009"); // empresa sin lote
+        crearUsuarioNuloSiNoExiste("Guido",   "VanRossum","guido@gmail.com",  10010L, "1234", "00000000010"); // empresa con lote
+
     }
     private void crearUsuarioNuloSiNoExiste(
             String nombre,
@@ -638,6 +655,7 @@ public class DataInitializer implements CommandLineRunner {
         );
 
         lote1.setEstadoLote(EstadoLote.DISPONIBLE);
+        lote1.setServicios(servicios1);
 
         lote2.setEstadoLote(EstadoLote.EN_USO);
         lote2.setFechaUso(LocalDate.now().minusMonths(6));
@@ -783,6 +801,349 @@ public class DataInitializer implements CommandLineRunner {
         usuario.getRoles().clear();
         usuario.getRoles().add(rol);
         usuarioRepository.save(usuario);
+    }
+
+    /// Nuevos metodos relacionados a los nuevos usuarios precargados
+    // ── ETAPA A: SOLICITUD DE RADICACION PENDIENTE ──
+    private void precargarSolicitudRadicacionLinus() {
+        if (solicitudRadicacionRepository.existsByUsuarioCuit("00000000005")) return;
+
+        Usuario linus = usuarioRepository.findByCuit("00000000005").orElseThrow();
+
+        SolicitudRadicacion solicitud = new SolicitudRadicacion();
+        solicitud.setRazonSocial("TechViedma SA");
+        solicitud.setCuitEmpresa("30-55555555-5");
+        solicitud.setRubro("Tecnología");
+        solicitud.setEmailEmpresa("contacto@techviedma.com");
+        solicitud.setTelefonoEmpresa("2920-555555");
+        solicitud.setDireccion("Ruta 1 Sector B");
+        solicitud.setIngresoBrutos("IB-555555");
+        solicitud.setDescripcionBienServicio("Desarrollo de software y hardware industrial.");
+        solicitud.setTipoIndustria("Tecnológica");
+        solicitud.setTipoEmpresa("Nueva");
+        solicitud.setObjetivoProyecto("Instalar una planta de desarrollo tecnológico.");
+        solicitud.setActividadPrincipal("Desarrollo de software.");
+        solicitud.setNecesidadM2(1800D);
+        solicitud.setTienePlanos(false);
+        solicitud.setEstado(EstadoSolicitud.PENDIENTE);
+        solicitud.setFechaEnvio(LocalDate.of(2025, 2, 10));
+        solicitud.setUsuario(linus);
+        solicitudRadicacionRepository.save(solicitud);
+
+        System.out.println("Solicitud de radicación de Linus Torvalds cargada (PENDIENTE)");
+    }
+
+    // ── ETAPA B: SOLICITUD DE RADICACION REQUIERE MODIFICACION ──
+    private void precargarSolicitudRadicacionTim() {
+        if (solicitudRadicacionRepository.existsByUsuarioCuit("00000000006")) return;
+
+        Usuario tim = usuarioRepository.findByCuit("00000000006").orElseThrow();
+
+        SolicitudRadicacion solicitud = new SolicitudRadicacion();
+        solicitud.setRazonSocial("WebPatagonia SRL");
+        solicitud.setCuitEmpresa("30-66666666-6");
+        solicitud.setRubro("Comunicaciones");
+        solicitud.setEmailEmpresa("info@webpatagonia.com");
+        solicitud.setTelefonoEmpresa("2920-666666");
+        solicitud.setDireccion("Av. Pioneros 100");
+        solicitud.setIngresoBrutos("IB-666666");
+        solicitud.setDescripcionBienServicio("Servicios de telecomunicaciones y redes.");
+        solicitud.setTipoIndustria("Telecomunicaciones");
+        solicitud.setTipoEmpresa("Existente");
+        solicitud.setObjetivoProyecto("Ampliar infraestructura de telecomunicaciones.");
+        solicitud.setActividadPrincipal("Instalación de redes.");
+        solicitud.setNecesidadM2(1200D);
+        solicitud.setTienePlanos(true);
+        solicitud.setEstado(EstadoSolicitud.REQUIERE_MODIFICACION);
+        solicitud.setMotivoRechazo("Falta adjuntar documentación técnica de la empresa existente.");
+        solicitud.setFechaEnvio(LocalDate.of(2025, 2, 15));
+        solicitud.setUsuario(tim);
+        solicitudRadicacionRepository.save(solicitud);
+
+        System.out.println("Solicitud de radicación de Tim Berners cargada (REQUIERE_MODIFICACION)");
+    }
+
+    // ── ETAPA C: SOLICITUD DE PROYECTO PENDIENTE ──
+    private void precargarSolicitudProyectoDennis() {
+        if (solicitudRadicacionRepository.existsByUsuarioCuit("00000000007")) return;
+
+        Usuario dennis = usuarioRepository.findByCuit("00000000007").orElseThrow();
+
+        SolicitudRadicacion sr = new SolicitudRadicacion();
+        sr.setRazonSocial("CRichard Systems");
+        sr.setCuitEmpresa("30-77777777-7");
+        sr.setRubro("Sistemas");
+        sr.setEmailEmpresa("info@crichard.com");
+        sr.setTelefonoEmpresa("2920-777777");
+        sr.setDireccion("Calle Unix 1");
+        sr.setIngresoBrutos("IB-777777");
+        sr.setDescripcionBienServicio("Desarrollo de sistemas operativos y software de bajo nivel.");
+        sr.setTipoIndustria("Sistemas");
+        sr.setTipoEmpresa("Nueva");
+        sr.setObjetivoProyecto("Instalar centro de desarrollo de sistemas.");
+        sr.setActividadPrincipal("Programación de sistemas.");
+        sr.setNecesidadM2(2500D);
+        sr.setTienePlanos(false);
+        sr.setEstado(EstadoSolicitud.PENDIENTE_PROYECTO);
+        sr.setFechaEnvio(LocalDate.of(2025, 3, 1));
+        sr.setUsuario(dennis);
+        solicitudRadicacionRepository.save(sr);
+
+        SolicitudProyecto sp = new SolicitudProyecto();
+        sp.setSolicitudRadicacion(sr);
+        sp.setTitulo("Centro de Desarrollo CRichard");
+        sp.setDescripcion("Centro especializado en desarrollo de sistemas de bajo nivel.");
+        sp.setObjetivo("Crear el primer centro de desarrollo de sistemas en la Patagonia.");
+        sp.setRubro("Sistemas");
+        sp.setInversionEstimada(new BigDecimal("8000000.00"));
+        sp.setActividadPrincipal("Programación de sistemas operativos.");
+        sp.setActividadSecundaria("Consultoría tecnológica.");
+        sp.setPersonalAOcupar(12);
+        sp.setTiempoDeRadicacion(24);
+        sp.setSupCubiertaTrabajoM2(600.0);
+        sp.setSupCubiertaDepositoM2(200.0);
+        sp.setSupExpansionM2(300.0);
+        sp.setTienePlanos(false);
+        sp.setGeneraResiduos(false);
+        sp.setProduccionEstimada("50 proyectos anuales.");
+        sp.setServiciosRequeridos(List.of(ServicioLote.ELECTRICIDAD, ServicioLote.INTERNET));
+        sp.setEstado(EstadoSolicitudProyecto.PENDIENTE);
+        sp.setFechaEnvio(LocalDate.of(2025, 3, 15));
+        solicitudProyectoRepository.save(sp);
+
+        TareaSolicitud t1 = new TareaSolicitud();
+        t1.setTitulo("Acondicionamiento del espacio");
+        t1.setDescripcion("Preparar el espacio físico para el equipo de desarrollo.");
+        t1.setSolicitudProyecto(sp);
+        tareaSolicitudRepository.save(t1);
+
+        TareaSolicitud t2 = new TareaSolicitud();
+        t2.setTitulo("Instalación de equipamiento");
+        t2.setDescripcion("Instalar servidores y equipos de desarrollo.");
+        t2.setSolicitudProyecto(sp);
+        tareaSolicitudRepository.save(t2);
+
+        System.out.println("Solicitud de proyecto de Dennis Ritchie cargada (PENDIENTE)");
+    }
+
+    // ── ETAPA D: SOLICITUD DE PROYECTO REQUIERE MODIFICACION ──
+    private void precargarSolicitudProyectoBjarne() {
+        if (solicitudRadicacionRepository.existsByUsuarioCuit("00000000008")) return;
+
+        Usuario bjarne = usuarioRepository.findByCuit("00000000008").orElseThrow();
+
+        SolicitudRadicacion sr = new SolicitudRadicacion();
+        sr.setRazonSocial("CppIndustria SA");
+        sr.setCuitEmpresa("30-88888888-8");
+        sr.setRubro("Manufactura");
+        sr.setEmailEmpresa("info@cppindustria.com");
+        sr.setTelefonoEmpresa("2920-888888");
+        sr.setDireccion("Sector C - Lote 12");
+        sr.setIngresoBrutos("IB-888888");
+        sr.setDescripcionBienServicio("Fabricación de componentes electrónicos.");
+        sr.setTipoIndustria("Manufactura electrónica");
+        sr.setTipoEmpresa("Existente");
+        sr.setObjetivoProyecto("Ampliar línea de producción de componentes.");
+        sr.setActividadPrincipal("Fabricación electrónica.");
+        sr.setNecesidadM2(3000D);
+        sr.setTienePlanos(true);
+        sr.setEstado(EstadoSolicitud.PENDIENTE_PROYECTO);
+        sr.setFechaEnvio(LocalDate.of(2025, 3, 5));
+        sr.setUsuario(bjarne);
+        solicitudRadicacionRepository.save(sr);
+
+        SolicitudProyecto sp = new SolicitudProyecto();
+        sp.setSolicitudRadicacion(sr);
+        sp.setTitulo("Ampliación CppIndustria");
+        sp.setDescripcion("Ampliación de la línea de producción de componentes electrónicos.");
+        sp.setObjetivo("Duplicar capacidad productiva en 12 meses.");
+        sp.setRubro("Manufactura");
+        sp.setInversionEstimada(new BigDecimal("25000000.00"));
+        sp.setActividadPrincipal("Fabricación de componentes.");
+        sp.setPersonalAOcupar(30);
+        sp.setTiempoDeRadicacion(12);
+        sp.setSupCubiertaTrabajoM2(1500.0);
+        sp.setSupCubiertaDepositoM2(500.0);
+        sp.setSupExpansionM2(800.0);
+        sp.setTienePlanos(true);
+        sp.setGeneraResiduos(true);
+        sp.setDescripcionResiduos("Residuos de soldadura y componentes electrónicos descartados.");
+        sp.setProduccionEstimada("10.000 unidades mensuales.");
+        sp.setServiciosRequeridos(List.of(
+                ServicioLote.ELECTRICIDAD, ServicioLote.AGUA,
+                ServicioLote.GAS_NATURAL, ServicioLote.INTERNET
+        ));
+        sp.setEstado(EstadoSolicitudProyecto.REQUIERE_MODIFICACION);
+        sp.setMotivoRechazo("Falta especificar el plan de tratamiento de residuos electrónicos.");
+        sp.setFechaEnvio(LocalDate.of(2025, 3, 20));
+        solicitudProyectoRepository.save(sp);
+
+        TareaSolicitud t1 = new TareaSolicitud();
+        t1.setTitulo("Ampliar línea de producción");
+        t1.setDescripcion("Incorporar nueva maquinaria para duplicar capacidad.");
+        t1.setSolicitudProyecto(sp);
+        tareaSolicitudRepository.save(t1);
+
+        System.out.println("Solicitud de proyecto de Bjarne Stroustrup cargada (REQUIERE_MODIFICACION)");
+    }
+
+    // ── ETAPA E: EMPRESA RADICADA SIN LOTE ──
+    private void precargarEmpresaSinLoteJames() {
+        if (empresaRepository.existsByCuit("30-99999999-9")) return;
+
+        Usuario james = usuarioRepository.findByCuit("00000000009").orElseThrow();
+
+        Rol rolRepresentante = rolRepository.findByNombre(NombreRol.ROL_REPRESENTANTE_EMPRESA).orElseThrow();
+        james.getRoles().clear();
+        james.getRoles().add(rolRepresentante);
+        usuarioRepository.save(james);
+
+        Empresa empresa = new Empresa();
+        empresa.setRazonSocial("JavaPatagonia SRL");
+        empresa.setCuit("30-99999999-9");
+        empresa.setRubro("Software");
+        empresa.setEmail("info@javapatagonia.com");
+        empresa.setDireccion("Sector A - Lote 5");
+        empresa.setIngresoBrutos("IB-999999");
+        empresa.setDescripcionBienServicio("Desarrollo de aplicaciones Java para industria.");
+        empresa.setTipoIndustria("Software");
+        empresa.setEstadoEmpresa(EstadoEmpresa.PENDIENTE_LOTE);
+        Empresa empresaGuardada = empresaRepository.save(empresa);
+
+        RepresentanteEmpresa representante = new RepresentanteEmpresa();
+        representante.setUsuario(james);
+        representante.setEmpresa(empresaGuardada);
+        RepresentanteEmpresa representanteGuardado = representanteRepository.save(representante);
+
+        Proyecto proyecto = new Proyecto();
+        proyecto.setTitulo("Planta JavaPatagonia");
+        proyecto.setDescripcion("Centro de desarrollo Java para la industria patagónica.");
+        proyecto.setObjetivo("Desarrollar soluciones Java para empresas del parque.");
+        proyecto.setRubro("Software");
+        proyecto.setInversionEstimada(new BigDecimal("5000000.00"));
+        proyecto.setActividadPrincipal("Desarrollo de software.");
+        proyecto.setPersonalAOcupar(10);
+        proyecto.setTiempoDeRadicacion(12);
+        proyecto.setSupCubiertaTrabajoM2(400.0);
+        proyecto.setSupCubiertaDepositoM2(100.0);
+        proyecto.setNecesidadM2(1200D);
+        proyecto.setTienePlanos(false);
+        proyecto.setGeneraResiduos(false);
+        proyecto.setServiciosRequeridos(List.of(ServicioLote.ELECTRICIDAD, ServicioLote.INTERNET));
+        proyecto.setEmpresa(empresaGuardada);
+        proyecto.setRepresentanteEmpresa(representanteGuardado);
+        proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
+        proyecto.setFechaInicio(LocalDate.of(2025, 4, 1));
+        Proyecto proyectoGuardado = proyectoRepository.save(proyecto);
+
+        Tarea t1 = new Tarea();
+        t1.setTitulo("Instalar entorno de desarrollo");
+        t1.setDescripcion("Configurar servidores y entorno Java.");
+        t1.setCompleta(false);
+        t1.setProyecto(proyectoGuardado);
+        tareaRepository.save(t1);
+
+        Tarea t2 = new Tarea();
+        t2.setTitulo("Contratar personal");
+        t2.setDescripcion("Incorporar desarrolladores Java senior y junior.");
+        t2.setCompleta(true);
+        t2.setProyecto(proyectoGuardado);
+        tareaRepository.save(t2);
+
+        System.out.println("Empresa JavaPatagonia (sin lote) y proyecto cargados");
+    }
+
+    // ── ETAPA F: EMPRESA RADICADA CON LOTE ──
+    private void precargarEmpresaConLoteGuido() {
+        if (empresaRepository.existsByCuit("30-10101010-1")) return;
+
+        Usuario guido = usuarioRepository.findByCuit("00000000010").orElseThrow();
+
+        Rol rolRepresentante = rolRepository.findByNombre(NombreRol.ROL_REPRESENTANTE_EMPRESA).orElseThrow();
+        guido.getRoles().clear();
+        guido.getRoles().add(rolRepresentante);
+        usuarioRepository.save(guido);
+
+        Empresa empresa = new Empresa();
+        empresa.setRazonSocial("PythonIndustria SA");
+        empresa.setCuit("30-10101010-1");
+        empresa.setRubro("Automatización");
+        empresa.setEmail("info@pythonindustria.com");
+        empresa.setDireccion("Sector D - Lote 3");
+        empresa.setIngresoBrutos("IB-101010");
+        empresa.setDescripcionBienServicio("Automatización de procesos industriales con Python.");
+        empresa.setTipoIndustria("Automatización");
+        empresa.setEstadoEmpresa(EstadoEmpresa.ADJUDICADA);
+        Empresa empresaGuardada = empresaRepository.save(empresa);
+
+        RepresentanteEmpresa representante = new RepresentanteEmpresa();
+        representante.setUsuario(guido);
+        representante.setEmpresa(empresaGuardada);
+        RepresentanteEmpresa representanteGuardado = representanteRepository.save(representante);
+
+        Proyecto proyecto = new Proyecto();
+        proyecto.setTitulo("Automatización PythonIndustria");
+        proyecto.setDescripcion("Planta de automatización industrial usando Python y IoT.");
+        proyecto.setObjetivo("Automatizar procesos industriales en el parque.");
+        proyecto.setRubro("Automatización");
+        proyecto.setInversionEstimada(new BigDecimal("12000000.00"));
+        proyecto.setActividadPrincipal("Automatización industrial.");
+        proyecto.setActividadSecundaria("Consultoría en IoT.");
+        proyecto.setPersonalAOcupar(20);
+        proyecto.setTiempoDeRadicacion(24);
+        proyecto.setSupCubiertaTrabajoM2(900.0);
+        proyecto.setSupCubiertaDepositoM2(300.0);
+        proyecto.setSupExpansionM2(400.0);
+        proyecto.setNecesidadM2(1800D);
+        proyecto.setTienePlanos(true);
+        proyecto.setGeneraResiduos(false);
+        proyecto.setServiciosRequeridos(List.of(
+                ServicioLote.ELECTRICIDAD, ServicioLote.INTERNET,
+                ServicioLote.AGUA, ServicioLote.SEGURIDAD_24HS
+        ));
+        proyecto.setEmpresa(empresaGuardada);
+        proyecto.setRepresentanteEmpresa(representanteGuardado);
+        proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
+        proyecto.setFechaInicio(LocalDate.of(2025, 5, 1));
+        Proyecto proyectoGuardado = proyectoRepository.save(proyecto);
+
+        Tarea t1 = new Tarea();
+        t1.setTitulo("Instalar sensores IoT");
+        t1.setDescripcion("Colocar sensores en la línea de producción.");
+        t1.setCompleta(true);
+        t1.setProyecto(proyectoGuardado);
+        tareaRepository.save(t1);
+
+        Tarea t2 = new Tarea();
+        t2.setTitulo("Desarrollar dashboard de monitoreo");
+        t2.setDescripcion("Crear panel de control para visualizar datos en tiempo real.");
+        t2.setCompleta(true);
+        t2.setProyecto(proyectoGuardado);
+        tareaRepository.save(t2);
+
+        Tarea t3 = new Tarea();
+        t3.setTitulo("Capacitar al personal");
+        t3.setDescripcion("Entrenar operarios en el uso del sistema automatizado.");
+        t3.setCompleta(false);
+        t3.setProyecto(proyectoGuardado);
+        tareaRepository.save(t3);
+
+        // Buscar un lote disponible y adjudicar
+        Lote lote = loteRepository.findAll().stream()
+                .filter(l -> l.getEstadoLote() == EstadoLote.DISPONIBLE)
+                .findFirst()
+                .orElse(null);
+
+        if (lote != null) {
+            ocupacionLoteService.ocuparLote(
+                    lote.getId(),
+                    proyectoGuardado.getId(),
+                    LocalDate.of(2025, 5, 15)
+            );
+            System.out.println("Lote adjudicado a PythonIndustria");
+        }
+
+        System.out.println("Empresa PythonIndustria (con lote) y proyecto cargados");
     }
 
 
