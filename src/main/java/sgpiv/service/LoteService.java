@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sgpiv.dtos.response.LoteResponseDTO;
 import sgpiv.dtos.request.LoteRequestDTO;
-import sgpiv.enums.ServicioLote;
 import sgpiv.model.Lote;
 import sgpiv.model.OcupacionLote;
 import sgpiv.model.Proyecto;
 import sgpiv.repository.LoteRepository;
 import sgpiv.repository.OcupacionLoteRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -40,6 +40,7 @@ public class LoteService {
         return new LoteResponseDTO(lote, null);
     }
 
+    @Transactional(readOnly = true)
     public List<LoteResponseDTO> obtenerLotesParaAdjudicar(Long idProyecto){
         Proyecto proyecto = proyectoService.obtenerPorId(idProyecto);
         Double superficie = proyecto.getNecesidadM2();
@@ -62,8 +63,6 @@ public class LoteService {
     private boolean tieneServiciosRequeridos(Lote lote, Proyecto proyecto){
         return lote.getServicios().
                 containsAll( proyecto.getServiciosRequeridos() );
-
-
     }
 
 

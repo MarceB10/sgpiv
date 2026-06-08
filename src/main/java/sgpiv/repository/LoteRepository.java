@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public interface LoteRepository extends JpaRepository<Lote, Long> {
 
-
     // Buscar por estado
     List<Lote> findByEstadoLote(EstadoLote estadoLote);
 

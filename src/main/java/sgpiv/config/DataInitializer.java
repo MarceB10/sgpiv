@@ -5,9 +5,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import sgpiv.dtos.request.SolicitudProyectoRequestDTO;
 import sgpiv.dtos.request.TareaSoliDTORequest;
+import sgpiv.dtos.response.LoteResponseDTO;
 import sgpiv.enums.*;
 import sgpiv.model.*;
 import sgpiv.repository.*;
+import sgpiv.service.LoteService;
+import sgpiv.service.OcupacionLoteService;
 import sgpiv.service.SolicitudService;
 
 import java.math.BigDecimal;
@@ -36,6 +39,9 @@ public class DataInitializer implements CommandLineRunner {
 
     private final SolicitudService solicitudService;
 
+    private final LoteService loteService;
+    private final OcupacionLoteService ocupacionLoteService;
+
     @Override
     public void run(String... args) {
         precargarRoles();
@@ -52,6 +58,7 @@ public class DataInitializer implements CommandLineRunner {
         precargarSolicitudProyectoAlan();
         aprobarSolicitudProyectoAlan();
         convertirAlanEnRepresentante();
+        adjudicarLoteAProyectoAlan();
     }
 
     private void precargarRoles() {
@@ -341,7 +348,8 @@ public class DataInitializer implements CommandLineRunner {
         empresa.setIngresoBrutos(solicitudRadicacion.getIngresoBrutos());
         empresa.setDescripcionBienServicio(solicitudRadicacion.getDescripcionBienServicio());
         empresa.setTipoIndustria(solicitudRadicacion.getTipoIndustria());
-        empresa.setEstadoEmpresa(EstadoEmpresa.RADICADA);
+
+        empresa.setEstadoEmpresa(EstadoEmpresa.PENDIENTE_LOTE);
 
         Empresa empresaGuardada = empresaRepository.save(empresa);
 
@@ -349,7 +357,7 @@ public class DataInitializer implements CommandLineRunner {
         representante.setUsuario(alan);
         representante.setEmpresa(empresaGuardada);
 
-        representanteRepository.save(representante);
+        RepresentanteEmpresa representanteGuardado = representanteRepository.save(representante);
 
         Proyecto proyecto = new Proyecto();
 
@@ -370,10 +378,14 @@ public class DataInitializer implements CommandLineRunner {
         proyecto.setDescripcionResiduos(solicitudProyecto.getDescripcionResiduos());
         proyecto.setProduccionEstimada(solicitudProyecto.getProduccionEstimada());
 
+        proyecto.setServiciosRequeridos(solicitudProyecto.getServiciosRequeridos());
+
         proyecto.setNecesidadM2(solicitudRadicacion.getNecesidadM2());
         proyecto.setFechaInicio(LocalDate.now());
 
         proyecto.setEmpresa(empresaGuardada);
+        proyecto.setRepresentanteEmpresa(representanteGuardado);
+
         proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
 
         Proyecto proyectoGuardado = proyectoRepository.save(proyecto);
@@ -400,6 +412,32 @@ public class DataInitializer implements CommandLineRunner {
 
         System.out.println("Tareas creadas desde la solicitud de proyecto");
     }
+
+    private void adjudicarLoteAProyectoAlan() {
+        Proyecto proyecto = proyectoRepository.findAll()
+                .stream()
+                .filter(p -> "Centro logístico Patagonia".equals(p.getTitulo()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Proyecto de Alan no encontrado"));
+
+        List<LoteResponseDTO> lotesDisponibles =
+                loteService.obtenerLotesParaAdjudicar(proyecto.getId());
+
+        if (lotesDisponibles.isEmpty()) {
+            System.out.println("No hay lotes compatibles para adjudicar al proyecto de Alan");
+            return;
+        }
+
+        LoteResponseDTO loteSeleccionado = lotesDisponibles.get(0);
+
+        ocupacionLoteService.ocuparLote(loteSeleccionado.getId(), proyecto.getId());
+
+        System.out.println("Lote adjudicado al proyecto de Alan Turing");
+    }
+
+
+
+
 
 
     private void precargarInfraestructura() {
@@ -520,6 +558,21 @@ public class DataInitializer implements CommandLineRunner {
 
     private void precargarLotes() {
         if (loteRepository.count() > 0) return;
+
+        Lote loteAlan = new Lote(
+                3000D,
+                "Sector D - Lote 8",
+                50000000f,
+                "restric"
+        );
+
+        loteAlan.setEstadoLote(EstadoLote.DISPONIBLE);
+
+        loteAlan.getServicios().add(ServicioLote.INTERNET);
+        loteAlan.getServicios().add(ServicioLote.AGUA);
+        loteAlan.getServicios().add(ServicioLote.ELECTRICIDAD);
+
+        loteRepository.save(loteAlan);
 
         Lote lote1 = new Lote(
                 1200D,
