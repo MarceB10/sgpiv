@@ -8,10 +8,7 @@ import sgpiv.enums.EstadoEmpresa;
 import sgpiv.enums.EstadoLote;
 import sgpiv.enums.EstadoProyecto;
 import sgpiv.model.*;
-import sgpiv.repository.EmpresaRepository;
-import sgpiv.repository.LoteRepository;
-import sgpiv.repository.OcupacionLoteRepository;
-import sgpiv.repository.RepresentanteRepository;
+import sgpiv.repository.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,6 +22,7 @@ public class OcupacionLoteService {
     private final RepresentanteRepository representanteRepository;
     private final LoteRepository loteRepository;
     private final EmpresaRepository empresaRepository;
+    private final ProyectoRepository proyectoRepository;
 
     private final NotificacionService notificacionService;
 
@@ -54,21 +52,52 @@ public class OcupacionLoteService {
         ocuparLote(idLote, idProyecto, LocalDate.now());
     }
 
+//    public void ocuparLote(Long idLote, Long idProyecto, LocalDate fechaAdjudicacion) {
+//        Lote lote = loteRepository
+//                .findById(idLote)
+//                .orElseThrow(() -> new RuntimeException("Lote no encontrado"));
+//
+//        Proyecto proyecto = proyectoService
+//                .obtenerPorId(idProyecto);
+//
+//        lote.setEstadoLote(EstadoLote.EN_USO);
+//        loteRepository.save(lote);
+//        proyecto.getEmpresa().setEstadoEmpresa(EstadoEmpresa.RADICADA);
+//        empresaRepository.save(proyecto.getEmpresa());
+//        OcupacionLote ocupacionLote = new OcupacionLote(proyecto, lote, fechaAdjudicacion);
+//        proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
+//        ocupacionLoteRepository.save(ocupacionLote);
+//
+//        notificacionService.crearNotificacion(
+//                "Se te ha adjudicado un Lote: \n" +
+//                        "Ubicacion: " + lote.getUbicacion(),
+//                proyecto.getRepresentanteEmpresa().getUsuario()
+//        );
+//    }
+
     public void ocuparLote(Long idLote, Long idProyecto, LocalDate fechaAdjudicacion) {
-        Lote lote = loteRepository
-                .findById(idLote)
+        Lote lote = loteRepository.findById(idLote)
                 .orElseThrow(() -> new RuntimeException("Lote no encontrado"));
 
-        Proyecto proyecto = proyectoService
-                .obtenerPorId(idProyecto);
+        Proyecto proyecto = proyectoService.obtenerPorId(idProyecto);
 
-        lote.setEstadoLote(EstadoLote.EN_USO);
-        loteRepository.save(lote);
         proyecto.getEmpresa().setEstadoEmpresa(EstadoEmpresa.RADICADA);
         empresaRepository.save(proyecto.getEmpresa());
-        OcupacionLote ocupacionLote = new OcupacionLote(proyecto, lote, fechaAdjudicacion);
+
+        OcupacionLote ocupacion = new OcupacionLote();
+        ocupacion.setLote(lote);
+        ocupacion.setProyecto(proyecto);
+        ocupacion.setFechaInicio(fechaAdjudicacion);
+        ocupacion.setFechaFin(null);
+
+        lote.setEstadoLote(EstadoLote.EN_USO);
+        lote.setFechaAdjudicacion(fechaAdjudicacion);
+        lote.setFechaUso(fechaAdjudicacion);
+
         proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
-        ocupacionLoteRepository.save(ocupacionLote);
+
+        ocupacionLoteRepository.save(ocupacion);
+        loteRepository.save(lote);
 
         notificacionService.crearNotificacion(
                 "Se te ha adjudicado un Lote: \n" +
