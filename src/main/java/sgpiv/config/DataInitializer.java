@@ -3,10 +3,14 @@ package sgpiv.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import sgpiv.dtos.request.SolicitudProyectoRequestDTO;
+import sgpiv.dtos.request.TareaSoliDTORequest;
 import sgpiv.enums.*;
 import sgpiv.model.*;
 import sgpiv.repository.*;
+import sgpiv.service.SolicitudService;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -18,24 +22,388 @@ public class DataInitializer implements CommandLineRunner {
 
     private final RolRepository rolRepository;
     private final UsuarioRepository usuarioRepository;
-/// Pruebas
+
     private final EmpresaRepository empresaRepository;
     private final LoteRepository loteRepository;
     private final InfraestructuraRepository infraestructuraRepository;
-//    private final SolicitudRepository solicitudRadicacionRepository;
-/// /
+
+    private final SolicitudRadicacionRepository solicitudRadicacionRepository;
+    private final SolicitudProyectoRepository solicitudProyectoRepository;
+    private final ProyectoRepository proyectoRepository;
+    private final RepresentanteRepository representanteRepository;
+    private final TareaRepository tareaRepository;
+    private final TareaSolicitudRepository tareaSolicitudRepository;
+
+    private final SolicitudService solicitudService;
+
     @Override
-    public void run(String... args) throws Exception {
-        for(NombreRol nombreRol :  NombreRol.values()){
-            if (rolRepository.findByNombre(nombreRol).isEmpty()){
+    public void run(String... args) {
+        precargarRoles();
+
+        precargarGerente();
+        precargarUsuariosNulos();
+
+        precargarInfraestructura();
+        precargarLotes();
+
+        precargarSolicitudRadicacionAlan();
+        aceptarSolicitudRadicacionAlan();
+
+        precargarSolicitudProyectoAlan();
+        aprobarSolicitudProyectoAlan();
+        convertirAlanEnRepresentante();
+    }
+
+    private void precargarRoles() {
+        for (NombreRol nombreRol : NombreRol.values()) {
+            if (rolRepository.findByNombre(nombreRol).isEmpty()) {
                 rolRepository.save(new Rol(nombreRol));
             }
         }
+    }
+    private void precargarGerente() {
+        if (!usuarioRepository.existsByCuit("00000000000")) {
+            Rol rolGerente = rolRepository.findByNombre(NombreRol.ROL_GERENTE)
+                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND));
 
-//        Infraestructura precargada
-        if (infraestructuraRepository.count() > 0) {
+            Usuario gerente = new Usuario(
+                    "Martin",
+                    "Lemos",
+                    "gerenteSGPIV@gmail.com",
+                    10000L,
+                    "1234",
+                    "00000000000"
+            );
+
+            gerente.getRoles().clear();
+            gerente.getRoles().add(rolGerente);
+
+            usuarioRepository.save(gerente);
+        }
+    }
+    private void precargarUsuariosNulos() {
+        crearUsuarioNuloSiNoExiste(
+                "Alan",
+                "Turing",
+                "alan@gmail.com",
+                10001L,
+                "1234",
+                "00000000001"
+        );
+
+        crearUsuarioNuloSiNoExiste(
+                "Rodrigo",
+                "Quichan",
+                "ro@gmail.com",
+                10002L,
+                "1234",
+                "00000000002"
+        );
+
+        crearUsuarioNuloSiNoExiste(
+                "Grace",
+                "Hopper",
+                "grace@gmail.com",
+                10003L,
+                "1234",
+                "00000000003"
+        );
+
+        crearUsuarioNuloSiNoExiste(
+                "Ada",
+                "Lovelace",
+                "ada@gmail.com",
+                10004L,
+                "1234",
+                "00000000004"
+        );
+    }
+    private void crearUsuarioNuloSiNoExiste(
+            String nombre,
+            String apellido,
+            String email,
+            Long legajo,
+            String password,
+            String cuit
+    ) {
+        if (!usuarioRepository.existsByCuit(cuit)) {
+            Rol rolUsuarioNulo = rolRepository.findByNombre(NombreRol.ROL_NULO)
+                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND));
+
+            Usuario usuario = new Usuario(
+                    nombre,
+                    apellido,
+                    email,
+                    legajo,
+                    password,
+                    cuit
+            );
+
+            usuario.getRoles().clear();
+            usuario.getRoles().add(rolUsuarioNulo);
+
+            usuarioRepository.save(usuario);
+        }
+    }
+
+    private void precargarSolicitudRadicacionAlan() {
+        if (solicitudRadicacionRepository.count() > 0) return;
+
+        Usuario alan = usuarioRepository.findByCuit("00000000001")
+                .orElseThrow(() -> new RuntimeException("Alan Turing no fue encontrado"));
+
+        SolicitudRadicacion solicitudRadicacion = crearSRparaAlan(alan);
+
+        solicitudRadicacionRepository.save(solicitudRadicacion);
+
+        System.out.println("Solicitud de radicación de Alan Turing cargada");
+    }
+
+    private SolicitudRadicacion crearSRparaAlan(Usuario alan) {
+        SolicitudRadicacion solicitud = new SolicitudRadicacion();
+
+        // DATOS EMPRESA
+        solicitud.setRazonSocial("Patagonia Logística");
+        solicitud.setCuitEmpresa("20-12345678-9");
+        solicitud.setRubro("Logística");
+        solicitud.setEmailEmpresa("contacto@patagonialogistica.com");
+        solicitud.setTelefonoEmpresa("2920-111111");
+        solicitud.setDireccion("Ruta Provincial 1 - Sector A");
+        solicitud.setIngresoBrutos("IB-123456");
+        solicitud.setDescripcionBienServicio("Servicios de logística, depósito y distribución regional.");
+        solicitud.setTipoIndustria("Logística y distribución");
+
+        // DATOS PROYECTO
+        solicitud.setTipoEmpresa("Nueva");
+        solicitud.setObjetivoProyecto("Instalar un centro logístico dentro del parque industrial.");
+        solicitud.setActividadPrincipal("Almacenamiento y distribución de mercadería.");
+        solicitud.setNecesidadM2(1200D);
+        solicitud.setTienePlanos(false);
+
+        // ESTADO
+        solicitud.setEstado(EstadoSolicitud.PENDIENTE);
+        solicitud.setFechaEnvio(LocalDate.now());
+
+        // USUARIO NULO
+        solicitud.setUsuario(alan);
+
+        return solicitud;
+    }
+
+    private void aceptarSolicitudRadicacionAlan() {
+        Usuario alan = usuarioRepository.findByCuit("00000000001")
+                .orElseThrow(() -> new RuntimeException("Alan Turing no fue encontrado"));
+
+        SolicitudRadicacion solicitud = solicitudRadicacionRepository
+                .findFirstByUsuarioIdAndEstadoIn(alan.getId(), List.of(EstadoSolicitud.PENDIENTE));
+
+        if (solicitud == null) return;
+
+        solicitud.setEstado(EstadoSolicitud.PENDIENTE_PROYECTO);
+        solicitudRadicacionRepository.save(solicitud);
+
+        System.out.println("Solicitud de radicación de Alan Turing aceptada");
+    }
+
+    private void precargarSolicitudProyectoAlan() {
+        Usuario alan = usuarioRepository.findByCuit("00000000001")
+                .orElseThrow(() -> new RuntimeException("Alan Turing no fue encontrado"));
+
+        SolicitudRadicacion solicitudRadicacion =
+                solicitudRadicacionRepository.findFirstByUsuarioIdAndEstadoIn(
+                        alan.getId(),
+                        List.of(EstadoSolicitud.PENDIENTE_PROYECTO)
+                );
+
+        if (solicitudRadicacion == null) {
             return;
         }
+
+        if (solicitudRadicacion.getSolicitudProyecto() != null) {
+            return;
+        }
+
+        SolicitudProyectoRequestDTO dto = new SolicitudProyectoRequestDTO();
+
+        dto.setSolicitudRadicacionId(solicitudRadicacion.getId());
+
+        dto.setTitulo("Centro logístico Patagonia");
+        dto.setDescripcion("Proyecto para instalar un centro logístico dentro del parque industrial.");
+        dto.setObjetivo("Centralizar almacenamiento, distribución y despacho de mercadería regional.");
+        dto.setRubro("Logística");
+
+        dto.setInversionEstimada(new BigDecimal("15000000.00"));
+
+        dto.setActividadPrincipal("Almacenamiento y distribución de mercadería.");
+        dto.setActividadSecundaria("Servicios de depósito para terceros.");
+
+        dto.setPersonalAOcupar(18);
+        dto.setTiempoDeRadicacion(12);
+
+        dto.setSupCubiertaTrabajoM2(800.0);
+        dto.setSupCubiertaDepositoM2(400.0);
+        dto.setSupExpansionM2(300.0);
+
+        dto.setTienePlanos(false);
+        dto.setGeneraResiduos(false);
+        dto.setDescripcionResiduos(null);
+
+        dto.setProduccionEstimada("Movimiento estimado de 200 toneladas mensuales.");
+
+        dto.setServiciosRequeridos(List.of(
+                ServicioLote.ELECTRICIDAD,
+                ServicioLote.AGUA,
+                ServicioLote.INTERNET
+        ));
+
+        dto.setTareas(List.of(
+                new TareaSoliDTORequest(
+                        "Presentar documentación técnica final",
+                        "Adjuntar documentación técnica definitiva del proyecto."
+                ),
+                new TareaSoliDTORequest(
+                        "Validar planos del proyecto",
+                        "El área técnica debe revisar los planos presentados."
+                ),
+                new TareaSoliDTORequest(
+                        "Inspección inicial del lote",
+                        "Verificar las condiciones iniciales del lote solicitado."
+                )
+        ));
+
+        solicitudService.guardarSolicitudProyecto(dto);
+
+        System.out.println("Solicitud de proyecto de Alan Turing cargada con tareas");
+    }
+
+    private void aprobarSolicitudProyectoAlan() {
+        Usuario alan = usuarioRepository.findByCuit("00000000001")
+                .orElseThrow(() -> new RuntimeException("Alan Turing no fue encontrado"));
+
+        SolicitudRadicacion solicitudRadicacion =
+                solicitudRadicacionRepository.findFirstByUsuarioIdAndEstadoIn(
+                        alan.getId(), List.of(EstadoSolicitud.PENDIENTE_PROYECTO));
+        if (solicitudRadicacion == null) return;
+
+        SolicitudProyecto solicitudProyecto = solicitudRadicacion.getSolicitudProyecto();
+        if (solicitudProyecto == null) return;
+
+        if (solicitudProyecto.getEstado() != EstadoSolicitudProyecto.PENDIENTE) return;
+
+        solicitudProyecto.setEstado(EstadoSolicitudProyecto.APROBADA);
+
+        solicitudProyectoRepository.save(solicitudProyecto);
+
+        System.out.println("Solicitud de proyecto de Alan Turing aprobada");
+    }
+
+    private void convertirAlanEnRepresentante() {
+        Usuario alan = usuarioRepository.findByCuit("00000000001")
+                .orElseThrow(() -> new RuntimeException("Alan Turing no fue encontrado"));
+
+        SolicitudRadicacion solicitudRadicacion =
+                solicitudRadicacionRepository.findFirstByUsuarioIdAndEstadoIn(
+                        alan.getId(),
+                        List.of(EstadoSolicitud.PENDIENTE_PROYECTO)
+                );
+
+        if (solicitudRadicacion == null) {
+            return;
+        }
+
+        SolicitudProyecto solicitudProyecto = solicitudRadicacion.getSolicitudProyecto();
+
+        if (solicitudProyecto == null) {
+            return;
+        }
+
+        if (solicitudProyecto.getEstado() != EstadoSolicitudProyecto.APROBADA) {
+            return;
+        }
+
+        if (empresaRepository.existsByCuit(solicitudRadicacion.getCuitEmpresa())) {
+            return;
+        }
+
+        Rol rolRepresentante = rolRepository.findByNombre(NombreRol.ROL_REPRESENTANTE_EMPRESA)
+                .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND));
+
+        alan.getRoles().clear();
+        alan.getRoles().add(rolRepresentante);
+        usuarioRepository.save(alan);
+
+        Empresa empresa = new Empresa();
+        empresa.setRazonSocial(solicitudRadicacion.getRazonSocial());
+        empresa.setCuit(solicitudRadicacion.getCuitEmpresa());
+        empresa.setRubro(solicitudRadicacion.getRubro());
+        empresa.setEmail(solicitudRadicacion.getEmailEmpresa());
+        empresa.setDireccion(solicitudRadicacion.getDireccion());
+        empresa.setIngresoBrutos(solicitudRadicacion.getIngresoBrutos());
+        empresa.setDescripcionBienServicio(solicitudRadicacion.getDescripcionBienServicio());
+        empresa.setTipoIndustria(solicitudRadicacion.getTipoIndustria());
+        empresa.setEstadoEmpresa(EstadoEmpresa.RADICADA);
+
+        Empresa empresaGuardada = empresaRepository.save(empresa);
+
+        RepresentanteEmpresa representante = new RepresentanteEmpresa();
+        representante.setUsuario(alan);
+        representante.setEmpresa(empresaGuardada);
+
+        representanteRepository.save(representante);
+
+        Proyecto proyecto = new Proyecto();
+
+        proyecto.setTitulo(solicitudProyecto.getTitulo());
+        proyecto.setDescripcion(solicitudProyecto.getDescripcion());
+        proyecto.setObjetivo(solicitudProyecto.getObjetivo());
+        proyecto.setRubro(solicitudProyecto.getRubro());
+        proyecto.setInversionEstimada(solicitudProyecto.getInversionEstimada());
+        proyecto.setActividadPrincipal(solicitudProyecto.getActividadPrincipal());
+        proyecto.setActividadSecundaria(solicitudProyecto.getActividadSecundaria());
+        proyecto.setPersonalAOcupar(solicitudProyecto.getPersonalAOcupar());
+        proyecto.setTiempoDeRadicacion(solicitudProyecto.getTiempoDeRadicacion());
+        proyecto.setSupCubiertaTrabajoM2(solicitudProyecto.getSupCubiertaTrabajoM2());
+        proyecto.setSupCubiertaDepositoM2(solicitudProyecto.getSupCubiertaDepositoM2());
+        proyecto.setSupExpansionM2(solicitudProyecto.getSupExpansionM2());
+        proyecto.setTienePlanos(solicitudProyecto.getTienePlanos());
+        proyecto.setGeneraResiduos(solicitudProyecto.isGeneraResiduos());
+        proyecto.setDescripcionResiduos(solicitudProyecto.getDescripcionResiduos());
+        proyecto.setProduccionEstimada(solicitudProyecto.getProduccionEstimada());
+
+        proyecto.setNecesidadM2(solicitudRadicacion.getNecesidadM2());
+        proyecto.setFechaInicio(LocalDate.now());
+
+        proyecto.setEmpresa(empresaGuardada);
+        proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
+
+        Proyecto proyectoGuardado = proyectoRepository.save(proyecto);
+
+        crearTareasDesdeSolicitudProyecto(solicitudProyecto, proyectoGuardado);
+
+        System.out.println("Alan Turing convertido en representante, empresa creada, proyecto creado y tareas asignadas");
+    }
+
+    private void crearTareasDesdeSolicitudProyecto(SolicitudProyecto solicitudProyecto, Proyecto proyecto) {
+        List<TareaSolicitud> tareasSolicitud =
+                tareaSolicitudRepository.findBySolicitudProyecto(solicitudProyecto);
+        if (tareasSolicitud.isEmpty()) return;
+
+        for (TareaSolicitud tareaSolicitud : tareasSolicitud) {
+            Tarea tarea = new Tarea();
+            tarea.setTitulo(tareaSolicitud.getTitulo());
+            tarea.setDescripcion(tareaSolicitud.getDescripcion());
+            tarea.setCompleta(false);
+            tarea.setProyecto(proyecto);
+
+            tareaRepository.save(tarea);
+        }
+
+        System.out.println("Tareas creadas desde la solicitud de proyecto");
+    }
+
+
+    private void precargarInfraestructura() {
+        if (infraestructuraRepository.count() > 0) return;
 
         infraestructuraRepository.save(new Infraestructura(
                 "Estación Transformadora 1",
@@ -147,206 +515,65 @@ public class DataInitializer implements CommandLineRunner {
                 null
         ));
 
-        // crea el gerente inicial si no existe
-        precargarGerente();
-        precargarUsuarioNulo();
-
-        /// Pruebas
-        var empresas = precargarEmpresas();
-        precargarLotes();
-//        precargarSolicitudes(empresas);
-        ///
-    }
-
-//    private void precargarSolicitudes(List<Empresa> empresas) {
-//        if(solicitudRadicacionRepository.count() == 0){
-//
-//            Empresa empresa1 = empresas.get(0);
-//            SolicitudRadicacion s1 = new SolicitudRadicacion();
-//
-//            s1.setRazonSocial(empresa1.getRazonSocial());
-//            s1.setCuitEmpresa(empresa1.getCuit());
-//            s1.setRubro(empresa1.getRubro());
-//            s1.setTipoIndustria(empresa1.getTipoIndustria());
-//            s1.setEmailEmpresa(empresa1.getEmail());
-//            s1.setDireccion(empresa1.getDireccion());
-//            s1.setDescripcionBienServicio(empresa1.getDescripcionBienServicio());
-//
-//            solicitudRadicacionRepository.save(s1);
-//        }
-//    }
-
-    private List<Empresa> precargarEmpresas() {
-        if (empresaRepository.count() == 0) {
-
-            Empresa empresa1 = new Empresa();
-            empresa1.setRazonSocial("Patagonia Logística");
-            empresa1.setCuit("20-12345678-9");
-            empresa1.setRubro("Logística");
-            empresa1.setEmail("contacto@patagonialogistica.com");
-            empresa1.setEstadoEmpresa(EstadoEmpresa.INTERESADA);
-
-            Empresa empresa2 = new Empresa();
-            empresa2.setRazonSocial("Premoldeados Viedma");
-            empresa2.setCuit("27-98765432-1");
-            empresa2.setRubro("Construcción");
-            empresa2.setEmail("ventas@premoldeadosviedma.com");
-            empresa2.setEstadoEmpresa(EstadoEmpresa.RADICADA);
-
-            Empresa empresa3 = new Empresa();
-            empresa3.setRazonSocial("Frigorífico Río Negro");
-            empresa3.setCuit("30-45678912-3");
-            empresa3.setRubro("Frigorífico");
-            empresa3.setEmail("info@frigorificiorn.com");
-            empresa3.setEstadoEmpresa(EstadoEmpresa.ADJUDICADA);
-
-            Empresa empresa4 = new Empresa();
-            empresa4.setRazonSocial("Aberturas del Sur");
-            empresa4.setCuit("30-22223333-4");
-            empresa4.setRubro("Aberturas de aluminio");
-            empresa4.setEmail("contacto@aberturasdelsur.com");
-            empresa4.setEstadoEmpresa(EstadoEmpresa.RADICADA);
-
-            Empresa empresa5 = new Empresa();
-            empresa5.setRazonSocial("Valle Inferior Agro");
-            empresa5.setCuit("30-99887766-5");
-            empresa5.setRubro("Agroindustria");
-            empresa5.setEmail("administracion@vigro.com");
-            empresa5.setEstadoEmpresa(EstadoEmpresa.INTERESADA);
-
-            Empresa empresa6 = new Empresa();
-            empresa6.setRazonSocial("Maderas Patagónicas");
-            empresa6.setCuit("30-11112222-6");
-            empresa6.setRubro("Aserradero");
-            empresa6.setEmail("ventas@maderaspatagonicas.com");
-            empresa6.setEstadoEmpresa(EstadoEmpresa.BAJA);
-
-            empresaRepository.save(empresa1);
-            empresaRepository.save(empresa2);
-            empresaRepository.save(empresa3);
-            empresaRepository.save(empresa4);
-            empresaRepository.save(empresa5);
-            empresaRepository.save(empresa6);
-
-            System.out.println("Empresas de prueba cargadas");
-        }
-        return empresaRepository.findAll();
-    }
-
-    private void precargarUsuarioNulo() {
-        if (!usuarioRepository.existsByCuit("00000000001")) {
-            Rol rolUsuarioNulo = rolRepository.findByNombre(NombreRol.ROL_NULO)
-                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
-
-            Usuario nulo = new Usuario(
-                    "Alan",
-                    "Turing",
-                    "alan@gmail.com",
-                    10001L,
-                    "1234",
-                    "00000000001"
-            );
-
-            nulo.getRoles().clear(); // saca ROL_NULO que agrega el constructor
-            nulo.getRoles().add(rolUsuarioNulo);
-
-            usuarioRepository.save(nulo);
-        }
-        if (!usuarioRepository.existsByCuit("00000000002")) {
-            Rol rolUsuarioNulo = rolRepository.findByNombre(NombreRol.ROL_NULO)
-                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
-
-            Usuario nulo = new Usuario(
-                    "Rodrigo",
-                    "Quichan",
-                    "ro@gmail.com",
-                    10002L,
-                    "1234",
-                    "00000000002"
-            );
-
-            nulo.getRoles().clear(); // saca ROL_NULO que agrega el constructor
-            nulo.getRoles().add(rolUsuarioNulo);
-
-            usuarioRepository.save(nulo);
-        }
-    }
-
-    private void precargarGerente() {
-        if (!usuarioRepository.existsByCuit("00000000000")) {
-            Rol rolGerente = rolRepository.findByNombre(NombreRol.ROL_GERENTE)
-                    .orElseThrow(() -> new RuntimeException(ROL_NOT_FOUND) );
-
-            Usuario gerente = new Usuario(
-                    "Martin",
-                    "Lemos",
-                    "gerenteSGPIV@gmail.com",
-                    10000L,
-                    "sgpiv1234",
-                    "00000000000"
-            );
-
-            gerente.getRoles().clear(); // saca ROL_NULO que agrega el constructor
-            gerente.getRoles().add(rolGerente);
-
-            usuarioRepository.save(gerente);
-        }
+        System.out.println("Infraestructura de prueba cargada");
     }
 
     private void precargarLotes() {
-        if (loteRepository.count() == 0) {
-            Lote lote1 = new Lote(
-                    1200D,
-                    "Sector A - Lote 1",
-                    4500000f,
-                    "Uso industrial liviano"
-            );
-            Lote lote2 = new Lote(
-                    1800D,
-                    "Sector A - Lote 2",
-                    6200000f,
-                    "Sin restricciones"
-            );
-            Lote lote3 = new Lote(
-                    950D,
-                    "Sector B - Lote 3",
-                    3900000f,
-                    "No apto almacenamiento químico"
-            );
-            Lote lote4 = new Lote(
-                    2500D,
-                    "Sector C - Lote 4",
-                    9100000f,
-                    "Uso industrial pesado"
-            );
-            Lote lote5 = new Lote(
-                    1500D,
-                    "Sector D - Lote 5",
-                    5400000f,
-                    "Altura máxima 12m"
-            );
+        if (loteRepository.count() > 0) return;
 
-            // estados distintos para prueba
+        Lote lote1 = new Lote(
+                1200D,
+                "Sector A - Lote 1",
+                4500000f,
+                "Uso industrial liviano"
+        );
 
-            lote1.setEstadoLote(EstadoLote.DISPONIBLE);
+        Lote lote2 = new Lote(
+                1800D,
+                "Sector A - Lote 2",
+                6200000f,
+                "Sin restricciones"
+        );
 
-            lote2.setEstadoLote(EstadoLote.EN_USO);
-            lote2.setFechaUso(LocalDate.now().minusMonths(6));
+        Lote lote3 = new Lote(
+                950D,
+                "Sector B - Lote 3",
+                3900000f,
+                "No apto almacenamiento químico"
+        );
 
-            lote3.setEstadoLote(EstadoLote.DISPONIBLE);
+        Lote lote4 = new Lote(
+                2500D,
+                "Sector C - Lote 4",
+                9100000f,
+                "Uso industrial pesado"
+        );
 
-            lote4.setEstadoLote(EstadoLote.EN_USO);
-            lote4.setFechaAdjudicacion(LocalDate.now().minusMonths(2));
+        Lote lote5 = new Lote(
+                1500D,
+                "Sector D - Lote 5",
+                5400000f,
+                "Altura máxima 12m"
+        );
 
-            lote5.setEstadoLote(EstadoLote.DISPONIBLE);
+        lote1.setEstadoLote(EstadoLote.DISPONIBLE);
 
-            loteRepository.save(lote1);
-            loteRepository.save(lote2);
-            loteRepository.save(lote3);
-            loteRepository.save(lote4);
-            loteRepository.save(lote5);
+        lote2.setEstadoLote(EstadoLote.EN_USO);
+        lote2.setFechaUso(LocalDate.now().minusMonths(6));
 
-            System.out.println("Lotes de prueba cargados");
-        }
+        lote3.setEstadoLote(EstadoLote.DISPONIBLE);
+
+        lote4.setEstadoLote(EstadoLote.EN_USO);
+        lote4.setFechaAdjudicacion(LocalDate.now().minusMonths(2));
+
+        lote5.setEstadoLote(EstadoLote.DISPONIBLE);
+
+        loteRepository.save(lote1);
+        loteRepository.save(lote2);
+        loteRepository.save(lote3);
+        loteRepository.save(lote4);
+        loteRepository.save(lote5);
+
+        System.out.println("Lotes de prueba cargados");
     }
 }

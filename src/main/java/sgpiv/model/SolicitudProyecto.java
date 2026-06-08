@@ -69,11 +69,6 @@ public class SolicitudProyecto {
     private LocalDate fechaEnvio;
     private String motivoRechazo;
 
-
-
-
-
-
 }
     
 
