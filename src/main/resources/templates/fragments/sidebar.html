@@ -128,7 +128,7 @@
 
             <!--Lista de proyectos-->
             <a th:href="@{/empresas/proyectos}"
-               th:classappend="${pagina == 'proyectos-empresa'} ? ' active' : ''">
+               th:classappend="${pagina == 'proyecto-empresa'} ? ' active' : ''">
                 <i class="fa-solid fa-diagram-project"></i> Mis Proyectos
             </a>
 
@@ -224,7 +224,7 @@
 
         <!-- NOTIFICACIONES -->
 
-        <a th:href="@{/notificaciones}" th:classappend="${activePage == 'notificaciones'} ? 'active'">
+        <a th:href="@{/notificaciones}" th:classappend="${pagina == 'notificaciones'} ? 'active' : ''">
             <i class="fa-solid fa-bell"></i> Notificaciones
             <span th:if="${notificacionesNoLeidas > 0}" th:text="${notificacionesNoLeidas}"
                   style="margin-left:auto; background:#ef4444; color:white; border-radius:10px; padding:1px 7px; font-size:11px;">

@@ -30,13 +30,9 @@ public class LoginController {
 
     @PostMapping("/login")
     public String procesarLogin(@Valid @ModelAttribute LoginDTO dto,
-                                BindingResult result,
-                                Model model,
-                                HttpSession session){
+                                BindingResult result, Model model, HttpSession session){
 
-        if (result.hasErrors()){
-            return "login";
-        }
+        if (result.hasErrors()) return "login";
         try{
             UsuarioResponseDTO usuario = usuarioService.iniciarSesion(dto);
 //            model.addAttribute("usuario", usuario); ESTO SE USA MAS ADELANTE NO SE BORRA
@@ -44,6 +40,7 @@ public class LoginController {
             return "redirect:/home";
         } catch (RuntimeException e) {
             model.addAttribute("error", e.getMessage());
+            model.addAttribute("loginDTO", dto);
             return "login";
         }
     }

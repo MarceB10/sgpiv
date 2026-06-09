@@ -43,6 +43,7 @@ public class NotificacionController {
 
         model.addAttribute("notificaciones", notificaciones);
         model.addAttribute("notificacionesNoLeidas", noLeidas);
+        model.addAttribute("pagina", "notificaciones");
 
         return "notificaciones";     // → templates/notificaciones.html
     }

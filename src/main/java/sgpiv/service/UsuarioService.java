@@ -20,10 +20,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsuarioService {
 
-    private static final String USUARIO_NO_ENCONTRADO = "El Usuario No se ha Encontrado";
-    private static final String CONTRASENIA_INCORRECTA = "La contraseña No es correcta";
+    private static final String USUARIO_NO_ENCONTRADO = "El Usuario no se ha Encontrado";
+    private static final String CONTRASENIA_INCORRECTA = "La contraseña no es correcta";
     private static final String USUARIO_INACTIVO = "El Usuario esta dado de baja";
-    private static final String EMAIL_NO_EXISTE = "El email No Existe";
+    private static final String EMAIL_NO_EXISTE = "El email no existe";
 
 
     private final UsuarioRepository usuarioRepository;
