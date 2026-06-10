@@ -16,6 +16,7 @@ import sgpiv.service.LoteService;
 import sgpiv.service.OcupacionLoteService;
 import sgpiv.service.ProyectoService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -135,7 +136,7 @@ public class LoteController {
         if (lote == null) return "redirect:/gerente/proyectos/" + idProyecto + "/detalle";
 
 
-        ocupacionLoteService.ocuparLote(lote.getId(), idProyecto);
+        ocupacionLoteService.ocuparLote(lote.getId(), idProyecto, LocalDate.now());
         session.removeAttribute("loteSeleccionado");
         return "redirect:/gerente/lotes";
     }

@@ -48,9 +48,9 @@ public class OcupacionLoteService {
         return resultado;
     }
 
-    public void ocuparLote(Long idLote, Long idProyecto) {
-        ocuparLote(idLote, idProyecto, LocalDate.now());
-    }
+//    public void ocuparLote(Long idLote, Long idProyecto) {
+//        ocuparLote(idLote, idProyecto, LocalDate.now());
+//    }
 
 //    public void ocuparLote(Long idLote, Long idProyecto, LocalDate fechaAdjudicacion) {
 //        Lote lote = loteRepository

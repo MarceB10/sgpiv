@@ -121,6 +121,29 @@
         </div>
     </div>
 
+    <!--SECCION SERVICIOS REQUERIDOS-->
+    <div class="seccion">
+        <h2 class="seccion-titulo">🔌 Servicios requeridos</h2>
+
+        <div th:if="${#sets.isEmpty(proyecto.serviciosRequeridos)}"
+             class="dato-valor">
+            No se especificaron servicios.
+        </div>
+
+        <div class="chips-container"
+             th:unless="${#sets.isEmpty(proyecto.serviciosRequeridos)}">
+
+        <span class="chip-servicio"
+              th:each="servicio : ${proyecto.serviciosRequeridos}"
+              th:text="${servicio}">
+        </span>
+
+        </div>
+    </div>
+
+
+
+
     <!-- SECCION: RESIDUOS -->
     <div class="seccion">
         <h2 class="seccion-titulo">♻️ Residuos</h2>

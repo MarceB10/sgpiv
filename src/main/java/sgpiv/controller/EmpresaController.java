@@ -55,22 +55,22 @@ public class EmpresaController {
             empresas = empresaService.listarTodas();
         }
 
-        long interesadas = empresas.stream()
-                .filter(e -> EstadoEmpresa.INTERESADA.toString().equals(e.getEstadoEmpresa()))
+        long dadasDeBaja = empresas.stream()
+                .filter(e -> EstadoEmpresa.BAJA.toString().equals(e.getEstadoEmpresa()))
                 .count();
         long radicadas = empresas.stream()
                 .filter(e -> EstadoEmpresa.RADICADA.toString().equals(e.getEstadoEmpresa()))
                 .count();
-        long adjudicadas = empresas.stream()
-                .filter(e -> EstadoEmpresa.ADJUDICADA.toString().equals(e.getEstadoEmpresa()))
+        long pendientesLote = empresas.stream()
+                .filter(e -> EstadoEmpresa.PENDIENTE_LOTE.toString().equals(e.getEstadoEmpresa()))
                 .count();
 
         model.addAttribute("empresas", empresas);
         model.addAttribute("buscar", buscar);
         model.addAttribute("totalEmpresas", empresas.size());
-        model.addAttribute("interesadas", interesadas);
+        model.addAttribute("dadasDeBaja", dadasDeBaja);
         model.addAttribute("radicadas", radicadas);
-        model.addAttribute("adjudicadas", adjudicadas);
+        model.addAttribute("pendienteLote", pendientesLote);
         model.addAttribute("pagina", "empresas");
         return "empresas";
     }
