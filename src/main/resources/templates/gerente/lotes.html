@@ -126,39 +126,75 @@
 
 
     <!-- LISTADO DE PROYECTOS -->
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Proyecto</th>
-            <th>Empresa</th>
-            <th>Estado</th>
-            <th>Fecha</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="proyecto : ${proyectos}">
-            <td th:text="${proyecto.id}"></td>
-            <td th:text="${proyecto.titulo}" style="font-weight: 500;"></td>
-            <td th:text="${proyecto.razonSocialEmpresa}"></td>
-            <td>
-        <span th:text="${proyecto.estado}">
-<!--              th:classappend="${proyecto.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :-->
-<!--                 (${proyecto.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">-->
-        </span>
-<!--            </td>-->
-<!--            <td th:text="${proyecto.fechaEnvio}"></td>-->
-<!--            <td>-->
-                <a class="btn btn-edit" th:href="@{/gerente/proyectos/{id}/detalle(id=${proyecto.id})}">
-                    <i class="fa-regular fa-eye"></i> Ver detalle
-                </a>
-            </td>
+    <!-- TABLA CONTAINER PROYECTOS SIN LOTE -->
+    <div class="table-container">
 
-        </tr>
-        </tbody>
+        <div class="table-top">
 
-    </table>
+            <h3>Proyectos Pendientes de Asignación de Lote</h3>
+
+            <div class="search-form">
+
+                <input
+                        type="text"
+                        id="buscadorProyecto"
+                        placeholder="Buscar por empresa o CUIT..."
+                />
+
+            </div>
+
+        </div>
+
+        <table>
+
+            <thead>
+            <tr>
+
+                <th>ID</th>
+                <th>Proyecto</th>
+                <th>Empresa</th>
+                <th>CUIT</th>
+                <th>Superficie Solicitada</th>
+                <th>Acciones</th>
+
+            </tr>
+            </thead>
+
+            <tbody id="tablaProyectos">
+
+            <tr th:each="proyecto : ${proyectos}"
+                class="fila-proyecto">
+
+                <td th:text="${proyecto.id}"></td>
+
+                <td th:text="${proyecto.titulo}"></td>
+
+                <td class="col-empresa"
+                    th:text="${proyecto.razonSocialEmpresa}">
+                </td>
+
+                <td class="col-cuit"
+                    th:text="${proyecto.cuitEmpresa}">
+                </td>
+
+                <td th:text="${proyecto.necesidadM2 + ' m²'}"></td>
+
+                <td>
+
+                    <a class="btn btn-edit"
+                       th:href="@{/gerente/proyectos/{id}/detalle(id=${proyecto.id})}">
+                        Ver detalle
+                    </a>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 
 
@@ -228,5 +264,42 @@
     );
 
 </script>
+
+<script>
+    const buscadorProyecto =
+    document.getElementById("buscadorProyecto");
+
+buscadorProyecto.addEventListener("input", function () {
+
+    let texto =
+        this.value.toLowerCase().trim();
+
+    let filas =
+        document.querySelectorAll(".fila-proyecto");
+
+    filas.forEach(fila => {
+
+        let empresa =
+            fila.querySelector(".col-empresa")
+                .innerText
+                .toLowerCase();
+
+        let cuit =
+            fila.querySelector(".col-cuit")
+                .innerText
+                .toLowerCase();
+
+        let visible =
+            empresa.includes(texto) ||
+            cuit.includes(texto);
+
+        fila.style.display =
+            visible ? "" : "none";
+
+    });
+
+});
+</script>
+
 </body>
 </html>
