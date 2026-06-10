@@ -22,6 +22,11 @@ public class LoginController {
     private final UsuarioService usuarioService;
 
     @GetMapping("/")
+    public String landing(){
+        return "landing";
+    }
+
+    @GetMapping("/login")
     public String login(Model model){
         model.addAttribute("loginDTO", new LoginDTO());
         return "login";
