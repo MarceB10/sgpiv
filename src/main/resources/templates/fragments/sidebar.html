@@ -144,10 +144,10 @@
 
         <!-- ROL_ORGANISMO_PUBLICO -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_ORGANISMO_PUBLICO'}">
-<!--            <a th:href="@{/mi-perfil}"-->
-<!--               th:classappend="${pagina == 'mi-perfil'} ? ' active' : ''">-->
-<!--                <i class="fa-solid fa-building-shield"></i> Mi Perfil-->
-<!--            </a>-->
+            <!--            <a th:href="@{/mi-perfil}"-->
+            <!--               th:classappend="${pagina == 'mi-perfil'} ? ' active' : ''">-->
+            <!--                <i class="fa-solid fa-building-shield"></i> Mi Perfil-->
+            <!--            </a>-->
         </th:block>
 
         <!-- ROL_NULO -->
@@ -220,6 +220,24 @@
                 </a>
             </th:block>
         </th:block>
+
+        <!-- PROVEEDORES -->
+
+        <a th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'}"
+           th:href="@{/gerente/proveedores}"
+           th:classappend="${pagina == 'proveedores-parque'} ? ' active' : ''">
+            <i class="fa-solid fa-truck"></i>
+            Proveedores
+        </a>
+
+        <a th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}"
+           th:href="@{/empresas/mis-proveedores}"
+           th:classappend="${pagina == 'mis-proveedores'} ? ' active' : ''">
+            <i class="fa-solid fa-truck"></i>
+            Mis Proveedores
+        </a>
+
+        <!-- PROVEEDORES -->
 
 
         <!-- NOTIFICACIONES -->
