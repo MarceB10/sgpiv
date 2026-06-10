@@ -58,7 +58,7 @@ class LoteTest {
     @Test
     public void testUbicacionVacia() {
         Lote lote = new Lote();
-        lote.setSuperficie(200f);
+        lote.setSuperficie(200d);
         lote.setPrecio(1500f);
         lote.setUbicacion("");
         Set<ConstraintViolation<Lote>> errores = validator.validate(lote);
@@ -70,7 +70,7 @@ class LoteTest {
     @Test
     public void testPrecioNulo() {
         Lote lote = new Lote();
-        lote.setSuperficie(200f);
+        lote.setSuperficie(200d);
         lote.setUbicacion("Zona A");
         Set<ConstraintViolation<Lote>> errores = validator.validate(lote);
         assertTrue(errores.stream()

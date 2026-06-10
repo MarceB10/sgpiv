@@ -4,11 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sgpiv.dtos.response.LoteResponseDTO;
 import sgpiv.dtos.request.LoteRequestDTO;
-import sgpiv.enums.ServicioLote;
 import sgpiv.model.Lote;
+import sgpiv.model.OcupacionLote;
 import sgpiv.model.Proyecto;
 import sgpiv.repository.LoteRepository;
+import sgpiv.repository.OcupacionLoteRepository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -18,6 +21,7 @@ public class LoteService {
     private final String LOTE_NOT_FOUND = "El Lote no fue encontrado";
     private final LoteRepository loteRepository;
     private final ProyectoService proyectoService;
+    private final OcupacionLoteRepository ocupacionLoteRepository;
 
 
     public void definirLote(LoteRequestDTO loteDTO){
@@ -33,9 +37,10 @@ public class LoteService {
         Lote lote = loteRepository.findById(idLote)
                 .orElseThrow(() -> new RuntimeException(LOTE_NOT_FOUND));
 
-        return new LoteResponseDTO(lote);
+        return new LoteResponseDTO(lote, null);
     }
 
+    @Transactional(readOnly = true)
     public List<LoteResponseDTO> obtenerLotesParaAdjudicar(Long idProyecto){
         Proyecto proyecto = proyectoService.obtenerPorId(idProyecto);
         Double superficie = proyecto.getNecesidadM2();
@@ -48,7 +53,7 @@ public class LoteService {
 
         for (Lote lote: lotes){
             if (tieneServiciosRequeridos(lote, proyecto)){
-            lotesDTOS.add(new LoteResponseDTO(lote));
+            lotesDTOS.add(new LoteResponseDTO(lote, null));
             }
         }
 
@@ -58,8 +63,6 @@ public class LoteService {
     private boolean tieneServiciosRequeridos(Lote lote, Proyecto proyecto){
         return lote.getServicios().
                 containsAll( proyecto.getServiciosRequeridos() );
-
-
     }
 
 
@@ -75,11 +78,15 @@ public class LoteService {
         List<LoteResponseDTO> lotesResponseDTO = new ArrayList<>();
         List<Lote> lotes = loteRepository.findAll();
 
-        for (Lote lote: lotes){
-            lotesResponseDTO.add(
-                    new LoteResponseDTO(lote)
-            );
+        for (Lote lote : lotes){
+            LocalDate fechaAdjudicacion = ocupacionLoteRepository
+                    .findOcupacionActivaPorLote(lote.getId())
+                    .map(OcupacionLote::getFechaInicio)
+                    .orElse(null);
 
+            LoteResponseDTO dto = new LoteResponseDTO(lote, fechaAdjudicacion);
+            dto.setFechaAdjudicacion(fechaAdjudicacion);
+            lotesResponseDTO.add(dto);
         }
 
         return lotesResponseDTO;

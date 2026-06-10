@@ -14,7 +14,7 @@ public class EmpresaRequestDTO {
     @NotBlank(message = "El CUIT es obligatorio")
     private String cuit;
 
-    public Long Telefono;
+    public String Telefono;
 
     private String ingresoBrutos;
 

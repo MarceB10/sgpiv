@@ -146,6 +146,79 @@
 
     </div>
     <!-- /table-container -->
+
+    <!-- TABLA CONTAINER -->
+    <div class="table-container">
+
+        <!-- TOP -->
+        <div class="table-top">
+            <h3>Solicitudes de organismos públicos</h3>
+            <form th:action="@{/solicitudesGerente}" method="get" class="search-form">
+                <input
+                        type="text"
+                        name="organismo"
+                        th:value="${param.organismo}"
+                        placeholder="Buscar por organismo..."
+                />
+                <select name="estadoOrganismo">
+                    <option value="">Todos los estados</option>
+                    <option value="PENDIENTE"
+                            th:selected="${param.estadoOrganismo == 'PENDIENTE'}">Pendiente</option>
+                    <option value="APROBADA"
+                            th:selected="${param.estadoOrganismo == 'APROBADA'}">Aprobada</option>
+                    <option value="RECHAZADA"
+                            th:selected="${param.estadoOrganismo == 'RECHAZADA'}">Rechazada</option>
+                </select>
+                <button type="submit" class="search-button">Buscar</button>
+            </form>
+        </div>
+
+        <!-- LISTADO -->
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Organismo</th>
+                <th>Tipo</th>
+                <th>Solicitante</th>
+                <th>Cargo</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(solicitudesOrganismo)}">
+                <td colspan="8" style="text-align:center; color:#94a3b8; padding: 20px;">
+                    No hay solicitudes de organismos públicos
+                </td>
+            </tr>
+            <tr th:each="solicitud : ${solicitudesOrganismo}">
+                <td th:text="${solicitud.id}"></td>
+                <td th:text="${solicitud.nombreOrganismo}" style="font-weight: 500;"></td>
+                <td th:text="${solicitud.tipoOrganismo}"></td>
+                <td th:text="${solicitud.nombreUsuario + ' ' + solicitud.apellidoUsuario}"></td>
+                <td th:text="${solicitud.cargoSolicitante}"></td>
+                <td>
+                <span th:text="${solicitud.estado}"
+                      th:classappend="${solicitud.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
+                                     (${solicitud.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">
+                </span>
+                </td>
+                <td th:text="${solicitud.fechaEnvio}"></td>
+                <td>
+                    <a class="btn btn-edit"
+                       th:href="@{/gerente/solicitudesOrganismo/{id}(id=${solicitud.id})}">
+                        <i class="fa-regular fa-eye"></i> Ver detalle
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <!--- /table container --->
+
 </div>
 <!-- /main-content -->
 

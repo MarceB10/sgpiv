@@ -1,6 +1,8 @@
 package sgpiv.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import sgpiv.model.Empresa;
 import sgpiv.model.Lote;
 import sgpiv.model.OcupacionLote;
@@ -20,7 +22,14 @@ public interface OcupacionLoteRepository extends JpaRepository<OcupacionLote, Lo
 
     Optional<OcupacionLote> findByFechaInicioAndLote(LocalDate fechaInicio, Lote lote);
 
+    @Query("SELECT o FROM OcupacionLote o WHERE o.proyecto.empresa.id = :empresaId AND o.fechaFin IS NULL")
+    Optional<OcupacionLote> findOcupacionActiva(@Param("empresaId") Long empresaId);
+
+    @Query("SELECT o FROM OcupacionLote o WHERE o.lote.id = :loteId AND o.fechaFin IS NULL")
+    Optional<OcupacionLote> findOcupacionActivaPorLote(@Param("loteId") Long loteId);
 
     List<OcupacionLote> findAll();
+
+    Optional<OcupacionLote> findByProyecto_EmpresaAndFechaFinIsNull(Empresa empresa);
 
 }

@@ -2,6 +2,9 @@ package sgpiv.controller;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,8 +15,11 @@ import sgpiv.dtos.response.LoteResponseDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.enums.EstadoSolicitud;
 import sgpiv.enums.NombreRol;
+import sgpiv.model.SolicitudOrganismoPublico;
 import sgpiv.model.SolicitudRadicacion;
+import sgpiv.repository.SolicitudOrganismoPublicoRepository;
 import sgpiv.repository.SolicitudRadicacionRepository;
+import sgpiv.service.SolicitudOrganismoService;
 import sgpiv.service.SolicitudService;
 import sgpiv.service.UsuarioService;
 
@@ -26,6 +32,8 @@ public class GerenteController {
     private final SolicitudService solicitudService;
     private final SolicitudRadicacionRepository solicitudRadicacionRepository;
     private final UsuarioService usuarioService;
+    private  final SolicitudOrganismoService solicitudOrganismoService;
+    private final SolicitudOrganismoPublicoRepository solicitudOrgRepo;
 
     @GetMapping("/gerente/usuarios")
     public String usuariosPendientes(Model model,
@@ -79,6 +87,8 @@ public class GerenteController {
 
         model.addAttribute("proyectos",
                 solicitudService.listarProyectosPendientes());
+
+        model.addAttribute("solicitudesOrganismo", solicitudOrganismoService.listarPendientes());
 
         model.addAttribute("pagina", "solicitudes-gerente");
 
@@ -210,5 +220,55 @@ public class GerenteController {
 
     }
 
+
+    /// ----------------------------Solicitudes Org Publico ----------------------------------------
+
+    @GetMapping("/gerente/solicitudesOrganismo")
+    public String listarSolicitudesOrganismo(Model model, HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/login";
+
+        model.addAttribute("solicitudes", solicitudOrganismoService.listarPendientes());
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pagina", "solicitudes-organismo");
+        return "solicitudesGerente";
+    }
+
+    @GetMapping("/gerente/solicitudesOrganismo/{id}")
+    public String detalleSolicitudOrganismo(@PathVariable Long id,
+                                            Model model,
+                                            HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/login";
+
+        model.addAttribute("solicitud", solicitudOrganismoService.obtenerSolicitudPorId(id));
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pagina", "solicitudes-organismo");
+        return "gerente/detalleSolicitudOrganismo";
+    }
+
+    @PostMapping("/gerente/solicitudesOrganismo/{id}/aprobar")
+    public String aprobarOrganismo(@PathVariable Long id) {
+        solicitudOrganismoService.aprobar(id);
+        return "redirect:/solicitudesGerente";
+    }
+
+    @PostMapping("/gerente/solicitudesOrganismo/{id}/rechazar")
+    public String rechazarOrganismo(@PathVariable Long id,
+                                    @RequestParam String motivo) {
+        solicitudOrganismoService.rechazar(id, motivo);
+        return "redirect:/gerente/solicitudesOrganismo";
+    }
+
+    @GetMapping("/gerente/solicitudesOrganismo/{id}/archivo")
+    public ResponseEntity<byte[]> descargarArchivo(@PathVariable Long id) {
+        SolicitudOrganismoPublico solicitud = solicitudOrgRepo.findById(id).orElseThrow();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + solicitud.getNombreArchivo() + "\"")
+                .contentType(MediaType.parseMediaType(solicitud.getTipoArchivo()))
+                .body(solicitud.getArchivo());
+    }
 
 }

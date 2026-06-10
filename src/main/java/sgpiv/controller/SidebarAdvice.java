@@ -6,8 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import sgpiv.dtos.response.UsuarioResponseDTO;
+import sgpiv.model.SolicitudOrganismoPublico;
 import sgpiv.model.SolicitudProyecto;
 import sgpiv.model.SolicitudRadicacion;
+import sgpiv.repository.SolicitudOrganismoPublicoRepository;
 import sgpiv.repository.SolicitudProyectoRepository;
 import sgpiv.service.SolicitudService;
 
@@ -17,6 +19,7 @@ public class SidebarAdvice {
 
     private final SolicitudService solicitudService;
     private final SolicitudProyectoRepository solicitudProyectoRepository;
+    private final SolicitudOrganismoPublicoRepository solicitudOrganismoPublicoRepository;
 
     /*
     Esta clase se encarga de cargar al model la solicitud activa y asi cambia de estado las opciones
@@ -44,5 +47,11 @@ public class SidebarAdvice {
                     .orElse(null);
             model.addAttribute("solicitudProyectoActiva", solicitudProyectoActiva);
         }
+
+        SolicitudOrganismoPublico solicitudOrganismo = solicitudOrganismoPublicoRepository
+                .findByUsuarioId(usuario.getId())
+                .orElse(null);
+        model.addAttribute("solicitudOrganismoActiva", solicitudOrganismo);
+
     }
 }

@@ -38,16 +38,35 @@ public class SolicitudProyectoController {
         return "solicitudProyecto";
     }
 
+//    @PostMapping
+//    public String guardar(@Valid @ModelAttribute SolicitudProyectoRequestDTO dto,
+//                          BindingResult result,
+//                          HttpSession session,
+//                          Model model) {
+//
+//        if (result.hasErrors()) {
+//            UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+//            model.addAttribute("usuario", usuario);
+//            model.addAttribute("solicitudProyectoDTO", dto);
+//            return "solicitudProyecto";
+//        }
+//
+//        solicitudService.guardarSolicitudProyecto(dto);
+//        return "redirect:/home";
+//    }
+
     @PostMapping
-    public String guardar(@Valid @ModelAttribute SolicitudProyectoRequestDTO dto,
-                          BindingResult result,
-                          HttpSession session,
-                          Model model) {
+    public String guardar(
+            @Valid @ModelAttribute("solicitudProyectoDTO") SolicitudProyectoRequestDTO dto,
+            BindingResult result, HttpSession session, Model model) {
+
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+
+        if (usuario == null) return "redirect:/";
 
         if (result.hasErrors()) {
-            UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
             model.addAttribute("usuario", usuario);
-            model.addAttribute("solicitudProyectoDTO", dto);
+            model.addAttribute("pagina", "solicitudProyecto");
             return "solicitudProyecto";
         }
 

@@ -21,8 +21,10 @@ public class OrganismoPublico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @NotBlank(message = "El CUIT no puede estar vacio")
-//    private String cuit;
+    private String nombreOrganismo;
+    private String tipoOrganismo;
+    private String cargoSolicitante;
+    private boolean activo = true;
 
     @OneToOne
     @JoinColumn(name = "usuario_id", unique = true)

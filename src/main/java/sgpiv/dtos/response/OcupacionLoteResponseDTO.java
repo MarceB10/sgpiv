@@ -35,6 +35,9 @@ public class OcupacionLoteResponseDTO {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
 
+    //ACTIVA
+    private boolean activa;
+
     public OcupacionLoteResponseDTO(OcupacionLote ocupacion) {
         this.id               = ocupacion.getId();
         this.idLote           = ocupacion.getLote().getId();
@@ -57,5 +60,7 @@ public class OcupacionLoteResponseDTO {
                 this.cuitRepresentante     = proyecto.getRepresentanteEmpresa().getUsuario().getCuit();
             }
         }
+
+        this.activa = ocupacion.estaActiva();
     }
 }

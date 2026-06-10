@@ -61,7 +61,7 @@
 
             <div class="card">
                 <h3>Progreso</h3>
-                <p th:text="${#numbers.formatDecimal(proyecto.obtenerProgreso()*100,0,0)} + '%'">
+                <p th:text="${#numbers.formatDecimal(proyecto.obtenerProgreso(),0,0)} + '%'">
                     70%
                 </p>
             </div>

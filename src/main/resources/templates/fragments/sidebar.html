@@ -49,6 +49,11 @@
                th:classappend="${pagina == 'empresas'} ? ' active' : ''">
                 <i class="fa-solid fa-building"></i> Empresas
             </a>
+            <!-- Organismos del Parque -->
+            <a th:href="@{/gerente/organismos}"
+               th:classappend="${pagina == 'organismos'} ? ' active' : ''">
+                <i class="fa-solid fa-building-columns"></i> Organismos públicos
+            </a>
             <!--Usuarios del parque a gestionar-->
             <a th:href="@{/gerente/usuarios}"
                th:classappend="${pagina == 'usuarios'} ? ' active' : ''">
@@ -139,10 +144,10 @@
 
         <!-- ROL_ORGANISMO_PUBLICO -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_ORGANISMO_PUBLICO'}">
-            <a th:href="@{/mi-perfil}"
-               th:classappend="${pagina == 'mi-perfil'} ? ' active' : ''">
-                <i class="fa-solid fa-building-shield"></i> Mi Perfil
-            </a>
+            <!--            <a th:href="@{/mi-perfil}"-->
+            <!--               th:classappend="${pagina == 'mi-perfil'} ? ' active' : ''">-->
+            <!--                <i class="fa-solid fa-building-shield"></i> Mi Perfil-->
+            <!--            </a>-->
         </th:block>
 
         <!-- ROL_NULO -->
@@ -154,6 +159,21 @@
                th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
                 <i class="fa-solid fa-file-signature"></i>
                 Solicitud de Radicación
+            </a>
+
+            <a th:href="@{/solicitudOrganismo}"
+               th:classappend="${pagina == 'solicitud-organismo'} ? ' active' : ''">
+                <i class="fa-solid fa-building-columns"></i>
+                Solicitud Organismo Público
+            </a>
+
+            <!-- Si tiene solicitud pendiente muestra el estado -->
+            <a th:if="${solicitudOrganismoActiva != null
+                    and solicitudOrganismoActiva.estado.name() == 'PENDIENTE'}"
+               th:href="@{/miSolicitudOrganismo}"
+               th:classappend="${pagina == 'mi-solicitud-organismo'} ? ' active' : ''">
+                <i class="fa-solid fa-clock"></i>
+                Ver mi solicitud organismo
             </a>
 
             <!-- REQUIERE MODIFICACION → solo mostrar Modificar -->
@@ -200,6 +220,24 @@
                 </a>
             </th:block>
         </th:block>
+
+        <!-- PROVEEDORES -->
+
+        <a th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'}"
+           th:href="@{/gerente/proveedores}"
+           th:classappend="${pagina == 'proveedores-parque'} ? ' active' : ''">
+            <i class="fa-solid fa-truck"></i>
+            Proveedores
+        </a>
+
+        <a th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}"
+           th:href="@{/empresas/mis-proveedores}"
+           th:classappend="${pagina == 'mis-proveedores'} ? ' active' : ''">
+            <i class="fa-solid fa-truck"></i>
+            Mis Proveedores
+        </a>
+
+        <!-- PROVEEDORES -->
 
 
         <!-- NOTIFICACIONES -->
