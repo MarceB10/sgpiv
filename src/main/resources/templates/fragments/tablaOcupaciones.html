@@ -23,6 +23,7 @@
         <th>Fecha Inicio</th>
         <th>Fecha Fin</th>
         <th>Estado</th>
+        <th>Acciones</th>
       </tr>
       </thead>
       <tbody>
@@ -42,6 +43,14 @@
                           th:classappend="${ocupacion.activa} ? 'estado disponible' : 'estado en-uso'">
                     </span>
         </td>
+
+        <td>
+          <a class="btn btn-edit"
+             th:href="@{/gerente/ocupaciones/{id}/detalle(id=${ocupacion.id})}">
+            <i class="fa-regular fa-eye"></i> Ver detalle
+          </a>
+        </td>
+
       </tr>
       </tbody>
     </table>

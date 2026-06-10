@@ -107,10 +107,10 @@
                 />
                 <select name="estado">
                     <option value="">Todos los estados</option>
-                    <option value="DISPONIBLE"
-                            th:selected="${param.estado == 'DISPONIBLE'}">Disponible</option>
-                    <option value="EN_USO"
-                            th:selected="${param.estado == 'EN_USO'}">En Uso</option>
+                    <option value="Activa"
+                            th:selected="${param.estado == 'Activa'}">Activo</option>
+                    <option value="Finalizada"
+                            th:selected="${param.estado == 'Finalizada'}">Finalizada</option>
                 </select>
                 <button type="submit" class="search-button">Buscar</button>
             </form>

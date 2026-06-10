@@ -145,6 +145,11 @@ public class OcupacionLoteService {
         lote.habilitarDisponibilidad();
         loteRepository.save(lote);
 
+        // new 7. Volver a un estado consistente la empresa
+        empresa.setEstadoEmpresa(EstadoEmpresa.PENDIENTE_LOTE);
+        empresaRepository.save(empresa);
+
+
 //        // Suspender todos los proyectos de la empresa
 //        empresa.getProyectos().forEach(proyecto -> {
 //            proyecto.setEstadoProyecto(EstadoProyecto.INACTIVO);
@@ -180,6 +185,12 @@ public class OcupacionLoteService {
 
         return new OcupacionLoteResponseDTO(ocupacion);
 
+    }
+
+    public OcupacionLoteResponseDTO obtenerPorId(Long id) {
+        return new OcupacionLoteResponseDTO(
+                ocupacionLoteRepository.findById(id).orElseThrow()
+        );
     }
 
 }

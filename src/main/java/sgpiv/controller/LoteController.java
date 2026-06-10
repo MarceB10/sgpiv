@@ -212,4 +212,36 @@ public class LoteController {
 
         return "redirect:/gerente/lotes";
     }
+
+    //DESADJUDICACION DEL LOTE
+    @GetMapping("/gerente/ocupaciones/{id}/detalle")
+    public String detalleOcupacion(@PathVariable Long id,
+                                   Model model,
+                                   HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/";
+
+        model.addAttribute("ocupacion", ocupacionLoteService.obtenerPorId(id));
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pagina", "lotes");
+        return "gerente/detalleOcupacion";
+    }
+
+    @PostMapping("/gerente/ocupaciones/{id}/desadjudicar")
+    public String desadjudicarOcupacion(@PathVariable Long id,
+                                        @RequestParam String motivo,
+                                        Model model,
+                                        HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        try {
+            ocupacionLoteService.desadjudicar(id, motivo);
+            return "redirect:/gerente/lotes";
+        } catch (RuntimeException e) {
+            model.addAttribute("ocupacion", ocupacionLoteService.obtenerPorId(id));
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("pagina", "lotes");
+            return "gerente/detalleOcupacion";
+        }
+    }
 }
