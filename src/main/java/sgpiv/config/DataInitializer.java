@@ -47,6 +47,8 @@ public class DataInitializer implements CommandLineRunner {
     private final LoteService loteService;
     private final OcupacionLoteService ocupacionLoteService;
 
+    
+
     @Override
     public void run(String... args) {
         precargarRoles();

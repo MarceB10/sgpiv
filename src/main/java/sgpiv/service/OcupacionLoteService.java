@@ -145,22 +145,41 @@ public class OcupacionLoteService {
         lote.habilitarDisponibilidad();
         loteRepository.save(lote);
 
-        // Suspender todos los proyectos de la empresa
-        empresa.getProyectos().forEach(proyecto -> {
-            proyecto.setEstadoProyecto(EstadoProyecto.INACTIVO);
-        });
-        empresaRepository.save(empresa);
+//        // Suspender todos los proyectos de la empresa
+//        empresa.getProyectos().forEach(proyecto -> {
+//            proyecto.setEstadoProyecto(EstadoProyecto.INACTIVO);
+//        });
+//        empresaRepository.save(empresa);
+//
+//        // 7. Dar de baja la empresa
+//        empresa.setEstadoEmpresa(EstadoEmpresa.BAJA);
+//        empresaRepository.save(empresa);
+//
+//        // 8. Desactivar representante
+//        representanteRepository.findByEmpresa(empresa)
+//                .ifPresent(rep -> {
+//                    rep.getUsuario().desactivar();
+//                    representanteRepository.save(rep);
+//                });
+    }
 
-        // 7. Dar de baja la empresa
-        empresa.setEstadoEmpresa(EstadoEmpresa.BAJA);
-        empresaRepository.save(empresa);
+    public boolean existeOcupacion(Empresa empresa){
 
-        // 8. Desactivar representante
-        representanteRepository.findByEmpresa(empresa)
-                .ifPresent(rep -> {
-                    rep.getUsuario().desactivar();
-                    representanteRepository.save(rep);
-                });
+        OcupacionLote ocupacionActiva = ocupacionLoteRepository
+                .findByProyecto_EmpresaAndFechaFinIsNull(empresa)
+                .orElseThrow(() -> new RuntimeException(
+                        "No hay ocupacion activa para esta empresa"));
+
+        return (ocupacionActiva != null);
+    }
+
+    public OcupacionLoteResponseDTO obtenerOcupacionDeEmpresa(Empresa empresa){
+        OcupacionLote ocupacion = ocupacionLoteRepository
+                .findOcupacionActiva(empresa.getId())
+                .orElseThrow(() -> new RuntimeException("no se encuentra una ocupacion activa"));
+
+        return new OcupacionLoteResponseDTO(ocupacion);
+
     }
 
 }

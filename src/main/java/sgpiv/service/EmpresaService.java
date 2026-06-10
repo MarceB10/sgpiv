@@ -4,10 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sgpiv.dtos.request.EmpresaRequestDTO;
 import sgpiv.dtos.response.EmpresaResponseDTO;
+import sgpiv.dtos.response.OcupacionLoteResponseDTO;
 import sgpiv.enums.EstadoEmpresa;
+import sgpiv.enums.EstadoProyecto;
 import sgpiv.model.Empresa;
+import sgpiv.model.OcupacionLote;
 import sgpiv.model.RepresentanteEmpresa;
 import sgpiv.repository.EmpresaRepository;
+import sgpiv.repository.OcupacionLoteRepository;
+import sgpiv.repository.RepresentanteRepository;
 
 import java.util.List;
 
@@ -18,6 +23,8 @@ public class EmpresaService {
 
     private final EmpresaRepository empresaRepository; //para acceso a la bd
     private final RepresentanteService representanteService;
+    private final RepresentanteRepository representanteRepository;
+    private final OcupacionLoteService ocupacionLoteService;
 
     public EmpresaResponseDTO registrar(EmpresaRequestDTO dto, RepresentanteEmpresa representanteEmpresa){
         if( empresaRepository.existsByCuit(dto.getCuit())){
@@ -60,7 +67,21 @@ public class EmpresaService {
         Empresa empresa = empresaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
 
-        return new EmpresaResponseDTO(empresa);
+        EmpresaResponseDTO dto = new EmpresaResponseDTO(empresa);
+
+        // Buscar si tiene un lote ocupado a través de sus proyectos
+        OcupacionLoteResponseDTO ocupacion = ocupacionLoteService.obtenerOcupacionDeEmpresa(empresa);
+
+        if (ocupacion != null) {
+            dto.setTieneLoteOcupado(true);
+            dto.setLoteId(ocupacion.getIdLote());
+            dto.setLoteUbicacion(ocupacion.getUbicacionLote());
+            dto.setLoteSuperficie(ocupacion.getSuperficieLote());
+        } else {
+            dto.setTieneLoteOcupado(false);
+        }
+
+        return dto;
     }
     public List<EmpresaResponseDTO> listarPorRazonSocial(String razonSocial) {
         return empresaRepository.findByRazonSocialStartingWithIgnoreCase(razonSocial)
@@ -89,15 +110,29 @@ public class EmpresaService {
         );
     }
 
-    public EmpresaResponseDTO darDeBaja(Long id) {
+    public void darDeBaja(Long id, String motivo) {
         Empresa empresa = empresaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
 
-        empresa.setEstadoEmpresa(EstadoEmpresa.BAJA);
+        if (ocupacionLoteService.existeOcupacion(empresa)){
+            ocupacionLoteService.desadjudicar(id, motivo);
+        }
 
-        return new EmpresaResponseDTO(
-                empresaRepository.save(empresa)
-        );
+        empresa.getProyectos().forEach(proyecto -> {
+            proyecto.setEstadoProyecto(EstadoProyecto.INACTIVO);
+        });
+        empresaRepository.save(empresa);
+
+        // Dar de baja la empresa
+        empresa.setEstadoEmpresa(EstadoEmpresa.BAJA);
+        empresaRepository.save(empresa);
+
+        // Desactivar representante
+        representanteRepository.findByEmpresa(empresa)
+                .ifPresent(rep -> {
+                    rep.getUsuario().desactivar();
+                    representanteRepository.save(rep);
+                });
     }
 
     public EmpresaResponseDTO buscarEmpresaDelRepresentante(String cuit) {

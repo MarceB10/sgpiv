@@ -115,12 +115,26 @@
                   empresa.estadoEmpresa == 'ADJUDICADA'}">
 
         <form th:action="@{/empresas/{id}/desadjudicar(id=${empresa.id})}"
-              method="post">
+              method="post"
+              onsubmit="return confirmarBaja(this)">
+
+            <!-- ADVERTENCIA SI TIENE LOTE -->
+            <div th:if="${empresa.tieneLoteOcupado}" class="advertencia-lote">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Esta empresa tiene adjudicado el
+                <strong>Lote #<span th:text="${empresa.loteId}"></span></strong>
+                (<span th:text="${empresa.loteUbicacion}"></span> —
+                <span th:text="${empresa.loteSuperficie}"></span> m²).
+                <br/>
+                Al confirmar la baja, el lote será liberado y quedará disponible nuevamente.
+            </div>
+
             <input type="text"
                    name="motivo"
                    placeholder="Motivo de baja (obligatorio)"
                    class="input-motivo"
                    required/>
+
             <button type="submit"
                     class="btn-rechazar"
                     th:disabled="${tieneProyectosActivos}">
@@ -137,6 +151,18 @@
     </div>
 
 </div>
+
+
+<script>
+    function confirmarBaja(form) {
+        const tieneLote = /*[[${empresa.tieneLoteOcupado}]]*/ false;
+        if (tieneLote) {
+            return confirm("Esta empresa tiene un lote adjudicado. " +
+                "¿Confirmás dar de baja la empresa y liberar el lote?");
+        }
+        return confirm("¿Confirmás dar de baja esta empresa?");
+    }
+</script>
 
 </body>
 </html>
