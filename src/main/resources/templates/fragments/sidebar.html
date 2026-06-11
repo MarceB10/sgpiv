@@ -39,11 +39,11 @@
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'}">
 
             <!--Gestion de infraestructuras-->
-            <a th:href="@{/infraestructuras}"
-               th:classappend="${pagina == 'infraestructuras'} ? ' active' : ''">
-                <span>🛠️</span>
-                Gestión de Infraestructura
-            </a>
+<!--            <a th:href="@{/infraestructuras}"-->
+<!--               th:classappend="${pagina == 'infraestructuras'} ? ' active' : ''">-->
+<!--                <span>🛠️</span>-->
+<!--                Gestión de Infraestructura-->
+<!--            </a>-->
             <!--Empresas del parque a gestionar-->
             <a th:href="@{/empresas}"
                th:classappend="${pagina == 'empresas'} ? ' active' : ''">
@@ -79,12 +79,12 @@
                 <i class="fa-solid fa-industry"></i> Mi Empresa
             </a>
 
-            <!-- Solicitud inicial -->
-            <a th:if="${solicitudActiva == null}"
-               th:href="@{/solicitudRadicacion}"
-               th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
-                <i class="fa-solid fa-file-signature"></i> Solicitud de Radicación
-            </a>
+<!--            &lt;!&ndash; Solicitud inicial &ndash;&gt;-->
+<!--            <a th:if="${solicitudActiva == null}"-->
+<!--               th:href="@{/solicitudRadicacion}"-->
+<!--               th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">-->
+<!--                <i class="fa-solid fa-file-signature"></i> Solicitud de Radicación-->
+<!--            </a>-->
 
             <a th:if="${solicitudActiva != null}"
                th:href="@{/miSolicitud}"
@@ -144,82 +144,116 @@
 
         <!-- ROL_ORGANISMO_PUBLICO -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_ORGANISMO_PUBLICO'}">
-<!--            <a th:href="@{/mi-perfil}"-->
-<!--               th:classappend="${pagina == 'mi-perfil'} ? ' active' : ''">-->
-<!--                <i class="fa-solid fa-building-shield"></i> Mi Perfil-->
-<!--            </a>-->
+            <!--            <a th:href="@{/mi-perfil}"-->
+            <!--               th:classappend="${pagina == 'mi-perfil'} ? ' active' : ''">-->
+            <!--                <i class="fa-solid fa-building-shield"></i> Mi Perfil-->
+            <!--            </a>-->
         </th:block>
 
         <!-- ROL_NULO -->
+        <!-- ROL_NULO -->
         <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_NULO'}">
 
-            <!-- SIN SOLICITUD -->
-            <a th:if="${solicitudActiva == null}"
-               th:href="@{/solicitudRadicacion}"
-               th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
-                <i class="fa-solid fa-file-signature"></i>
-                Solicitud de Radicación
-            </a>
+            <!-- SOLICITUD DE RADICACION: solo si NO tiene organismo en curso (PENDIENTE o APROBADA) -->
+            <th:block th:if="${solicitudOrganismoActiva == null
+                    or solicitudOrganismoActiva.estado.name() == 'RECHAZADA'}">
 
-            <a th:href="@{/solicitudOrganismo}"
-               th:classappend="${pagina == 'solicitud-organismo'} ? ' active' : ''">
-                <i class="fa-solid fa-building-columns"></i>
-                Solicitud Organismo Público
-            </a>
-
-            <!-- Si tiene solicitud pendiente muestra el estado -->
-            <a th:if="${solicitudOrganismoActiva != null
-                    and solicitudOrganismoActiva.estado.name() == 'PENDIENTE'}"
-               th:href="@{/miSolicitudOrganismo}"
-               th:classappend="${pagina == 'mi-solicitud-organismo'} ? ' active' : ''">
-                <i class="fa-solid fa-clock"></i>
-                Ver mi solicitud organismo
-            </a>
-
-            <!-- REQUIERE MODIFICACION → solo mostrar Modificar -->
-            <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
-               th:href="@{/solicitudRadicacion}"
-               th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
-                <i class="fa-solid fa-pen-to-square"></i>
-                Modificar solicitud
-            </a>
-
-            <!-- RECHAZADA → solo mostrar Ver mi solicitud -->
-            <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'RECHAZADA'}"
-               th:href="@{/miSolicitud}"
-               th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
-                <i class="fa-solid fa-clock"></i>
-                Ver mi solicitud
-            </a>
-
-            <!-- CUALQUIER OTRO ESTADO (PENDIENTE, EN_REVISION, APROBADA, PENDIENTE_PROYECTO) → Ver mi solicitud -->
-            <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() != 'REQUIERE_MODIFICACION' and solicitudActiva.estado.name() != 'RECHAZADA'}"
-               th:href="@{/miSolicitud}"
-               th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
-                <i class="fa-solid fa-clock"></i>
-                Ver mi solicitud
-            </a>
-
-            <!-- ACEPTADA → puede presentar proyecto -->
-            <th:block th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO'}">
-
-                <!-- Si NO presentó proyecto -->
-                <a th:if="${solicitudProyectoActiva == null}"
-                   th:href="@{/solicitudProyecto}"
-                   th:classappend="${pagina == 'solicitud-proyecto'} ? ' active' : ''">
-                    <i class="fa-solid fa-folder-plus"></i>
-                    Presentar proyecto
+                <!-- SIN SOLICITUD -->
+                <a th:if="${solicitudActiva == null}"
+                   th:href="@{/solicitudRadicacion}"
+                   th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
+                    <i class="fa-solid fa-file-signature"></i>
+                    Solicitud de Radicación
                 </a>
 
-                <!-- Si YA presentó proyecto -->
-                <a th:if="${solicitudProyectoActiva != null}"
-                   th:href="@{/solicitudProyecto/miSolicitudProyecto}"
-                   th:classappend="${pagina == 'mi-proyecto'} ? ' active' : ''">
-                    <i class="fa-solid fa-folder-open"></i>
-                    Ver mi proyecto
+                <!-- REQUIERE MODIFICACION -->
+                <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'REQUIERE_MODIFICACION'}"
+                   th:href="@{/solicitudRadicacion}"
+                   th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    Modificar solicitud
                 </a>
+
+                <!-- RECHAZADA -->
+                <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'RECHAZADA'}"
+                   th:href="@{/miSolicitud}"
+                   th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
+                    <i class="fa-solid fa-clock"></i>
+                    Ver mi solicitud
+                </a>
+
+                <!-- CUALQUIER OTRO ESTADO -->
+                <a th:if="${solicitudActiva != null and solicitudActiva.estado.name() != 'REQUIERE_MODIFICACION' and solicitudActiva.estado.name() != 'RECHAZADA'}"
+                   th:href="@{/miSolicitud}"
+                   th:classappend="${pagina == 'mi-solicitud'} ? ' active' : ''">
+                    <i class="fa-solid fa-clock"></i>
+                    Ver mi solicitud
+                </a>
+
+                <!-- PENDIENTE_PROYECTO → presentar/ver proyecto -->
+                <th:block th:if="${solicitudActiva != null and solicitudActiva.estado.name() == 'PENDIENTE_PROYECTO'}">
+
+                    <a th:if="${solicitudProyectoActiva == null}"
+                       th:href="@{/solicitudProyecto}"
+                       th:classappend="${pagina == 'solicitud-proyecto'} ? ' active' : ''">
+                        <i class="fa-solid fa-folder-plus"></i>
+                        Presentar proyecto
+                    </a>
+
+                    <a th:if="${solicitudProyectoActiva != null}"
+                       th:href="@{/solicitudProyecto/miSolicitudProyecto}"
+                       th:classappend="${pagina == 'mi-proyecto'} ? ' active' : ''">
+                        <i class="fa-solid fa-folder-open"></i>
+                        Ver mi proyecto
+                    </a>
+                </th:block>
+
             </th:block>
+
+            <!-- SOLICITUD ORGANISMO: solo si NO tiene radicacion en curso (PENDIENTE_PROYECTO o sin REQUIERE_MODIFICACION/RECHAZADA) -->
+            <th:block th:if="${solicitudActiva == null
+                    or solicitudActiva.estado.name() == 'RECHAZADA'
+                    or solicitudActiva.estado.name() == 'REQUIERE_MODIFICACION'}">
+
+                <!-- SIN SOLICITUD ORGANISMO o RECHAZADA → puede presentar/reintentar -->
+                <a th:if="${solicitudOrganismoActiva == null
+                or solicitudOrganismoActiva.estado.name() == 'RECHAZADA'}"
+                   th:href="@{/solicitudOrganismo}"
+                   th:classappend="${pagina == 'solicitud-organismo'} ? ' active' : ''">
+                    <i class="fa-solid fa-building-columns"></i>
+                    Solicitud Organismo Público
+                </a>
+
+                <!-- PENDIENTE → ver estado -->
+                <a th:if="${solicitudOrganismoActiva != null
+                and solicitudOrganismoActiva.estado.name() == 'PENDIENTE'}"
+                   th:href="@{/miSolicitudOrganismo}"
+                   th:classappend="${pagina == 'mi-solicitud-organismo'} ? ' active' : ''">
+                    <i class="fa-solid fa-clock"></i>
+                    Ver mi solicitud organismo
+                </a>
+
+            </th:block>
+
         </th:block>
+
+        <!-- PROVEEDORES -->
+
+        <a th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'}"
+           th:href="@{/gerente/proveedores}"
+           th:classappend="${pagina == 'proveedores-parque'} ? ' active' : ''">
+            <i class="fa-solid fa-truck"></i>
+            Proveedores
+        </a>
+
+        <a th:if="${usuario.roles[0].nombre.name() == 'ROL_REPRESENTANTE_EMPRESA'}"
+           th:href="@{/empresas/mis-proveedores}"
+           th:classappend="${pagina == 'mis-proveedores'} ? ' active' : ''">
+            <i class="fa-solid fa-truck"></i>
+            Mis Proveedores
+        </a>
+
+        <!-- PROVEEDORES -->
 
 
         <!-- NOTIFICACIONES -->

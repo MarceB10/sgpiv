@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sgpiv.dtos.request.LoteRequestDTO;
 import sgpiv.dtos.response.LoteResponseDTO;
+import sgpiv.dtos.response.OcupacionLoteResponseDTO;
 import sgpiv.dtos.response.ProyectoResponseDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.service.LoteService;
 import sgpiv.service.OcupacionLoteService;
 import sgpiv.service.ProyectoService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -28,9 +30,27 @@ public class LoteController {
     private final ProyectoService proyectoService;
 
     @GetMapping("/gerente/lotes")
-    public String listarLotes(Model model, HttpSession session) {
+    public String listarLotes(
+            @RequestParam(required = false) Boolean activa,
+            Model model,
+            HttpSession session) {
+
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
         if (usuario == null) return "redirect:/";
+
+
+        List<OcupacionLoteResponseDTO> ocupaciones =
+                ocupacionLoteService.obtenerTodas();
+
+        if (activa != null) {
+            ocupaciones = ocupaciones.stream()
+                    .filter(o -> o.isActiva() == activa)
+                    .toList();
+        }
+        //Agregue Esto -------------------------------------------------------------------
+        model.addAttribute("ocupaciones", ocupaciones);
+        /// ----------------------------------------------------------------------------
+
 
         List<LoteResponseDTO> lotes = loteService.obtenerTodosLosLotes();
         model.addAttribute("lotes", lotes);
@@ -40,7 +60,6 @@ public class LoteController {
         model.addAttribute("totalEnUso",
                 lotes.stream().filter(l -> "EN_USO".equals(l.getEstadoLote().name())).count());
         //Agregue Esto -------------------------------------------------------------------
-        model.addAttribute("ocupaciones", ocupacionLoteService.obtenerTodas());
         /// ----------------------------------------------------------------------------
 
         model.addAttribute("proyectos", proyectoService.obtenerProyectosPendientesDeLote());
@@ -135,7 +154,7 @@ public class LoteController {
         if (lote == null) return "redirect:/gerente/proyectos/" + idProyecto + "/detalle";
 
 
-        ocupacionLoteService.ocuparLote(lote.getId(), idProyecto);
+        ocupacionLoteService.ocuparLote(lote.getId(), idProyecto, LocalDate.now());
         session.removeAttribute("loteSeleccionado");
         return "redirect:/gerente/lotes";
     }
@@ -210,5 +229,37 @@ public class LoteController {
         );
 
         return "redirect:/gerente/lotes";
+    }
+
+    //DESADJUDICACION DEL LOTE
+    @GetMapping("/gerente/ocupaciones/{id}/detalle")
+    public String detalleOcupacion(@PathVariable Long id,
+                                   Model model,
+                                   HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return "redirect:/";
+
+        model.addAttribute("ocupacion", ocupacionLoteService.obtenerPorId(id));
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("pagina", "lotes");
+        return "gerente/detalleOcupacion";
+    }
+
+    @PostMapping("/gerente/ocupaciones/{id}/desadjudicar")
+    public String desadjudicarOcupacion(@PathVariable Long id,
+                                        @RequestParam String motivo,
+                                        Model model,
+                                        HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        try {
+            ocupacionLoteService.desadjudicar(id, motivo);
+            return "redirect:/gerente/lotes";
+        } catch (RuntimeException e) {
+            model.addAttribute("ocupacion", ocupacionLoteService.obtenerPorId(id));
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("pagina", "lotes");
+            return "gerente/detalleOcupacion";
+        }
     }
 }

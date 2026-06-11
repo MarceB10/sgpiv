@@ -12,6 +12,7 @@ import sgpiv.repository.*;
 import sgpiv.service.LoteService;
 import sgpiv.service.OcupacionLoteService;
 import sgpiv.service.SolicitudService;
+import sgpiv.service.UsuarioService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private final RolRepository rolRepository;
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
 
     private final EmpresaRepository empresaRepository;
     private final LoteRepository loteRepository;
@@ -46,6 +48,8 @@ public class DataInitializer implements CommandLineRunner {
 
     private final LoteService loteService;
     private final OcupacionLoteService ocupacionLoteService;
+
+    
 
     @Override
     public void run(String... args) {
@@ -72,8 +76,29 @@ public class DataInitializer implements CommandLineRunner {
         precargarEmpresaSinLoteJames();
         precargarEmpresaConLoteGuido();
 
+        precargarEmpresasLotesEnUso();
+        precargarSolicitudYProyectoMetalurgica();
+        precargarSolicitudYProyectoFrigorifico();
+
         cargarFlujoOrgPublico();
 
+        System.out.println("SOLICITUDES DE RADICACION: \n");
+        solicitudRadicacionRepository.findAll().forEach(sr ->
+                System.out.println(
+                        sr.getId() + " | " +
+                                sr.getRazonSocial() + " | " +
+                                sr.getEstado()
+                )
+        );
+
+        System.out.println("SOLICITUDES DE PROYECTO: \n");
+        solicitudProyectoRepository.findAll().forEach(sp ->
+                System.out.println(
+                        sp.getId() + " | " +
+                                sp.getSolicitudRadicacion().getRazonSocial() + " | " +
+                                sp.getEstado()
+                )
+        );
 
     }
 
@@ -325,8 +350,10 @@ public class DataInitializer implements CommandLineRunner {
 
         solicitudProyecto.setEstado(EstadoSolicitudProyecto.APROBADA);
 
-        solicitudProyectoRepository.save(solicitudProyecto);
+        solicitudRadicacion.setEstado(EstadoSolicitud.APROBADA);
 
+        solicitudProyectoRepository.save(solicitudProyecto);
+        solicitudRadicacionRepository.save(solicitudRadicacion);
         System.out.println("Solicitud de proyecto de Alan Turing aprobada");
     }
 
@@ -337,16 +364,18 @@ public class DataInitializer implements CommandLineRunner {
         SolicitudRadicacion solicitudRadicacion =
                 solicitudRadicacionRepository.findFirstByUsuarioIdAndEstadoIn(
                         alan.getId(),
-                        List.of(EstadoSolicitud.PENDIENTE_PROYECTO)
+                        List.of(EstadoSolicitud.APROBADA)
                 );
 
         if (solicitudRadicacion == null) {
+
             return;
         }
 
         SolicitudProyecto solicitudProyecto = solicitudRadicacion.getSolicitudProyecto();
 
         if (solicitudProyecto == null) {
+
             return;
         }
 
@@ -1069,17 +1098,17 @@ public class DataInitializer implements CommandLineRunner {
         empresa.setCuit("30-10101010-1");
         empresa.setRubro("Automatización");
         empresa.setEmail("info@pythonindustria.com");
-        empresa.setDireccion("Sector D - Lote 3");
+        empresa.setDireccion("Sector D - Lote 8");
         empresa.setIngresoBrutos("IB-101010");
         empresa.setDescripcionBienServicio("Automatización de procesos industriales con Python.");
         empresa.setTipoIndustria("Automatización");
-        empresa.setEstadoEmpresa(EstadoEmpresa.ADJUDICADA);
-        Empresa empresaGuardada = empresaRepository.save(empresa);
+        empresa.setEstadoEmpresa(EstadoEmpresa.RADICADA);
+        empresaRepository.save(empresa);
 
         RepresentanteEmpresa representante = new RepresentanteEmpresa();
         representante.setUsuario(guido);
-        representante.setEmpresa(empresaGuardada);
-        RepresentanteEmpresa representanteGuardado = representanteRepository.save(representante);
+        representante.setEmpresa(empresa);
+        representanteRepository.save(representante);
 
         Proyecto proyecto = new Proyecto();
         proyecto.setTitulo("Automatización PythonIndustria");
@@ -1101,8 +1130,8 @@ public class DataInitializer implements CommandLineRunner {
                 ServicioLote.ELECTRICIDAD, ServicioLote.INTERNET,
                 ServicioLote.AGUA, ServicioLote.SEGURIDAD_24HS
         ));
-        proyecto.setEmpresa(empresaGuardada);
-        proyecto.setRepresentanteEmpresa(representanteGuardado);
+        proyecto.setEmpresa(empresa);
+        proyecto.setRepresentanteEmpresa(representante);
         proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
         proyecto.setFechaInicio(LocalDate.of(2025, 5, 1));
         Proyecto proyectoGuardado = proyectoRepository.save(proyecto);
@@ -1141,11 +1170,362 @@ public class DataInitializer implements CommandLineRunner {
                     LocalDate.of(2025, 5, 15)
             );
             System.out.println("Lote adjudicado a PythonIndustria");
+
+            //Actualizo estados
+            empresa.setEstadoEmpresa(EstadoEmpresa.RADICADA);
+            proyecto.setEmpresa(empresa);
+            empresaRepository.save(empresa);
+            representante.setEmpresa(empresa);
+            representanteRepository.save(representante);
+            proyectoRepository.save(proyecto);
         }
 
         System.out.println("Empresa PythonIndustria (con lote) y proyecto cargados");
     }
 
 
+    private void precargarEmpresasLotesEnUso() {
+        if (empresaRepository.existsByCuit("30-22222222-2")) return;
+
+        // ── EMPRESA 1 para lote2 ──
+        Lote lote2 = loteRepository.findAll().stream()
+                .filter(l -> "Sector A - Lote 2".equals(l.getUbicacion()))
+                .findFirst().orElse(null);
+        if (lote2 == null) return;
+
+        Empresa empresa2 = new Empresa();
+        empresa2.setRazonSocial("Metalúrgica Sur SA");
+        empresa2.setCuit("30-22222222-2");
+        empresa2.setRubro("Metalurgia");
+        empresa2.setEmail("info@metalurgicasur.com");
+        empresa2.setDireccion("Sector A - Lote 2");
+        empresa2.setIngresoBrutos("IB-222222");
+        empresa2.setDescripcionBienServicio("Fabricación de estructuras metálicas.");
+        empresa2.setTipoIndustria("Metalurgia");
+        empresa2.setEstadoEmpresa(EstadoEmpresa.RADICADA);
+        empresaRepository.save(empresa2);
+
+        // Usuario representante empresa2
+        Usuario rep2 = new Usuario(
+                "Carlos", "Mendez",
+                "carlos.mendez@metalurgicasur.com",
+                20111L, "1234", "20111111112"
+        );
+
+        usuarioRepository.save(rep2);
+
+        usuarioService.asignarRol(rep2.getCuit(), NombreRol.ROL_REPRESENTANTE_EMPRESA);
+
+        RepresentanteEmpresa representante2 = representanteRepository
+                .findByUsuario(rep2).orElseThrow(() -> new RuntimeException("Usuario: " + rep2.getNombre() +"\n"
+                                                                           +  "Cuit: " + rep2.getCuit() + "\n " + "NO ENCONTRADO"));
+        representante2.setUsuario(rep2);
+        representante2.setEmpresa(empresa2);
+        representanteRepository.save(representante2);
+
+
+        Proyecto proyecto2 = new Proyecto();
+        proyecto2.setTitulo("Planta Metalúrgica Sur");
+        proyecto2.setDescripcion("Planta de fabricación de estructuras metálicas.");
+        proyecto2.setObjetivo("Producir estructuras metálicas para la región patagónica.");
+        proyecto2.setRubro("Metalurgia");
+        proyecto2.setInversionEstimada(new BigDecimal("18000000.00"));
+        proyecto2.setActividadPrincipal("Fabricación de estructuras metálicas.");
+        proyecto2.setPersonalAOcupar(25);
+        proyecto2.setTiempoDeRadicacion(24);
+        proyecto2.setSupCubiertaTrabajoM2(1000.0);
+        proyecto2.setSupCubiertaDepositoM2(400.0);
+        proyecto2.setNecesidadM2(1800D);
+        proyecto2.setTienePlanos(true);
+        proyecto2.setGeneraResiduos(true);
+        proyecto2.setDescripcionResiduos("Virutas y residuos metálicos del proceso de corte.");
+        proyecto2.setServiciosRequeridos(List.of(
+                ServicioLote.ELECTRICIDAD, ServicioLote.AGUA, ServicioLote.GAS_NATURAL
+        ));
+        proyecto2.setEmpresa(empresa2);
+        proyecto2.setRepresentanteEmpresa(representante2);
+        proyecto2.setEstadoProyecto(EstadoProyecto.ACTIVO);
+        proyecto2.setFechaInicio(LocalDate.now().minusMonths(6));
+        proyectoRepository.save(proyecto2);
+
+        Tarea tp2t1 = new Tarea();
+        tp2t1.setTitulo("Instalar línea de corte");
+        tp2t1.setDescripcion("Instalar maquinaria de corte láser.");
+        tp2t1.setCompleta(true);
+        tp2t1.setProyecto(proyecto2);
+        tareaRepository.save(tp2t1);
+
+        Tarea tp2t2 = new Tarea();
+        tp2t2.setTitulo("Habilitación municipal");
+        tp2t2.setDescripcion("Gestionar habilitación ante el municipio.");
+        tp2t2.setCompleta(false);
+        tp2t2.setProyecto(proyecto2);
+        tareaRepository.save(tp2t2);
+
+        List<Tarea> lista = List.of(tp2t1, tp2t2);
+
+        proyecto2.setTareas(lista);
+        proyectoRepository.save(proyecto2);
+
+        ocupacionLoteService.ocuparLote(
+                lote2.getId(),
+                proyecto2.getId(),
+                LocalDate.now().minusMonths(6)
+        );
+
+        System.out.println("Empresa Metalúrgica Sur adjudicada a Lote 2");
+
+        // ── EMPRESA 2 para lote4 ──
+        Lote lote4 = loteRepository.findAll().stream()
+                .filter(l -> "Sector C - Lote 4".equals(l.getUbicacion()))
+                .findFirst().orElse(null);
+        if (lote4 == null) return;
+
+        Empresa empresa4 = new Empresa();
+        empresa4.setRazonSocial("Frigorífico Patagónico SRL");
+        empresa4.setCuit("30-44444444-4");
+        empresa4.setRubro("Alimenticia");
+        empresa4.setEmail("info@frigopata.com");
+        empresa4.setDireccion("Sector C - Lote 4");
+        empresa4.setIngresoBrutos("IB-444444");
+        empresa4.setDescripcionBienServicio("Procesamiento y almacenamiento de productos cárnicos.");
+        empresa4.setTipoIndustria("Alimenticia");
+        empresa4.setEstadoEmpresa(EstadoEmpresa.RADICADA);
+        empresaRepository.save(empresa4);
+
+        Usuario rep4 = new Usuario(
+                "Sandra", "Quiroga",
+                "sandra.quiroga@frigopata.com",
+                20222L, "1234", "27222222223"
+        );
+
+        usuarioRepository.save(rep4);
+
+        usuarioService.asignarRol(rep4.getCuit(), NombreRol.ROL_REPRESENTANTE_EMPRESA);
+
+        RepresentanteEmpresa representante4 = representanteRepository
+                .findByUsuario(rep4).orElseThrow(() -> new RuntimeException("Usuario: " + rep4.getNombre() +"\n"
+                        +  "Cuit: " + rep4.getCuit() + "\n " + "NO ENCONTRADO"));
+        representante4.setUsuario(rep4);
+        representante4.setEmpresa(empresa4);
+        representanteRepository.save(representante4);
+
+
+        Proyecto proyecto4 = new Proyecto();
+        proyecto4.setTitulo("Frigorífico Patagónico");
+        proyecto4.setDescripcion("Planta de procesamiento y almacenamiento frigorífico.");
+        proyecto4.setObjetivo("Proveer servicios de frío industrial para la región.");
+        proyecto4.setRubro("Alimenticia");
+        proyecto4.setInversionEstimada(new BigDecimal("30000000.00"));
+        proyecto4.setActividadPrincipal("Procesamiento de productos cárnicos.");
+        proyecto4.setActividadSecundaria("Almacenamiento frigorífico para terceros.");
+        proyecto4.setPersonalAOcupar(40);
+        proyecto4.setTiempoDeRadicacion(36);
+        proyecto4.setSupCubiertaTrabajoM2(1800.0);
+        proyecto4.setSupCubiertaDepositoM2(700.0);
+        proyecto4.setSupExpansionM2(500.0);
+        proyecto4.setNecesidadM2(2500D);
+        proyecto4.setTienePlanos(true);
+        proyecto4.setGeneraResiduos(true);
+        proyecto4.setDescripcionResiduos("Residuos orgánicos del proceso de faena y desposte.");
+        proyecto4.setServiciosRequeridos(List.of(
+                ServicioLote.ELECTRICIDAD, ServicioLote.AGUA,
+                ServicioLote.CLOACAS, ServicioLote.GAS_NATURAL, ServicioLote.SEGURIDAD_24HS
+        ));
+        proyecto4.setEmpresa(empresa4);
+        proyecto4.setRepresentanteEmpresa(representante4);
+        proyecto4.setEstadoProyecto(EstadoProyecto.ACTIVO);
+        proyecto4.setFechaInicio(LocalDate.now().minusMonths(2));
+        Proyecto proyecto4Guardado = proyectoRepository.save(proyecto4);
+
+        Tarea tp4t1 = new Tarea();
+        tp4t1.setTitulo("Instalar cámaras frigoríficas");
+        tp4t1.setDescripcion("Montar e instalar las cámaras de frío industrial.");
+        tp4t1.setCompleta(true);
+        tp4t1.setProyecto(proyecto4Guardado);
+        tareaRepository.save(tp4t1);
+
+        Tarea tp4t2 = new Tarea();
+        tp4t2.setTitulo("Habilitación SENASA");
+        tp4t2.setDescripcion("Tramitar habilitación ante SENASA para operar.");
+        tp4t2.setCompleta(false);
+        tp4t2.setProyecto(proyecto4Guardado);
+        tareaRepository.save(tp4t2);
+
+        Tarea tp4t3 = new Tarea();
+        tp4t3.setTitulo("Contratar personal operativo");
+        tp4t3.setDescripcion("Incorporar operarios para las distintas líneas de trabajo.");
+        tp4t3.setCompleta(false);
+        tp4t3.setProyecto(proyecto4Guardado);
+        tareaRepository.save(tp4t3);
+
+        ocupacionLoteService.ocuparLote(
+                lote4.getId(),
+                proyecto4Guardado.getId(),
+                LocalDate.now().minusMonths(2)
+        );
+
+        System.out.println("Empresa Frigorífico Patagónico adjudicada a Lote 4");
+    }
+
+
+
+
+    private void precargarSolicitudYProyectoMetalurgica() {
+        if (solicitudRadicacionRepository.existsByUsuarioCuit("20111111112")) return;
+
+        Usuario rep2 = usuarioRepository.findByCuit("20111111112").orElseThrow();
+        Empresa empresa2 = empresaRepository.findByCuit("30-22222222-2").orElseThrow();
+        RepresentanteEmpresa representante2 = representanteRepository.findByUsuario(rep2).orElseThrow();
+
+        // Solicitud de radicacion APROBADA
+        SolicitudRadicacion sr = new SolicitudRadicacion();
+        sr.setRazonSocial("Metalúrgica Sur SA");
+        sr.setCuitEmpresa("30-22222222-2");
+        sr.setRubro("Metalurgia");
+        sr.setEmailEmpresa("info@metalurgicasur.com");
+        sr.setTelefonoEmpresa("2920-111112");
+        sr.setDireccion("Sector A - Lote 2");
+        sr.setIngresoBrutos("IB-222222");
+        sr.setDescripcionBienServicio("Fabricación de estructuras metálicas.");
+        sr.setTipoIndustria("Metalurgia");
+        sr.setTipoEmpresa("Nueva");
+        sr.setObjetivoProyecto("Instalar planta de fabricación de estructuras metálicas.");
+        sr.setActividadPrincipal("Fabricación de estructuras metálicas.");
+        sr.setNecesidadM2(1800D);
+        sr.setTienePlanos(true);
+        sr.setEstado(EstadoSolicitud.PENDIENTE_PROYECTO);
+        sr.setFechaEnvio(LocalDate.of(2025, 1, 10));
+        sr.setUsuario(rep2);
+        solicitudRadicacionRepository.save(sr);
+
+        // Solicitud de proyecto APROBADA
+        SolicitudProyecto sp = new SolicitudProyecto();
+        sp.setSolicitudRadicacion(sr);
+        sp.setTitulo("Planta Metalúrgica Sur");
+        sp.setDescripcion("Planta de fabricación de estructuras metálicas.");
+        sp.setObjetivo("Producir estructuras metálicas para la región patagónica.");
+        sp.setRubro("Metalurgia");
+        sp.setInversionEstimada(new BigDecimal("18000000.00"));
+        sp.setActividadPrincipal("Fabricación de estructuras metálicas.");
+        sp.setPersonalAOcupar(25);
+        sp.setTiempoDeRadicacion(24);
+        sp.setSupCubiertaTrabajoM2(1000.0);
+        sp.setSupCubiertaDepositoM2(400.0);
+        sp.setSupExpansionM2(200.0);
+        sp.setTienePlanos(true);
+        sp.setGeneraResiduos(true);
+        sp.setDescripcionResiduos("Virutas y residuos metálicos del proceso de corte.");
+        sp.setProduccionEstimada("500 toneladas mensuales.");
+        sp.setServiciosRequeridos(List.of(
+                ServicioLote.ELECTRICIDAD, ServicioLote.AGUA, ServicioLote.GAS_NATURAL
+        ));
+
+        //Soli radicacion
+        sr.setEstado(EstadoSolicitud.APROBADA);
+        //Soli proyecto
+        sp.setEstado(EstadoSolicitudProyecto.APROBADA);
+        sp.setFechaEnvio(LocalDate.of(2025, 2, 1));
+
+        solicitudRadicacionRepository.save(sr);
+        solicitudProyectoRepository.save(sp);
+
+        // Tareas de la solicitud
+        TareaSolicitud ts1 = new TareaSolicitud();
+        ts1.setTitulo("Instalar línea de corte");
+        ts1.setDescripcion("Instalar maquinaria de corte láser.");
+        ts1.setSolicitudProyecto(sp);
+        tareaSolicitudRepository.save(ts1);
+
+        TareaSolicitud ts2 = new TareaSolicitud();
+        ts2.setTitulo("Habilitación municipal");
+        ts2.setDescripcion("Gestionar habilitación ante el municipio.");
+        ts2.setSolicitudProyecto(sp);
+        tareaSolicitudRepository.save(ts2);
+
+        System.out.println("Solicitud de radicación y proyecto de Metalúrgica Sur cargados");
+    }
+
+    private void precargarSolicitudYProyectoFrigorifico() {
+        if (solicitudRadicacionRepository.existsByUsuarioCuit("27222222223")) return;
+
+        Usuario rep4 = usuarioRepository.findByCuit("27222222223").orElseThrow();
+        Empresa empresa4 = empresaRepository.findByCuit("30-44444444-4").orElseThrow();
+        RepresentanteEmpresa representante4 = representanteRepository.findByUsuario(rep4).orElseThrow();
+
+        // Solicitud de radicacion APROBADA
+        SolicitudRadicacion sr = new SolicitudRadicacion();
+        sr.setRazonSocial("Frigorífico Patagónico SRL");
+        sr.setCuitEmpresa("30-44444444-4");
+        sr.setRubro("Alimenticia");
+        sr.setEmailEmpresa("info@frigopata.com");
+        sr.setTelefonoEmpresa("2920-444444");
+        sr.setDireccion("Sector C - Lote 4");
+        sr.setIngresoBrutos("IB-444444");
+        sr.setDescripcionBienServicio("Procesamiento y almacenamiento de productos cárnicos.");
+        sr.setTipoIndustria("Alimenticia");
+        sr.setTipoEmpresa("Existente");
+        sr.setObjetivoProyecto("Instalar planta frigorífica en el parque industrial.");
+        sr.setActividadPrincipal("Procesamiento de productos cárnicos.");
+        sr.setNecesidadM2(2500D);
+        sr.setTienePlanos(true);
+        sr.setEstado(EstadoSolicitud.PENDIENTE_PROYECTO);
+        sr.setFechaEnvio(LocalDate.of(2025, 1, 20));
+        sr.setUsuario(rep4);
+        solicitudRadicacionRepository.save(sr);
+
+        // Solicitud de proyecto APROBADA
+        SolicitudProyecto sp = new SolicitudProyecto();
+        sp.setSolicitudRadicacion(sr);
+        sp.setTitulo("Frigorífico Patagónico");
+        sp.setDescripcion("Planta de procesamiento y almacenamiento frigorífico.");
+        sp.setObjetivo("Proveer servicios de frío industrial para la región.");
+        sp.setRubro("Alimenticia");
+        sp.setInversionEstimada(new BigDecimal("30000000.00"));
+        sp.setActividadPrincipal("Procesamiento de productos cárnicos.");
+        sp.setActividadSecundaria("Almacenamiento frigorífico para terceros.");
+        sp.setPersonalAOcupar(40);
+        sp.setTiempoDeRadicacion(36);
+        sp.setSupCubiertaTrabajoM2(1800.0);
+        sp.setSupCubiertaDepositoM2(700.0);
+        sp.setSupExpansionM2(500.0);
+        sp.setTienePlanos(true);
+        sp.setGeneraResiduos(true);
+        sp.setDescripcionResiduos("Residuos orgánicos del proceso de faena y desposte.");
+        sp.setProduccionEstimada("200 toneladas mensuales.");
+        sp.setServiciosRequeridos(List.of(
+                ServicioLote.ELECTRICIDAD, ServicioLote.AGUA,
+                ServicioLote.CLOACAS, ServicioLote.GAS_NATURAL, ServicioLote.SEGURIDAD_24HS
+        ));
+        //Soli proyecto
+        sp.setEstado(EstadoSolicitudProyecto.APROBADA);
+        sp.setFechaEnvio(LocalDate.of(2025, 2, 10));
+        //Soli radicacion
+        sr.setEstado(EstadoSolicitud.APROBADA);
+
+        solicitudRadicacionRepository.save(sr);
+        solicitudProyectoRepository.save(sp);
+
+        // Tareas de la solicitud
+        TareaSolicitud ts1 = new TareaSolicitud();
+        ts1.setTitulo("Instalar cámaras frigoríficas");
+        ts1.setDescripcion("Montar e instalar las cámaras de frío industrial.");
+        ts1.setSolicitudProyecto(sp);
+        tareaSolicitudRepository.save(ts1);
+
+        TareaSolicitud ts2 = new TareaSolicitud();
+        ts2.setTitulo("Habilitación SENASA");
+        ts2.setDescripcion("Tramitar habilitación ante SENASA para operar.");
+        ts2.setSolicitudProyecto(sp);
+        tareaSolicitudRepository.save(ts2);
+
+        TareaSolicitud ts3 = new TareaSolicitud();
+        ts3.setTitulo("Contratar personal operativo");
+        ts3.setDescripcion("Incorporar operarios para las distintas líneas de trabajo.");
+        ts3.setSolicitudProyecto(sp);
+        tareaSolicitudRepository.save(ts3);
+
+        System.out.println("Solicitud de radicación y proyecto de Frigorífico Patagónico cargados");
+    }
 
 }

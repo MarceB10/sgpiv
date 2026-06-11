@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Proveedores - SGPIV</title>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/global.css}"/>
+    <link rel="stylesheet" th:href="@{/css/proveedores.css}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+    <div class="header">
+        <div>
+            <h1>Mis Proveedores</h1>
+            <p>Gestioná los proveedores de tu empresa.</p>
+        </div>
+    </div>
+
+    <!-- ERROR -->
+    <p th:if="${error}" th:text="${error}" class="error-message"></p>
+
+    <div class="cards">
+
+        <div class="card stat-card">
+            <div class="stat-icon">
+                <i class="fa-solid fa-building-user"></i>
+            </div>
+
+            <h3>Mis proveedores</h3>
+
+            <h2 th:text="${proveedores.size()}"></h2>
+        </div>
+
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="form-card">
+        <div class="section-title">
+            <i class="fa-solid fa-plus"></i>
+            <h2>Agregar proveedor</h2>
+        </div>
+
+        <form th:action="@{/empresas/mis-proveedores}"
+              th:object="${proveedorDTO}"
+              method="post">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" th:field="*{nombre}"
+                           placeholder="Ej: Proveedor de materia prima">
+                    <p th:if="${#fields.hasErrors('nombre')}"
+                       th:errors="*{nombre}" class="error-message"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Rubro *</label>
+                    <input type="text" th:field="*{rubro}"
+                           placeholder="Ej: Materia prima, Internet">
+                    <p th:if="${#fields.hasErrors('rubro')}"
+                       th:errors="*{rubro}" class="error-message"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Contacto</label>
+                    <input type="text" th:field="*{contacto}"
+                           placeholder="Ej: contacto@proveedor.com">
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-plus"></i> Agregar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- TABLA -->
+    <div class="table-container">
+        <div class="section-title">
+            <i class="fa-solid fa-table"></i>
+            <h2>Listado de proveedores</h2>
+        </div>
+
+        <div th:if="${proveedores.isEmpty()}" class="sin-datos">
+            No tenés proveedores registrados todavía.
+        </div>
+
+        <table th:if="${!proveedores.isEmpty()}">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Rubro</th>
+                <th>Contacto</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="proveedor : ${proveedores}">
+                <td th:text="${proveedor.nombre}"></td>
+                <td th:text="${proveedor.rubro}"></td>
+                <td th:text="${proveedor.contacto != null ? proveedor.contacto : '-'}"></td>
+                <td>
+                    <form th:action="@{/empresas/mis-proveedores/{id}/eliminar(id=${proveedor.id})}"
+                          method="post">
+                        <button type="submit" class="btn-rechazar">
+                            <i class="fa-solid fa-trash"></i> Eliminar
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+</body>
+</html>

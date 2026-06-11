@@ -268,6 +268,24 @@ body {
 
 }
 
+/*SERVICIOS REQUERIDOS*/
+
+.chips-container{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.chip-servicio{
+    background:#eef4ff;
+    color:#1e4fa1;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:0.9rem;
+    font-weight:500;
+}
+
+
 /*.btn-adjudicar{*/
 
 /*    background:#2563eb;*/
@@ -293,6 +311,25 @@ body {
     background:#cbd5e1;
 
 }
+
+
+/*ADVERTENCIAS AL DESADJUDICAR*/
+.advertencia-lote {
+    background: #fff7ed;
+    border: 1.5px solid #fed7aa;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    font-size: 0.9rem;
+    color: #9a3412;
+    line-height: 1.5;
+}
+
+.advertencia-lote i {
+    color: #f97316;
+    margin-right: 6px;
+}
+
 
 /*!* LOTE *!*/
 

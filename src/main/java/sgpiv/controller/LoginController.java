@@ -22,6 +22,11 @@ public class LoginController {
     private final UsuarioService usuarioService;
 
     @GetMapping("/")
+    public String landing(){
+        return "landing";
+    }
+
+    @GetMapping("/login")
     public String login(Model model){
         model.addAttribute("loginDTO", new LoginDTO());
         return "login";
@@ -48,7 +53,7 @@ public class LoginController {
     @GetMapping("/cerrarSesion")
     public String cerrarSesion(HttpSession session) {
         session.invalidate(); // destruye la sesión actual
-        return "redirect:/";
+        return "redirect:/login";
     }
 
 }

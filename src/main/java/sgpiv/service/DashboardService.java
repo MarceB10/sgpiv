@@ -92,6 +92,12 @@ public class DashboardService {
 
         Map<Integer, long[]> radicacionesPorAnio = obtenerRadicacionesPorAnio();
 
+        BigDecimal inversionPorEmpleo = inversionProyectada.divide(
+                BigDecimal.valueOf(empleoProyectado),
+                2,
+                RoundingMode.HALF_UP
+        );
+
         DashboardGeneralDTO dashboard = new DashboardGeneralDTO();
 
         dashboard.setTotalEmpresas(totalEmpresas);
@@ -108,6 +114,7 @@ public class DashboardService {
         dashboard.setInversionTotalEstimada(inversionProyectada);
         dashboard.setInversionPorRubro(inversionPorRubro);
         dashboard.setRadicacionesPorAnio(radicacionesPorAnio);
+        dashboard.setInversionPorEmpleo(inversionPorEmpleo);
 
         return dashboard;
     }

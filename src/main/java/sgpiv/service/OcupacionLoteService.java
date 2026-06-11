@@ -13,6 +13,7 @@ import sgpiv.repository.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,9 +49,9 @@ public class OcupacionLoteService {
         return resultado;
     }
 
-    public void ocuparLote(Long idLote, Long idProyecto) {
-        ocuparLote(idLote, idProyecto, LocalDate.now());
-    }
+//    public void ocuparLote(Long idLote, Long idProyecto) {
+//        ocuparLote(idLote, idProyecto, LocalDate.now());
+//    }
 
 //    public void ocuparLote(Long idLote, Long idProyecto, LocalDate fechaAdjudicacion) {
 //        Lote lote = loteRepository
@@ -88,6 +89,7 @@ public class OcupacionLoteService {
         ocupacion.setLote(lote);
         ocupacion.setProyecto(proyecto);
         ocupacion.setFechaInicio(fechaAdjudicacion);
+
         ocupacion.setFechaFin(null);
 
         lote.setEstadoLote(EstadoLote.EN_USO);
@@ -96,6 +98,7 @@ public class OcupacionLoteService {
 
         proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
 
+        proyectoRepository.save(proyecto);
         ocupacionLoteRepository.save(ocupacion);
         loteRepository.save(lote);
 
@@ -107,11 +110,21 @@ public class OcupacionLoteService {
     }
 
     @Transactional
-    public void desadjudicar(Long empresaId, String motivo) {
+    public void desadjudicar(Long ocupacionId, String motivo) {
 
-        // 1. Buscar la empresa
-        Empresa empresa = empresaRepository.findById(empresaId)
-                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+        // 1. Buscar la ocupacion
+        OcupacionLote ocupacionActiva = ocupacionLoteRepository
+                .findById(ocupacionId)
+                .orElseThrow(() -> new RuntimeException("Ocupación no encontrada"));
+
+        //1.5 traer la empresa
+        Empresa empresa = ocupacionActiva
+                .getProyecto()
+                .getEmpresa();
+
+        System.out.println("Id E: " + empresa.getId());
+        System.out.println("Empresa: " + empresa.getRazonSocial());
+        System.out.println("Estado: " + empresa.getEstadoEmpresa());
 
         // 2. Verificar estado
         if (empresa.getEstadoEmpresa() != EstadoEmpresa.RADICADA &&
@@ -129,11 +142,6 @@ public class OcupacionLoteService {
 //                    "La empresa tiene proyectos activos. Finalizalos antes de desadjudicar");
 //        }
 
-        // 4. Buscar la ocupacion activa
-        OcupacionLote ocupacionActiva = ocupacionLoteRepository
-                .findByProyecto_EmpresaAndFechaFinIsNull(empresa)
-                .orElseThrow(() -> new RuntimeException(
-                        "No hay ocupacion activa para esta empresa"));
 
         // 5. Cerrar la ocupacion
         ocupacionActiva.setFechaFin(LocalDate.now());
@@ -145,22 +153,58 @@ public class OcupacionLoteService {
         lote.habilitarDisponibilidad();
         loteRepository.save(lote);
 
-        // Suspender todos los proyectos de la empresa
-        empresa.getProyectos().forEach(proyecto -> {
-            proyecto.setEstadoProyecto(EstadoProyecto.INACTIVO);
-        });
+        // new 7. Volver a un estado consistente la empresa
+        empresa.setEstadoEmpresa(EstadoEmpresa.PENDIENTE_LOTE);
         empresaRepository.save(empresa);
 
-        // 7. Dar de baja la empresa
-        empresa.setEstadoEmpresa(EstadoEmpresa.BAJA);
-        empresaRepository.save(empresa);
 
-        // 8. Desactivar representante
-        representanteRepository.findByEmpresa(empresa)
-                .ifPresent(rep -> {
-                    rep.getUsuario().desactivar();
-                    representanteRepository.save(rep);
-                });
+//        // Suspender todos los proyectos de la empresa
+//        empresa.getProyectos().forEach(proyecto -> {
+//            proyecto.setEstadoProyecto(EstadoProyecto.INACTIVO);
+//        });
+//        empresaRepository.save(empresa);
+//
+//        // 7. Dar de baja la empresa
+//        empresa.setEstadoEmpresa(EstadoEmpresa.BAJA);
+//        empresaRepository.save(empresa);
+//
+//        // 8. Desactivar representante
+//        representanteRepository.findByEmpresa(empresa)
+//                .ifPresent(rep -> {
+//                    rep.getUsuario().desactivar();
+//                    representanteRepository.save(rep);
+//                });
     }
 
+    public boolean existeOcupacion(Empresa empresa){
+
+        OcupacionLote ocupacionActiva = ocupacionLoteRepository
+                .findByProyecto_EmpresaAndFechaFinIsNull(empresa)
+                .orElseThrow(() -> new RuntimeException(
+                        "No hay ocupacion activa para esta empresa"));
+
+        return (ocupacionActiva != null);
+    }
+
+    public OcupacionLoteResponseDTO obtenerOcupacionDeEmpresa(Empresa empresa){
+        OcupacionLote ocupacion = ocupacionLoteRepository
+                .findOcupacionActiva(empresa.getId())
+                .orElseThrow(() -> new RuntimeException("no se encuentra una ocupacion activa"));
+
+        return new OcupacionLoteResponseDTO(ocupacion);
+
+    }
+
+    public OcupacionLoteResponseDTO obtenerPorId(Long id) {
+        return new OcupacionLoteResponseDTO(
+                ocupacionLoteRepository.findById(id).orElseThrow()
+        );
+    }
+
+    // Nuevo método opcional
+    public Optional<OcupacionLoteResponseDTO> obtenerOcupacionDeEmpresaOpcional(Long empresaId) {
+        return ocupacionLoteRepository
+                .findOcupacionActiva(empresaId)
+                .map(OcupacionLoteResponseDTO::new);
+    }
 }

@@ -15,6 +15,12 @@ public class EmpresaResponseDTO {
     private String estadoEmpresa;
     private List<ProyectoResponseDTO> proyectos;
 
+    //info del lote por posible baja con adjudicacion activa
+    private boolean tieneLoteOcupado;
+    private Long loteId;
+    private String loteUbicacion;
+    private Double loteSuperficie;
+
     public EmpresaResponseDTO(Empresa empresa) {
         this.id = empresa.getId();
         this.razonSocial = empresa.getRazonSocial();
