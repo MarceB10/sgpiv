@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sgpiv.dtos.request.SolicitudOrganismoRequestDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
+import sgpiv.repository.SolicitudOrganismoPublicoRepository;
 import sgpiv.service.SolicitudOrganismoService;
 
 @Controller
@@ -18,6 +19,7 @@ import sgpiv.service.SolicitudOrganismoService;
 public class SolicitudOrganismoController {
 
     private final SolicitudOrganismoService solicitudOrganismoService;
+    private final SolicitudOrganismoPublicoRepository solicitudOrganismoPublicoRepository;
 
     @GetMapping
     public String formulario(HttpSession session, Model model) {
@@ -43,7 +45,17 @@ public class SolicitudOrganismoController {
         }
 
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        solicitudOrganismoService.guardar(dto, archivo, usuario.getCuit());
-        return "redirect:/home";
+        try {
+
+            solicitudOrganismoService.guardar(dto, archivo, usuario.getCuit());
+            return "redirect:/home";
+
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("solicitudOrganismoDTO", dto);
+
+            return "solicitudOrganismo";
+        }
     }
 }

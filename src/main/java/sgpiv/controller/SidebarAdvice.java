@@ -27,31 +27,31 @@ public class SidebarAdvice {
     para poder ver sus funcionalidades dependiendo en que paso de la radicacion este
      */
 
-
-
     @ModelAttribute
     public void agregarDatosSidebar(HttpSession session, Model model) {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-
         if (usuario == null) return;
-        if (!usuario.getRoles().get(0).getNombre().name().equals("ROL_NULO")) return;
 
-        SolicitudRadicacion solicitudActiva =
-                solicitudService.obtenerSolicitudActiva(usuario.getCuit());
+        String rol = usuario.getRoles().get(0).getNombre().name();
 
-        model.addAttribute("solicitudActiva", solicitudActiva);
+        if (rol.equals("ROL_NULO") || rol.equals("ROL_REPRESENTANTE_EMPRESA")) {
+            SolicitudRadicacion solicitudActiva =
+                    solicitudService.obtenerSolicitudActiva(usuario.getCuit());
+            model.addAttribute("solicitudActiva", solicitudActiva);
 
-        if (solicitudActiva != null) {
-            SolicitudProyecto solicitudProyectoActiva = solicitudProyectoRepository
-                    .findBySolicitudRadicacionId(solicitudActiva.getId())
-                    .orElse(null);
-            model.addAttribute("solicitudProyectoActiva", solicitudProyectoActiva);
+            if (solicitudActiva != null) {
+                SolicitudProyecto solicitudProyectoActiva = solicitudProyectoRepository
+                        .findBySolicitudRadicacionId(solicitudActiva.getId())
+                        .orElse(null);
+                model.addAttribute("solicitudProyectoActiva", solicitudProyectoActiva);
+            }
         }
 
-        SolicitudOrganismoPublico solicitudOrganismo = solicitudOrganismoPublicoRepository
-                .findByUsuarioId(usuario.getId())
-                .orElse(null);
-        model.addAttribute("solicitudOrganismoActiva", solicitudOrganismo);
-
+        if (rol.equals("ROL_NULO")) {
+            SolicitudOrganismoPublico solicitudOrganismo = solicitudOrganismoPublicoRepository
+                    .findByUsuarioId(usuario.getId())
+                    .orElse(null);
+            model.addAttribute("solicitudOrganismoActiva", solicitudOrganismo);
+        }
     }
 }
