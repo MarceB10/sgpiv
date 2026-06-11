@@ -200,4 +200,10 @@ public class OcupacionLoteService {
         );
     }
 
+    // Nuevo método opcional
+    public Optional<OcupacionLoteResponseDTO> obtenerOcupacionDeEmpresaOpcional(Long empresaId) {
+        return ocupacionLoteRepository
+                .findOcupacionActiva(empresaId)
+                .map(OcupacionLoteResponseDTO::new);
+    }
 }

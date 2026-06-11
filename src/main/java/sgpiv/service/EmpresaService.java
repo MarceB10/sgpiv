@@ -69,17 +69,18 @@ public class EmpresaService {
 
         EmpresaResponseDTO dto = new EmpresaResponseDTO(empresa);
 
-        // Buscar si tiene un lote ocupado a través de sus proyectos
-        OcupacionLoteResponseDTO ocupacion = ocupacionLoteService.obtenerOcupacionDeEmpresa(empresa);
 
-        if (ocupacion != null) {
-            dto.setTieneLoteOcupado(true);
-            dto.setLoteId(ocupacion.getIdLote());
-            dto.setLoteUbicacion(ocupacion.getUbicacionLote());
-            dto.setLoteSuperficie(ocupacion.getSuperficieLote());
-        } else {
-            dto.setTieneLoteOcupado(false);
-        }
+        // Usar Optional en lugar de orElseThrow
+        ocupacionLoteService.obtenerOcupacionDeEmpresaOpcional(id)
+                .ifPresentOrElse(
+                        ocupacion -> {
+                            dto.setTieneLoteOcupado(true);
+                            dto.setLoteId(ocupacion.getIdLote());
+                            dto.setLoteUbicacion(ocupacion.getUbicacionLote());
+                            dto.setLoteSuperficie(ocupacion.getSuperficieLote());
+                        },
+                        () -> dto.setTieneLoteOcupado(false)
+                );
 
         return dto;
     }
@@ -150,4 +151,7 @@ public class EmpresaService {
 
         return new EmpresaResponseDTO(empresa);
     }
+
+
+
 }
