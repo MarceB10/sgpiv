@@ -115,7 +115,9 @@ public class EmpresaService {
                 .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
 
         if (ocupacionLoteService.existeOcupacion(empresa)){
-            ocupacionLoteService.desadjudicar(id, motivo);
+            OcupacionLoteResponseDTO ocupacion = ocupacionLoteService.obtenerOcupacionDeEmpresa(empresa);
+
+            ocupacionLoteService.desadjudicar(ocupacion.getId(), motivo);
         }
 
         empresa.getProyectos().forEach(proyecto -> {
