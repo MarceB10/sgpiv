@@ -87,6 +87,7 @@ public class SolicitudProyectoController {
             model.addAttribute("solicitudProyectoDTO", dto);
             model.addAttribute("editando", true);
             model.addAttribute("motivo", proyecto.getMotivoRechazo());
+            model.addAttribute("pagina", "mi-proyecto");
             return "solicitudProyecto"; // misma vista que al crear
         }
 

@@ -169,7 +169,7 @@ public class EmpresaController {
         model.addAttribute("usuario", usuario);
         model.addAttribute("empresa", empresa);
         model.addAttribute("proyectos",empresa.getProyectos());
-        model.addAttribute("pagina","proyecto-empresa");
+        model.addAttribute("pagina","proyectos-empresa");
         model.addAttribute("solicitudActiva", solicitudActiva);
 
         SolicitudProyecto solicitudProyectoActiva = null;
@@ -195,7 +195,7 @@ public class EmpresaController {
 
         model.addAttribute("usuario",usuario);
         model.addAttribute("proyecto",proyecto);
-        model.addAttribute("pagina","proyecto-empresa");
+        model.addAttribute("pagina","proyectos-empresa");
 
         SolicitudRadicacion solicitudActiva =
                 solicitudService.obtenerSolicitudActiva(usuario.getCuit());

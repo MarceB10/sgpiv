@@ -96,6 +96,12 @@ body {
     border-radius: 18px;
     padding: 25px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+
+    margin-bottom: 35px;
+}
+
+.table-container:last-child {
+    margin-bottom: 0;
 }
 
 /* TOP TABLA */
