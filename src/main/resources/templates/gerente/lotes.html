@@ -105,12 +105,12 @@
                         th:value="${param.ubicacion}"
                         placeholder="Buscar por ubicación..."
                 />
-                <select name="estado">
-                    <option value="">Todos los estados</option>
+                <select name="activa">
+                    <option value="">Todas</option>
                     <option value="true"
-                            th:selected="${param.estado == 'Activa'}">Activa</option>
+                            th:selected="${param.activa == 'Activa'}">Activa</option>
                     <option value="false"
-                            th:selected="${param.estado == 'Finalizada'}">Finalizada</option>
+                            th:selected="${param.activa == 'Finalizada'}">Finalizada</option>
                 </select>
                 <button type="submit" class="search-button">Buscar</button>
             </form>

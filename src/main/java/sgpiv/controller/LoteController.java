@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import sgpiv.dtos.request.LoteRequestDTO;
 import sgpiv.dtos.response.LoteResponseDTO;
+import sgpiv.dtos.response.OcupacionLoteResponseDTO;
 import sgpiv.dtos.response.ProyectoResponseDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
 import sgpiv.service.LoteService;
@@ -29,9 +30,27 @@ public class LoteController {
     private final ProyectoService proyectoService;
 
     @GetMapping("/gerente/lotes")
-    public String listarLotes(Model model, HttpSession session) {
+    public String listarLotes(
+            @RequestParam(required = false) Boolean activa,
+            Model model,
+            HttpSession session) {
+
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
         if (usuario == null) return "redirect:/";
+
+
+        List<OcupacionLoteResponseDTO> ocupaciones =
+                ocupacionLoteService.obtenerTodas();
+
+        if (activa != null) {
+            ocupaciones = ocupaciones.stream()
+                    .filter(o -> o.isActiva() == activa)
+                    .toList();
+        }
+        //Agregue Esto -------------------------------------------------------------------
+        model.addAttribute("ocupaciones", ocupaciones);
+        /// ----------------------------------------------------------------------------
+
 
         List<LoteResponseDTO> lotes = loteService.obtenerTodosLosLotes();
         model.addAttribute("lotes", lotes);
@@ -41,7 +60,6 @@ public class LoteController {
         model.addAttribute("totalEnUso",
                 lotes.stream().filter(l -> "EN_USO".equals(l.getEstadoLote().name())).count());
         //Agregue Esto -------------------------------------------------------------------
-        model.addAttribute("ocupaciones", ocupacionLoteService.obtenerTodas());
         /// ----------------------------------------------------------------------------
 
         model.addAttribute("proyectos", proyectoService.obtenerProyectosPendientesDeLote());
