@@ -339,12 +339,13 @@
 
 
     <!-- VIDEO DE FONDO CON CARDS ENCIMA -->
-    <div class="video-container">
-        <video autoplay loop muted playsinline>
-            <source th:src="@{/css/videocomprimido.mp4}" type="video/mp4">
-        </video>
-        <div class="video-overlay"></div>
+<!--    <div class="video-container">-->
+<!--        <video autoplay loop muted playsinline>-->
+<!--            <source th:src="@{/css/videocomprimido.mp4}" type="video/mp4">-->
+<!--        </video>-->
+<!--        <div class="video-overlay"></div>-->
 
+    <div class="dashboard-container">
         <!-- INFO USUARIO -->
         <div class="cards">
 
@@ -371,8 +372,9 @@
         </div>
 
     </div>
+<!--    </div>-->
 
-</div>
+<!--</div>-->
 
 
 <th:block th:if="${usuario.roles[0].nombre.name() == 'ROL_GERENTE'
