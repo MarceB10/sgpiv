@@ -79,12 +79,12 @@
                 <i class="fa-solid fa-industry"></i> Mi Empresa
             </a>
 
-            <!-- Solicitud inicial -->
-            <a th:if="${solicitudActiva == null}"
-               th:href="@{/solicitudRadicacion}"
-               th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">
-                <i class="fa-solid fa-file-signature"></i> Solicitud de Radicación
-            </a>
+<!--            &lt;!&ndash; Solicitud inicial &ndash;&gt;-->
+<!--            <a th:if="${solicitudActiva == null}"-->
+<!--               th:href="@{/solicitudRadicacion}"-->
+<!--               th:classappend="${pagina == 'solicitud-radicacion'} ? ' active' : ''">-->
+<!--                <i class="fa-solid fa-file-signature"></i> Solicitud de Radicación-->
+<!--            </a>-->
 
             <a th:if="${solicitudActiva != null}"
                th:href="@{/miSolicitud}"
