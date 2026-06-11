@@ -38,5 +38,6 @@ public class DashboardGeneralDTO {
     // map de radicaciones por mes, dentro de un map con radicaciones anuales
     private Map<Integer, long[]> radicacionesPorAnio;
 
+    private BigDecimal inversionPorEmpleo;
 
 }
