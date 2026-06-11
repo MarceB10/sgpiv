@@ -13,6 +13,7 @@ import sgpiv.repository.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -200,4 +201,10 @@ public class OcupacionLoteService {
         );
     }
 
+    // Nuevo método opcional
+    public Optional<OcupacionLoteResponseDTO> obtenerOcupacionDeEmpresaOpcional(Long empresaId) {
+        return ocupacionLoteRepository
+                .findOcupacionActiva(empresaId)
+                .map(OcupacionLoteResponseDTO::new);
+    }
 }
