@@ -72,7 +72,7 @@ public class DataInitializer implements CommandLineRunner {
         precargarSolicitudRadicacionLinus();
         precargarSolicitudRadicacionTim();
         precargarSolicitudProyectoDennis();
-        precargarSolicitudProyectoBjarne();
+//        precargarSolicitudProyectoBjarne();
         precargarEmpresaSinLoteJames();
         precargarEmpresaConLoteGuido();
 
@@ -170,7 +170,7 @@ public class DataInitializer implements CommandLineRunner {
         crearUsuarioNuloSiNoExiste("Linus",   "Torvalds", "linus@gmail.com",  10005L, "1234", "00000000005"); // SR pendiente
         crearUsuarioNuloSiNoExiste("Tim",     "Berners",  "tim@gmail.com",    10006L, "1234", "00000000006"); // SR requiere modificacion
         crearUsuarioNuloSiNoExiste("Dennis",  "Ritchie",  "dennis@gmail.com", 10007L, "1234", "00000000007"); // SP pendiente
-        crearUsuarioNuloSiNoExiste("Bjarne",  "Stroustrup","bjarne@gmail.com",10008L, "1234", "00000000008"); // SP requiere modificacion
+//        crearUsuarioNuloSiNoExiste("Bjarne",  "Stroustrup","bjarne@gmail.com",10008L, "1234", "00000000008"); // SP requiere modificacion
         crearUsuarioNuloSiNoExiste("James",   "Gosling",  "james@gmail.com",  10009L, "1234", "00000000009"); // empresa sin lote
         crearUsuarioNuloSiNoExiste("Guido",   "VanRossum","guido@gmail.com",  10010L, "1234", "00000000010"); // empresa con lote
 
