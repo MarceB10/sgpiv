@@ -35,38 +35,28 @@ public class SolicitudOrganismoService {
                         MultipartFile archivo,
                         String cuitUsuario) {
 
-        Usuario usuario = usuarioRepository.findByCuit(cuitUsuario).orElseThrow();
+        Usuario usuario = obtenerUsuario(cuitUsuario);
 
+        SolicitudOrganismoPublico solicitudExistente =
+                validarSolicitudExistente(usuario.getId());
 
-        boolean existe = solicitudRepo
-                .findByUsuarioId(usuario.getId())
-                .isPresent();
+        // Si existe y está rechazada, se reutiliza
+        if (solicitudExistente != null) {
 
-        if (existe) {
-            throw new RuntimeException(
-                    "Ya posee una solicitud de organismo público registrada."
+            actualizarSolicitudRechazada(
+                    solicitudExistente,
+                    dto,
+                    archivo
             );
+
+            solicitudRepo.save(solicitudExistente);
+            return;
         }
 
-        SolicitudOrganismoPublico solicitud = new SolicitudOrganismoPublico();
-        solicitud.setNombreOrganismo(dto.getNombreOrganismo());
-        solicitud.setTipoOrganismo(dto.getTipoOrganismo());
-        solicitud.setCargoSolicitante(dto.getCargoSolicitante());
-        solicitud.setMotivoAcceso(dto.getMotivoAcceso());
-        solicitud.setUsuario(usuario);
-        solicitud.setFechaEnvio(LocalDate.now());
-        solicitud.setEstado(EstadoSolicitudOrganismo.PENDIENTE);
+        SolicitudOrganismoPublico solicitud =
+                construirSolicitud(dto, usuario);
 
-        // Guardar archivo si viene
-        if (archivo != null && !archivo.isEmpty()) {
-            try {
-                solicitud.setNombreArchivo(archivo.getOriginalFilename());
-                solicitud.setTipoArchivo(archivo.getContentType());
-                solicitud.setArchivo(archivo.getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException("Error al procesar el archivo");
-            }
-        }
+        procesarArchivo(archivo, solicitud);
 
         solicitudRepo.save(solicitud);
     }
@@ -122,5 +112,118 @@ public class SolicitudOrganismoService {
                 .orElse(false);
     }
 
+
+    private SolicitudOrganismoPublico validarSolicitudExistente(Long usuarioId) {
+
+        SolicitudOrganismoPublico solicitudExistente = solicitudRepo
+                .findByUsuarioId(usuarioId)
+                .orElse(null);
+
+        if (solicitudExistente == null) {
+            return null;
+        }
+
+        if (solicitudExistente.getEstado()
+                == EstadoSolicitudOrganismo.PENDIENTE) {
+
+            throw new RuntimeException(
+                    "Ya posee una solicitud de organismo público en curso."
+            );
+        }
+
+        if (solicitudExistente.getEstado()
+                == EstadoSolicitudOrganismo.APROBADA) {
+
+            throw new RuntimeException(
+                    "Su solicitud de organismo público ya fue aprobada."
+            );
+        }
+
+        // Si llegó acá está RECHAZADA
+        return solicitudExistente;
+    }
+
+    private Usuario obtenerUsuario(String cuitUsuario) {
+        return usuarioRepository.findByCuit(cuitUsuario)
+                .orElseThrow(() ->
+                        new RuntimeException("Usuario no encontrado"));
+    }
+
+
+
+    private SolicitudOrganismoPublico construirSolicitud(
+            SolicitudOrganismoRequestDTO dto,
+            Usuario usuario) {
+
+        SolicitudOrganismoPublico solicitud =
+                new SolicitudOrganismoPublico();
+
+        solicitud.setNombreOrganismo(dto.getNombreOrganismo());
+        solicitud.setTipoOrganismo(dto.getTipoOrganismo());
+        solicitud.setCargoSolicitante(dto.getCargoSolicitante());
+        solicitud.setMotivoAcceso(dto.getMotivoAcceso());
+
+        solicitud.setUsuario(usuario);
+        solicitud.setFechaEnvio(LocalDate.now());
+        solicitud.setEstado(EstadoSolicitudOrganismo.PENDIENTE);
+
+        return solicitud;
+    }
+
+
+    private void procesarArchivo(MultipartFile archivo,
+                                 SolicitudOrganismoPublico solicitud) {
+
+        if (archivo == null || archivo.isEmpty()) {
+            return;
+        }
+
+        try {
+
+            solicitud.setNombreArchivo(
+                    archivo.getOriginalFilename());
+
+            solicitud.setTipoArchivo(
+                    archivo.getContentType());
+
+            solicitud.setArchivo(
+                    archivo.getBytes());
+
+        } catch (IOException e) {
+
+            throw new RuntimeException(
+                    "Error al procesar el archivo adjunto");
+        }
+    }
+
+
+
+    private void actualizarSolicitudRechazada(
+            SolicitudOrganismoPublico solicitud,
+            SolicitudOrganismoRequestDTO dto,
+            MultipartFile archivo) {
+
+        solicitud.setNombreOrganismo(
+                dto.getNombreOrganismo());
+
+        solicitud.setTipoOrganismo(
+                dto.getTipoOrganismo());
+
+        solicitud.setCargoSolicitante(
+                dto.getCargoSolicitante());
+
+        solicitud.setMotivoAcceso(
+                dto.getMotivoAcceso());
+
+        solicitud.setEstado(
+                EstadoSolicitudOrganismo.PENDIENTE);
+
+        solicitud.setMotivoRechazo(null);
+
+        solicitud.setFechaEnvio(
+                LocalDate.now());
+
+        procesarArchivo(archivo, solicitud);
+    }
 
 }

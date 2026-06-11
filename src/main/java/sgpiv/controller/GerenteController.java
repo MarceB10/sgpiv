@@ -257,7 +257,7 @@ public class GerenteController {
     public String rechazarOrganismo(@PathVariable Long id,
                                     @RequestParam String motivo) {
         solicitudOrganismoService.rechazar(id, motivo);
-        return "redirect:/gerente/solicitudesOrganismo";
+        return "redirect:/solicitudesGerente";
     }
 
     @GetMapping("/gerente/solicitudesOrganismo/{id}/archivo")
