@@ -88,6 +88,7 @@ public class OcupacionLoteService {
         ocupacion.setLote(lote);
         ocupacion.setProyecto(proyecto);
         ocupacion.setFechaInicio(fechaAdjudicacion);
+
         ocupacion.setFechaFin(null);
 
         lote.setEstadoLote(EstadoLote.EN_USO);
@@ -96,6 +97,7 @@ public class OcupacionLoteService {
 
         proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
 
+        proyectoRepository.save(proyecto);
         ocupacionLoteRepository.save(ocupacion);
         loteRepository.save(lote);
 
@@ -107,11 +109,21 @@ public class OcupacionLoteService {
     }
 
     @Transactional
-    public void desadjudicar(Long empresaId, String motivo) {
+    public void desadjudicar(Long ocupacionId, String motivo) {
 
-        // 1. Buscar la empresa
-        Empresa empresa = empresaRepository.findById(empresaId)
-                .orElseThrow(() -> new RuntimeException("Empresa no encontrada"));
+        // 1. Buscar la ocupacion
+        OcupacionLote ocupacionActiva = ocupacionLoteRepository
+                .findById(ocupacionId)
+                .orElseThrow(() -> new RuntimeException("Ocupación no encontrada"));
+
+        //1.5 traer la empresa
+        Empresa empresa = ocupacionActiva
+                .getProyecto()
+                .getEmpresa();
+
+        System.out.println("Id E: " + empresa.getId());
+        System.out.println("Empresa: " + empresa.getRazonSocial());
+        System.out.println("Estado: " + empresa.getEstadoEmpresa());
 
         // 2. Verificar estado
         if (empresa.getEstadoEmpresa() != EstadoEmpresa.RADICADA &&
@@ -129,11 +141,6 @@ public class OcupacionLoteService {
 //                    "La empresa tiene proyectos activos. Finalizalos antes de desadjudicar");
 //        }
 
-        // 4. Buscar la ocupacion activa
-        OcupacionLote ocupacionActiva = ocupacionLoteRepository
-                .findByProyecto_EmpresaAndFechaFinIsNull(empresa)
-                .orElseThrow(() -> new RuntimeException(
-                        "No hay ocupacion activa para esta empresa"));
 
         // 5. Cerrar la ocupacion
         ocupacionActiva.setFechaFin(LocalDate.now());

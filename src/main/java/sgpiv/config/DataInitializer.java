@@ -12,6 +12,7 @@ import sgpiv.repository.*;
 import sgpiv.service.LoteService;
 import sgpiv.service.OcupacionLoteService;
 import sgpiv.service.SolicitudService;
+import sgpiv.service.UsuarioService;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private final RolRepository rolRepository;
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
 
     private final EmpresaRepository empresaRepository;
     private final LoteRepository loteRepository;
@@ -80,6 +82,23 @@ public class DataInitializer implements CommandLineRunner {
 
         cargarFlujoOrgPublico();
 
+        System.out.println("SOLICITUDES DE RADICACION: \n");
+        solicitudRadicacionRepository.findAll().forEach(sr ->
+                System.out.println(
+                        sr.getId() + " | " +
+                                sr.getRazonSocial() + " | " +
+                                sr.getEstado()
+                )
+        );
+
+        System.out.println("SOLICITUDES DE PROYECTO: \n");
+        solicitudProyectoRepository.findAll().forEach(sp ->
+                System.out.println(
+                        sp.getId() + " | " +
+                                sp.getSolicitudRadicacion().getRazonSocial() + " | " +
+                                sp.getEstado()
+                )
+        );
 
     }
 
@@ -1079,17 +1098,17 @@ public class DataInitializer implements CommandLineRunner {
         empresa.setCuit("30-10101010-1");
         empresa.setRubro("Automatización");
         empresa.setEmail("info@pythonindustria.com");
-        empresa.setDireccion("Sector D - Lote 3");
+        empresa.setDireccion("Sector D - Lote 8");
         empresa.setIngresoBrutos("IB-101010");
         empresa.setDescripcionBienServicio("Automatización de procesos industriales con Python.");
         empresa.setTipoIndustria("Automatización");
         empresa.setEstadoEmpresa(EstadoEmpresa.RADICADA);
-        Empresa empresaGuardada = empresaRepository.save(empresa);
+        empresaRepository.save(empresa);
 
         RepresentanteEmpresa representante = new RepresentanteEmpresa();
         representante.setUsuario(guido);
-        representante.setEmpresa(empresaGuardada);
-        RepresentanteEmpresa representanteGuardado = representanteRepository.save(representante);
+        representante.setEmpresa(empresa);
+        representanteRepository.save(representante);
 
         Proyecto proyecto = new Proyecto();
         proyecto.setTitulo("Automatización PythonIndustria");
@@ -1111,8 +1130,8 @@ public class DataInitializer implements CommandLineRunner {
                 ServicioLote.ELECTRICIDAD, ServicioLote.INTERNET,
                 ServicioLote.AGUA, ServicioLote.SEGURIDAD_24HS
         ));
-        proyecto.setEmpresa(empresaGuardada);
-        proyecto.setRepresentanteEmpresa(representanteGuardado);
+        proyecto.setEmpresa(empresa);
+        proyecto.setRepresentanteEmpresa(representante);
         proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
         proyecto.setFechaInicio(LocalDate.of(2025, 5, 1));
         Proyecto proyectoGuardado = proyectoRepository.save(proyecto);
@@ -1151,6 +1170,14 @@ public class DataInitializer implements CommandLineRunner {
                     LocalDate.of(2025, 5, 15)
             );
             System.out.println("Lote adjudicado a PythonIndustria");
+
+            //Actualizo estados
+            empresa.setEstadoEmpresa(EstadoEmpresa.RADICADA);
+            proyecto.setEmpresa(empresa);
+            empresaRepository.save(empresa);
+            representante.setEmpresa(empresa);
+            representanteRepository.save(representante);
+            proyectoRepository.save(proyecto);
         }
 
         System.out.println("Empresa PythonIndustria (con lote) y proyecto cargados");
@@ -1176,7 +1203,7 @@ public class DataInitializer implements CommandLineRunner {
         empresa2.setDescripcionBienServicio("Fabricación de estructuras metálicas.");
         empresa2.setTipoIndustria("Metalurgia");
         empresa2.setEstadoEmpresa(EstadoEmpresa.RADICADA);
-        Empresa empresa2Guardada = empresaRepository.save(empresa2);
+        empresaRepository.save(empresa2);
 
         // Usuario representante empresa2
         Usuario rep2 = new Usuario(
@@ -1184,15 +1211,18 @@ public class DataInitializer implements CommandLineRunner {
                 "carlos.mendez@metalurgicasur.com",
                 20111L, "1234", "20111111112"
         );
-        Rol rolRep = rolRepository.findByNombre(NombreRol.ROL_REPRESENTANTE_EMPRESA).orElseThrow();
-        rep2.getRoles().clear();
-        rep2.getRoles().add(rolRep);
+
         usuarioRepository.save(rep2);
 
-        RepresentanteEmpresa representante2 = new RepresentanteEmpresa();
+        usuarioService.asignarRol(rep2.getCuit(), NombreRol.ROL_REPRESENTANTE_EMPRESA);
+
+        RepresentanteEmpresa representante2 = representanteRepository
+                .findByUsuario(rep2).orElseThrow(() -> new RuntimeException("Usuario: " + rep2.getNombre() +"\n"
+                                                                           +  "Cuit: " + rep2.getCuit() + "\n " + "NO ENCONTRADO"));
         representante2.setUsuario(rep2);
-        representante2.setEmpresa(empresa2Guardada);
-        RepresentanteEmpresa representante2Guardado = representanteRepository.save(representante2);
+        representante2.setEmpresa(empresa2);
+        representanteRepository.save(representante2);
+
 
         Proyecto proyecto2 = new Proyecto();
         proyecto2.setTitulo("Planta Metalúrgica Sur");
@@ -1212,29 +1242,34 @@ public class DataInitializer implements CommandLineRunner {
         proyecto2.setServiciosRequeridos(List.of(
                 ServicioLote.ELECTRICIDAD, ServicioLote.AGUA, ServicioLote.GAS_NATURAL
         ));
-        proyecto2.setEmpresa(empresa2Guardada);
-        proyecto2.setRepresentanteEmpresa(representante2Guardado);
+        proyecto2.setEmpresa(empresa2);
+        proyecto2.setRepresentanteEmpresa(representante2);
         proyecto2.setEstadoProyecto(EstadoProyecto.ACTIVO);
         proyecto2.setFechaInicio(LocalDate.now().minusMonths(6));
-        Proyecto proyecto2Guardado = proyectoRepository.save(proyecto2);
+        proyectoRepository.save(proyecto2);
 
         Tarea tp2t1 = new Tarea();
         tp2t1.setTitulo("Instalar línea de corte");
         tp2t1.setDescripcion("Instalar maquinaria de corte láser.");
         tp2t1.setCompleta(true);
-        tp2t1.setProyecto(proyecto2Guardado);
+        tp2t1.setProyecto(proyecto2);
         tareaRepository.save(tp2t1);
 
         Tarea tp2t2 = new Tarea();
         tp2t2.setTitulo("Habilitación municipal");
         tp2t2.setDescripcion("Gestionar habilitación ante el municipio.");
         tp2t2.setCompleta(false);
-        tp2t2.setProyecto(proyecto2Guardado);
+        tp2t2.setProyecto(proyecto2);
         tareaRepository.save(tp2t2);
+
+        List<Tarea> lista = List.of(tp2t1, tp2t2);
+
+        proyecto2.setTareas(lista);
+        proyectoRepository.save(proyecto2);
 
         ocupacionLoteService.ocuparLote(
                 lote2.getId(),
-                proyecto2Guardado.getId(),
+                proyecto2.getId(),
                 LocalDate.now().minusMonths(6)
         );
 
@@ -1256,21 +1291,25 @@ public class DataInitializer implements CommandLineRunner {
         empresa4.setDescripcionBienServicio("Procesamiento y almacenamiento de productos cárnicos.");
         empresa4.setTipoIndustria("Alimenticia");
         empresa4.setEstadoEmpresa(EstadoEmpresa.RADICADA);
-        Empresa empresa4Guardada = empresaRepository.save(empresa4);
+        empresaRepository.save(empresa4);
 
         Usuario rep4 = new Usuario(
                 "Sandra", "Quiroga",
                 "sandra.quiroga@frigopata.com",
                 20222L, "1234", "27222222223"
         );
-        rep4.getRoles().clear();
-        rep4.getRoles().add(rolRep);
+
         usuarioRepository.save(rep4);
 
-        RepresentanteEmpresa representante4 = new RepresentanteEmpresa();
+        usuarioService.asignarRol(rep4.getCuit(), NombreRol.ROL_REPRESENTANTE_EMPRESA);
+
+        RepresentanteEmpresa representante4 = representanteRepository
+                .findByUsuario(rep4).orElseThrow(() -> new RuntimeException("Usuario: " + rep4.getNombre() +"\n"
+                        +  "Cuit: " + rep4.getCuit() + "\n " + "NO ENCONTRADO"));
         representante4.setUsuario(rep4);
-        representante4.setEmpresa(empresa4Guardada);
-        RepresentanteEmpresa representante4Guardado = representanteRepository.save(representante4);
+        representante4.setEmpresa(empresa4);
+        representanteRepository.save(representante4);
+
 
         Proyecto proyecto4 = new Proyecto();
         proyecto4.setTitulo("Frigorífico Patagónico");
@@ -1293,8 +1332,8 @@ public class DataInitializer implements CommandLineRunner {
                 ServicioLote.ELECTRICIDAD, ServicioLote.AGUA,
                 ServicioLote.CLOACAS, ServicioLote.GAS_NATURAL, ServicioLote.SEGURIDAD_24HS
         ));
-        proyecto4.setEmpresa(empresa4Guardada);
-        proyecto4.setRepresentanteEmpresa(representante4Guardado);
+        proyecto4.setEmpresa(empresa4);
+        proyecto4.setRepresentanteEmpresa(representante4);
         proyecto4.setEstadoProyecto(EstadoProyecto.ACTIVO);
         proyecto4.setFechaInicio(LocalDate.now().minusMonths(2));
         Proyecto proyecto4Guardado = proyectoRepository.save(proyecto4);

@@ -203,6 +203,7 @@ public class SolicitudService {
         solicitudRadicacionRepository.save(soliRadicacion);
     }
 
+    @Transactional
     public void aprobarSolicitudProyecto(Long solicitudProyectoId){
         SolicitudProyecto sp = solicitudProyectoRepository
                 .findByIdConTareas(solicitudProyectoId).orElseThrow();
@@ -276,6 +277,9 @@ public class SolicitudService {
             tarea.setProyecto(proyecto);
             tareaRepository.save(tarea);
         }
+
+        sp.getSolicitudRadicacion()
+                .setEstado(EstadoSolicitud.APROBADA);
 
         // 5. Actualizar estado
         sp.setEstado(EstadoSolicitudProyecto.APROBADA);
