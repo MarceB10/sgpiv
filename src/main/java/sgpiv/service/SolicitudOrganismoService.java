@@ -37,6 +37,17 @@ public class SolicitudOrganismoService {
 
         Usuario usuario = usuarioRepository.findByCuit(cuitUsuario).orElseThrow();
 
+
+        boolean existe = solicitudRepo
+                .findByUsuarioId(usuario.getId())
+                .isPresent();
+
+        if (existe) {
+            throw new RuntimeException(
+                    "Ya posee una solicitud de organismo público registrada."
+            );
+        }
+
         SolicitudOrganismoPublico solicitud = new SolicitudOrganismoPublico();
         solicitud.setNombreOrganismo(dto.getNombreOrganismo());
         solicitud.setTipoOrganismo(dto.getTipoOrganismo());

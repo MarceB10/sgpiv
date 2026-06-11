@@ -39,6 +39,10 @@
     </div>
   </div>
 
+  <div th:if="${error}" class="error-message">
+    <span th:text="${error}"></span>
+  </div>
+
   <!-- FORM CARD -->
   <div class="form-card">
 
