@@ -84,7 +84,10 @@
         </div>
 
         <a th:href="@{/gerente/solicitudesOrganismo/{id}/archivo(id=${solicitud.id}, modo='download')}"
-           class="btn btn-edit" style="margin-top: 1rem;">
+           class="btn-primary"
+           style="display:inline-flex; align-items:center; gap:8px; margin-top:16px;
+              padding: 10px 18px; border-radius:10px; text-decoration:none;
+              background:#2f6df5; color:white; font-weight:600; font-size:14px; width: fit-content;">
           <i class="fa-solid fa-download"></i>
           Descargar <span th:text="${solicitud.nombreArchivo}"></span>
         </a>

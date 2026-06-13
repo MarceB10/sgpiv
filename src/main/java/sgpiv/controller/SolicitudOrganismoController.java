@@ -3,6 +3,9 @@ package sgpiv.controller;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sgpiv.dtos.request.SolicitudOrganismoRequestDTO;
 import sgpiv.dtos.response.UsuarioResponseDTO;
+import sgpiv.model.SolicitudOrganismoPublico;
 import sgpiv.repository.SolicitudOrganismoPublicoRepository;
 import sgpiv.service.SolicitudOrganismoService;
 
@@ -58,4 +62,30 @@ public class SolicitudOrganismoController {
             return "solicitudOrganismo";
         }
     }
+
+
+    @GetMapping("/miSolicitudOrganismo/archivo")
+    public ResponseEntity<byte[]> verMiArchivo(@RequestParam(defaultValue = "inline") String modo,
+                                               HttpSession session) {
+        UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
+        if (usuario == null) return ResponseEntity.status(401).build();
+
+        SolicitudOrganismoPublico solicitud = solicitudOrganismoPublicoRepository
+                .findByUsuarioId(usuario.getId())
+                .orElseThrow();
+
+        if (solicitud.getArchivo() == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String disposition = modo.equals("download")
+                ? "attachment; filename=\"" + solicitud.getNombreArchivo() + "\""
+                : "inline; filename=\"" + solicitud.getNombreArchivo() + "\"";
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, disposition)
+                .contentType(MediaType.parseMediaType(solicitud.getTipoArchivo()))
+                .body(solicitud.getArchivo());
+    }
+
 }
