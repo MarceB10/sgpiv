@@ -261,12 +261,16 @@ public class GerenteController {
     }
 
     @GetMapping("/gerente/solicitudesOrganismo/{id}/archivo")
-    public ResponseEntity<byte[]> descargarArchivo(@PathVariable Long id) {
+    public ResponseEntity<byte[]> descargarArchivo(@PathVariable Long id,
+                                                   @RequestParam(defaultValue = "inline") String modo) {
         SolicitudOrganismoPublico solicitud = solicitudOrgRepo.findById(id).orElseThrow();
 
+        String disposition = modo.equals("download")
+                ? "attachment; filename=\"" + solicitud.getNombreArchivo() + "\""
+                : "inline; filename=\"" + solicitud.getNombreArchivo() + "\"";
+
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + solicitud.getNombreArchivo() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, disposition)
                 .contentType(MediaType.parseMediaType(solicitud.getTipoArchivo()))
                 .body(solicitud.getArchivo());
     }

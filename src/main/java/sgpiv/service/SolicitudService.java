@@ -1,13 +1,11 @@
 package sgpiv.service;
 
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sgpiv.dtos.request.SolicitudProyectoRequestDTO;
 import sgpiv.dtos.request.SolicitudRequestDTO;
 import sgpiv.dtos.request.TareaSoliDTORequest;
-import sgpiv.dtos.response.ProyectoResponseDTO;
 import sgpiv.dtos.response.SolicitudProyectoResponseDTO;
 import sgpiv.dtos.response.SolicitudResponseDTO;
 import sgpiv.enums.*;
@@ -39,6 +37,16 @@ public class SolicitudService {
     private final UsuarioService usuarioService;
     private final RepresentanteService representanteService;
     private final LoteService loteService;
+
+    public final String NOTIFICACION_SOLICITUD_RADICACION_APROBADA = "Tu solicitud de radicación fue aprobada. Ahora debes presentar un proyecto";
+    public final String NOTIFICACION_NUEVA_SOLICITUD_RADICACION = "Nueva solicitud de radicación de: ";
+    public final String NOTIFICACION_SOLICITUD_RADICACION_ENVIADA = "Tu solicitud fue enviada para la evaluacion de la gerencia del parque industrial";
+    public final String NOTIFICACION_NUEVA_SOLICITUD_DE_PROYECTO = "Nueva solicitud de Proyecto de: ";
+    public final String NOTIFICACION_SOLICITUD_PROYECTO_APROBADA  = "Tu solicitud fue Aceptada. ¡Bienvenido al Parque Industrial de Viedma!";
+    public final String NOTIFICACION_SOLICITUD_RADICACION_RECHAZADA = "Tu solicitud de radicación fue rechazada. Motivo: ";
+    public final String NOTIFICACION_SOLICITUD_REQUIERE_MODIFICACION = "Tu solicitud requiere modificaciones. Motivo: ";
+    public final String NOTIFICACION_SOLICITUD_PROYECTO_RECHAZADA = "Tu Solicitud De Proyecto fue Rechazada";
+
 
 
     public void enviarSolicitudInicial(SolicitudRequestDTO dto, String cuitUsuario) {
@@ -100,13 +108,13 @@ public class SolicitudService {
         List<Usuario> gerentes = usuarioRepository.findByRol(NombreRol.ROL_GERENTE);
         for (Usuario gerente : gerentes) {
             notificacionService.crearNotificacion(
-                    "Nueva solicitud de radicación de: " + solicitud.getRazonSocial(),
+                    NOTIFICACION_NUEVA_SOLICITUD_RADICACION + solicitud.getRazonSocial(),
                     gerente
             );
         }
 
         notificacionService.crearNotificacion(
-                "Tu solicitud fue enviada para la evaluacion de la gerencia del parque industrial",
+                NOTIFICACION_SOLICITUD_RADICACION_ENVIADA,
                 usuario
         );
 
@@ -130,7 +138,7 @@ public class SolicitudService {
 
         try {
             notificacionService.crearNotificacion(
-                    "Tu solicitud de radicación fue aprobada. Ahora debes presentar un proyecto",
+                    NOTIFICACION_SOLICITUD_RADICACION_APROBADA,
                     solicitud.getUsuario()
 
             );
@@ -192,7 +200,7 @@ public class SolicitudService {
         List<Usuario> gerentes = usuarioRepository.findByRol(NombreRol.ROL_GERENTE);
         for (Usuario gerente : gerentes) {
             notificacionService.crearNotificacion(
-                    "Nueva solicitud de Proyecto de: " + solicitud.getSolicitudRadicacion().getRazonSocial(),
+                    NOTIFICACION_NUEVA_SOLICITUD_DE_PROYECTO + solicitud.getSolicitudRadicacion().getRazonSocial(),
                     gerente
             );
         }
@@ -286,7 +294,7 @@ public class SolicitudService {
         solicitudProyectoRepository.save(sp);
 
         notificacionService.crearNotificacion(
-                "Tu solicitud fue Aceptada. ¡Bienvenido al Parque Industrial de Viedma!",
+                NOTIFICACION_SOLICITUD_PROYECTO_APROBADA,
                 usuario
         );
 
@@ -315,7 +323,7 @@ public class SolicitudService {
         solicitudRadicacionRepository.save(solicitud);
 
         notificacionService.crearNotificacion(
-                "Tu solicitud de radicación fue rechazada. Motivo: " + motivo,
+                NOTIFICACION_SOLICITUD_RADICACION_RECHAZADA + motivo,
                 solicitud.getUsuario()
         );
         // Si se rechaza se puede desactivar el usuario
@@ -361,7 +369,7 @@ public class SolicitudService {
         solicitud.setEstado(EstadoSolicitud.REQUIERE_MODIFICACION);
         solicitud.setMotivoRechazo(motivo);
         notificacionService.crearNotificacion(
-                "Tu solicitud requiere modificaciones. Motivo: " + motivo,
+                NOTIFICACION_SOLICITUD_REQUIERE_MODIFICACION + motivo,
                 solicitud.getUsuario()
         );
         solicitudRadicacionRepository.save(solicitud);
@@ -405,7 +413,7 @@ public class SolicitudService {
             throw new RuntimeException("Solo se pueden aceptar solicitudes en estado PENDIENTE");
         }
         notificacionService.crearNotificacion(
-                "Tu solicitud de radicación fue aprobada. Ahora debes presentar una solicitud de Proyecto",
+                NOTIFICACION_SOLICITUD_RADICACION_APROBADA,
                 solicitud.getUsuario()
 
         );
@@ -421,6 +429,8 @@ public class SolicitudService {
         solicitud.setEstado(EstadoSolicitud.REQUIERE_MODIFICACION);
         solicitud.setMotivoRechazo(motivo);
         solicitudRadicacionRepository.save(solicitud);
+
+        notificacionService.crearNotificacion(NOTIFICACION_SOLICITUD_RADICACION_RECHAZADA + motivo, solicitud.getUsuario());
     }
 
     public SolicitudResponseDTO obtenerSolicitudRadicacionAprobadaPrimerParte(String cuit) {
@@ -444,6 +454,8 @@ public class SolicitudService {
         sp.setEstado(EstadoSolicitudProyecto.RECHAZADA);
         sp.setMotivoRechazo(motivo);
         solicitudProyectoRepository.save(sp);
+
+        notificacionService.crearNotificacion(NOTIFICACION_SOLICITUD_PROYECTO_RECHAZADA + motivo, sp.getSolicitudRadicacion().getUsuario());
     }
 
     public void requiereModificacionProyecto(Long id, String motivo) {
@@ -452,6 +464,8 @@ public class SolicitudService {
         sp.setEstado(EstadoSolicitudProyecto.REQUIERE_MODIFICACION);
         sp.setMotivoRechazo(motivo);
         solicitudProyectoRepository.save(sp);
+
+        notificacionService.crearNotificacion(NOTIFICACION_SOLICITUD_REQUIERE_MODIFICACION + motivo, sp.getSolicitudRadicacion().getUsuario());
     }
 
     public List<SolicitudProyecto> listarTodosProyectos() {

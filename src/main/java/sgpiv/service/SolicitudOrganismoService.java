@@ -29,6 +29,15 @@ public class SolicitudOrganismoService {
     private final UsuarioService usuarioService;
     private final OrganismoPublicoRepository organismoPublicoRepository;
 
+    private final NotificacionService notificacionService;
+
+    public static final String NOTIFICACION_SOLICITUD_ORG_PUBLICO_ENVIADA = "Se ha enviado tu solicitud como Organismo Publico";
+    public static final String NOTIFICACION_SOLICITUD_ORG_PUBLICO_APROBADA = "Se ha aprobado tu solicitud como Organismo Publico. ¡Bienvenido al Parque Industrial de Viedma!";
+    public static final String NOTIFICACION_SOLICITUD_ORG_PUBLICO_RECHAZADA = "Tu solicitud como Organismo Publico fue Rechazada";
+    public static final String NOTIFICACION_NUEVA_SOLICITUD_ORG_PUBLICO = "Nueva Solicitud de Org Publico de: ";
+
+
+
 
     @Transactional
     public void guardar(SolicitudOrganismoRequestDTO dto,
@@ -59,6 +68,17 @@ public class SolicitudOrganismoService {
         procesarArchivo(archivo, solicitud);
 
         solicitudRepo.save(solicitud);
+
+        notificacionService.crearNotificacion(NOTIFICACION_SOLICITUD_ORG_PUBLICO_ENVIADA, usuario );
+
+        //NOTIFICACION A GERENTE
+        List<Usuario> gerentes = usuarioRepository.findByRol(NombreRol.ROL_GERENTE);
+        for (Usuario gerente : gerentes) {
+            notificacionService.crearNotificacion(
+                    NOTIFICACION_NUEVA_SOLICITUD_ORG_PUBLICO + solicitud.getUsuario().getNombre() + "-CUIT: (" + solicitud.getUsuario().getCuit() + ")",
+                    gerente
+            );
+        }
     }
 
 
@@ -95,6 +115,8 @@ public class SolicitudOrganismoService {
         organismo.setCargoSolicitante(solicitud.getCargoSolicitante());
         organismo.setActivo(true);
         organismoPublicoRepository.save(organismo);
+
+        notificacionService.crearNotificacion(NOTIFICACION_SOLICITUD_ORG_PUBLICO_APROBADA, usuario);
     }
 
     @Transactional
@@ -103,6 +125,13 @@ public class SolicitudOrganismoService {
         solicitud.setEstado(EstadoSolicitudOrganismo.RECHAZADA);
         solicitud.setMotivoRechazo(motivo);
         solicitudRepo.save(solicitud);
+
+        if (motivo.isBlank()) {
+            notificacionService.crearNotificacion(NOTIFICACION_SOLICITUD_ORG_PUBLICO_RECHAZADA, solicitud.getUsuario());
+        }else {
+            notificacionService.crearNotificacion(NOTIFICACION_SOLICITUD_ORG_PUBLICO_RECHAZADA + "\nMotivo: " + motivo
+                    , solicitud.getUsuario());
+        }
     }
 
     // Para verificar si el usuario ya tiene una solicitud activa
@@ -180,11 +209,20 @@ public class SolicitudOrganismoService {
 
         try {
 
+            // Al guardar el archivo en el service, si es txt, lo pongo en texto plano para poder verlo en la preview
+            String contentType = archivo.getContentType();
+            String nombreOriginal = archivo.getOriginalFilename();
+
+            if (nombreOriginal != null && nombreOriginal.toLowerCase().endsWith(".txt")) {
+                contentType = "text/plain";
+            }
+
             solicitud.setNombreArchivo(
-                    archivo.getOriginalFilename());
+                    nombreOriginal);
 
             solicitud.setTipoArchivo(
-                    archivo.getContentType());
+                    contentType);
+
 
             solicitud.setArchivo(
                     archivo.getBytes());
@@ -222,6 +260,11 @@ public class SolicitudOrganismoService {
 
         solicitud.setFechaEnvio(
                 LocalDate.now());
+
+        // Eliminar archivo anterior
+        solicitud.setNombreArchivo(null);
+        solicitud.setTipoArchivo(null);
+        solicitud.setArchivo(null);
 
         procesarArchivo(archivo, solicitud);
     }
