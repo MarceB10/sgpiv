@@ -2,127 +2,83 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-
     <meta charset="UTF-8">
-
     <title>Empresas Registradas</title>
 
     <link rel="stylesheet" th:href="@{/css/sidebar.css}">
     <link rel="stylesheet" th:href="@{/css/empresas.css}">
-
-    <!-- Aca vinculé el diseño de los botones -->
     <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-
 <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<!-- CONTENIDO -->
+<main class="main-content">
 
-<div class="main-content">
-
-    <!-- HEADER -->
-
-    <div class="header">
-
+    <section class="header">
         <div>
             <h1>Empresas registradas</h1>
-
-            <p>
-                Gestioná y consultá las empresas registradas dentro del Parque Industrial.
-            </p>
+            <p>Gestioná y consultá las empresas registradas dentro del Parque Industrial.</p>
         </div>
+    </section>
 
-    </div>
-
-    <!-- CARDS -->
-
-    <div class="cards">
-
+    <section class="cards">
         <div class="card">
-
             <h3>Total empresas</h3>
-
-            <h2 th:text="${totalEmpresas}"></h2>
-
+            <h2 th:text="${totalEmpresas}">0</h2>
         </div>
 
         <div class="card">
-
-            <h3>Dadas De Baja</h3>
-
-            <h2 th:text="${dadasDeBaja}"></h2>
-
+            <h3>Dadas de baja</h3>
+            <h2 th:text="${dadasDeBaja}">0</h2>
         </div>
 
         <div class="card">
-
             <h3>Radicadas</h3>
-
-            <h2 th:text="${radicadas}"></h2>
-
+            <h2 th:text="${radicadas}">0</h2>
         </div>
 
         <div class="card">
-
-            <h3>Pendientes de Lote</h3>
-
-            <h2 th:text="${pendienteLote}"></h2>
-
+            <h3>Pendientes de lote</h3>
+            <h2 th:text="${pendienteLote}">0</h2>
         </div>
+    </section>
 
-    </div>
-
-    <!-- TABLA -->
-
-    <div class="table-container">
-
-        <!-- TOP BAR -->
+    <section class="table-container">
 
         <div class="table-top">
-
             <h3>Lista de empresas</h3>
 
-            <div class="search-box">
+            <form id="searchForm"
+                  th:action="@{/empresas}"
+                  method="get"
+                  class="search-form">
 
-                <form
-                        id="searchForm"
-                        th:action="@{/empresas}"
-                        method="get"
-                        class="search-form"
-                >
-                    <input
-                            id="buscador"
-                            type="text"
-                            name="buscar"
-                            placeholder="Buscar empresa..."
-                            th:value="${buscar}"
-                    >
+                <input id="buscador"
+                       type="text"
+                       name="buscar"
+                       placeholder="Buscar empresa..."
+                       th:value="${buscar}">
 
-                    <select id="filtroEstado">
-                        <option value="">Todos los estados</option>
-                        <option value="PENDIENTE_LOTE">Pendiente de Lote</option>
-                        <option value="RADICADA">Radicada</option>
-                        <option value="BAJA">Baja</option>
-                    </select>
+                <select id="filtroEstado" name="estado">
+                    <option value="">Todos los estados</option>
 
-                </form>
+                    <option th:each="estadoOption : ${estadosEmpresa}"
+                            th:value="${estadoOption}"
+                            th:text="${#strings.replace(estadoOption, '_', ' ')}"
+                            th:selected="${estadoOption == estado}">
+                    </option>
+                </select>
 
-            </div>
-
+            </form>
         </div>
-
-        <!-- TABLA -->
 
         <table>
             <thead>
             <tr>
-
                 <th>ID</th>
                 <th>Razón social</th>
                 <th>CUIT</th>
@@ -130,82 +86,44 @@
                 <th>Email</th>
                 <th>Estado</th>
                 <th>Acciones</th>
-
             </tr>
             </thead>
+
             <tbody id="tablaEmpresas">
-            <tr th:each="empresa : ${empresas}">
+            <tr th:each="empresa : ${empresas}"
+                th:data-razon-social="${#strings.toLowerCase(empresa.razonSocial)}"
+                th:data-estado="${empresa.estadoEmpresa}">
+
                 <td th:text="${empresa.id}"></td>
                 <td th:text="${empresa.razonSocial}"></td>
                 <td th:text="${empresa.cuit}"></td>
                 <td th:text="${empresa.rubro}"></td>
                 <td th:text="${empresa.email}"></td>
-                <td>
 
-                    <span
-                            class="estado"
-                            th:classappend="
-                            ${empresa.estadoEmpresa == 'INTERESADA'} ? ' interesada' :
-                            (${empresa.estadoEmpresa == 'RADICADA'} ? ' radicada' :
-                            (${empresa.estadoEmpresa == 'ADJUDICADA'} ? ' adjudicada' : ' baja'))
-                            "
-                            th:text="${empresa.estadoEmpresa}">
+                <td>
+                    <span class="estado"
+                          th:classappend="${#strings.toLowerCase(empresa.estadoEmpresa)}"
+                          th:text="${#strings.replace(empresa.estadoEmpresa, '_', ' ')}">
                     </span>
                 </td>
 
                 <td>
                     <a th:href="@{/empresas/{id}(id=${empresa.id})}"
                        class="btn btn-edit">
-                        <i class="fa-solid fa-eye"></i> Ver detalle
+                        <i class="fa-solid fa-eye"></i>
+                        Ver detalle
                     </a>
                 </td>
 
             </tr>
             </tbody>
         </table>
-    </div>
-</div>
 
-<script>
+    </section>
 
-    const buscador = document.getElementById("buscador");
-    const filtroEstado = document.getElementById("filtroEstado");
+</main>
 
-    function filtrar() {
-
-        let texto = buscador.value.toLowerCase().trim();
-        let estadoSeleccionado = filtroEstado.value;
-
-        let filas =
-            document.querySelectorAll("#tablaEmpresas tr");
-
-        filas.forEach(fila => {
-
-            let razonSocial =
-                fila.cells[1].innerText.toLowerCase();
-
-            let estado =
-                fila.cells[5].innerText.trim();
-
-            let coincideNombre =
-                razonSocial.startsWith(texto);
-
-            let coincideEstado =
-                estadoSeleccionado === "" ||
-                estado === estadoSeleccionado;
-
-            fila.style.display =
-                (coincideNombre && coincideEstado)
-                    ? ""
-                    : "none";
-        });
-    }
-
-    buscador.addEventListener("input", filtrar);
-    filtroEstado.addEventListener("change", filtrar);
-
-</script>
+<script th:src="@{/js/empresas.js}"></script>
 
 </body>
-
 </html>

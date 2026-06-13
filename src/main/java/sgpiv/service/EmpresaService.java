@@ -152,6 +152,34 @@ public class EmpresaService {
         return new EmpresaResponseDTO(empresa);
     }
 
+    public List<EmpresaResponseDTO> filtrarEmpresas(String buscar, EstadoEmpresa estado) {
 
+        boolean tieneBusqueda = buscar != null && !buscar.isBlank();
+        boolean tieneEstado = estado != null;
+
+        if (tieneBusqueda && tieneEstado) {
+            return empresaRepository
+                    .findByRazonSocialStartingWithIgnoreCaseAndEstadoEmpresa(buscar, estado)
+                    .stream()
+                    .map(EmpresaResponseDTO::new)
+                    .toList();
+        }
+
+        if (tieneBusqueda) {
+            return listarPorRazonSocial(buscar);
+        }
+
+        if (tieneEstado) {
+            return listarPorEstado(estado);
+        }
+
+        return listarTodas();
+    }
+
+    public long contarPorEstado(List<EmpresaResponseDTO> empresas, EstadoEmpresa estado) {
+        return empresas.stream()
+                .filter(e -> estado.toString().equals(e.getEstadoEmpresa()))
+                .count();
+    }
 
 }
