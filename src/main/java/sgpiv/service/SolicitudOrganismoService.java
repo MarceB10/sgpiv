@@ -34,7 +34,7 @@ public class SolicitudOrganismoService {
     public static final String NOTIFICACION_SOLICITUD_ORG_PUBLICO_ENVIADA = "Se ha enviado tu solicitud como Organismo Publico";
     public static final String NOTIFICACION_SOLICITUD_ORG_PUBLICO_APROBADA = "Se ha aprobado tu solicitud como Organismo Publico. ¡Bienvenido al Parque Industrial de Viedma!";
     public static final String NOTIFICACION_SOLICITUD_ORG_PUBLICO_RECHAZADA = "Tu solicitud como Organismo Publico fue Rechazada";
-
+    public static final String NOTIFICACION_NUEVA_SOLICITUD_ORG_PUBLICO = "Nueva Solicitud de Org Publico de: ";
 
 
 
@@ -70,6 +70,15 @@ public class SolicitudOrganismoService {
         solicitudRepo.save(solicitud);
 
         notificacionService.crearNotificacion(NOTIFICACION_SOLICITUD_ORG_PUBLICO_ENVIADA, usuario );
+
+        //NOTIFICACION A GERENTE
+        List<Usuario> gerentes = usuarioRepository.findByRol(NombreRol.ROL_GERENTE);
+        for (Usuario gerente : gerentes) {
+            notificacionService.crearNotificacion(
+                    NOTIFICACION_NUEVA_SOLICITUD_ORG_PUBLICO + solicitud.getUsuario().getNombre() + "-CUIT: (" + solicitud.getUsuario().getCuit() + ")",
+                    gerente
+            );
+        }
     }
 
 
