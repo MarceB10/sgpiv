@@ -180,11 +180,20 @@ public class SolicitudOrganismoService {
 
         try {
 
+            // Al guardar el archivo en el service, si es txt, lo pongo en texto plano para poder verlo en la preview
+            String contentType = archivo.getContentType();
+            String nombreOriginal = archivo.getOriginalFilename();
+
+            if (nombreOriginal != null && nombreOriginal.toLowerCase().endsWith(".txt")) {
+                contentType = "text/plain";
+            }
+
             solicitud.setNombreArchivo(
-                    archivo.getOriginalFilename());
+                    nombreOriginal);
 
             solicitud.setTipoArchivo(
-                    archivo.getContentType());
+                    contentType);
+
 
             solicitud.setArchivo(
                     archivo.getBytes());
@@ -222,6 +231,11 @@ public class SolicitudOrganismoService {
 
         solicitud.setFechaEnvio(
                 LocalDate.now());
+
+        // Eliminar archivo anterior
+        solicitud.setNombreArchivo(null);
+        solicitud.setTipoArchivo(null);
+        solicitud.setArchivo(null);
 
         procesarArchivo(archivo, solicitud);
     }

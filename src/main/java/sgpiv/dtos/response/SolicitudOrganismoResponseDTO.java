@@ -18,7 +18,6 @@ public class SolicitudOrganismoResponseDTO {
     private String tipoOrganismo;
     private String cargoSolicitante;
     private String motivoAcceso;
-    private String nombreArchivo;
     private EstadoSolicitudOrganismo estado;
     private LocalDate fechaEnvio;
     private String motivoRechazo;
@@ -29,16 +28,23 @@ public class SolicitudOrganismoResponseDTO {
     private String cuitUsuario;
     private String emailUsuario;
 
+    //Archivo
+    private String nombreArchivo;
+    private String tipoArchivo;
+
+
     public SolicitudOrganismoResponseDTO(SolicitudOrganismoPublico s) {
         this.id               = s.getId();
         this.nombreOrganismo  = s.getNombreOrganismo();
         this.tipoOrganismo    = s.getTipoOrganismo();
         this.cargoSolicitante = s.getCargoSolicitante();
         this.motivoAcceso     = s.getMotivoAcceso();
-        this.nombreArchivo    = s.getNombreArchivo();
         this.estado           = s.getEstado();
         this.fechaEnvio       = s.getFechaEnvio();
         this.motivoRechazo    = s.getMotivoRechazo();
+
+        this.nombreArchivo    = s.getNombreArchivo();
+        this.tipoArchivo      = s.getTipoArchivo();
 
         if (s.getUsuario() != null) {
             this.nombreUsuario   = s.getUsuario().getNombre();
