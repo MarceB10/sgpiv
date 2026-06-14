@@ -1,19 +1,19 @@
 const buscador = document.getElementById("buscador");
 const filtroEstado = document.getElementById("filtroEstado");
-const filas = document.querySelectorAll("#tablaEmpresas tr");
+const empresas = document.querySelectorAll(".empresa-card");
 
 function filtrarEmpresas() {
     const texto = buscador.value.toLowerCase().trim();
     const estadoSeleccionado = filtroEstado.value;
 
-    filas.forEach(fila => {
-        const razonSocial = fila.dataset.razonSocial;
-        const estado = fila.dataset.estado;
+    empresas.forEach(empresa => {
+        const razonSocial = empresa.dataset.razonSocial;
+        const estado = empresa.dataset.estado;
 
-        const coincideNombre = razonSocial.startsWith(texto);
+        const coincideTexto = razonSocial.includes(texto);
         const coincideEstado = !estadoSeleccionado || estado === estadoSeleccionado;
 
-        fila.style.display = coincideNombre && coincideEstado ? "" : "none";
+        empresa.style.display = coincideTexto && coincideEstado ? "flex" : "none";
     });
 }
 

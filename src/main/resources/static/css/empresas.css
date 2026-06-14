@@ -132,9 +132,123 @@
 }
 
 /* =========================
-   TABLE
+   EMPRESAS GRID
 ========================= */
 
+.empresas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
+    gap: 18px;
+}
+
+.empresa-card {
+    display: flex;
+    gap: 18px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.empresa-card:hover {
+    transform: translateY(-2px);
+    border-color: #bfdbfe;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.empresa-icon {
+    width: 70px;
+    height: 70px;
+    min-width: 70px;
+    border-radius: 14px;
+    background: #eff6ff;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    border: 1px solid #dbeafe;
+}
+
+.empresa-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.empresa-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.empresa-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.empresa-id {
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    border-radius: 8px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.empresa-title h4 {
+    color: #0f172a;
+    font-size: 17px;
+    font-weight: 800;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.empresa-detalles {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.empresa-detalles p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #334155;
+    font-size: 14px;
+    margin: 0;
+}
+
+.empresa-detalles i {
+    width: 18px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.empresa-detalles strong {
+    color: #475569;
+    font-weight: 700;
+}
+
+.empresa-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 18px;
+}
+
+/* ========================= TABLE ========================= */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -165,7 +279,6 @@ tbody tr {
 tbody tr:hover {
     background: #f8fafc;
 }
-
 /* =========================
    ESTADOS
 ========================= */
@@ -229,11 +342,20 @@ tbody tr:hover {
         width: 100%;
     }
 
-    .table-container {
-        overflow-x: auto;
+    .empresas-grid {
+        grid-template-columns: 1fr;
     }
 
-    table {
-        min-width: 850px;
+    .empresa-card {
+        flex-direction: column;
+    }
+
+    .empresa-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .empresa-actions {
+        justify-content: flex-start;
     }
 }

@@ -77,48 +77,65 @@
             </form>
         </div>
 
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Razón social</th>
-                <th>CUIT</th>
-                <th>Rubro</th>
-                <th>Email</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
+        <div class="empresas-grid" id="tablaEmpresas">
 
-            <tbody id="tablaEmpresas">
-            <tr th:each="empresa : ${empresas}"
-                th:data-razon-social="${#strings.toLowerCase(empresa.razonSocial)}"
-                th:data-estado="${empresa.estadoEmpresa}">
+            <article class="empresa-card"
+                     th:each="empresa : ${empresas}"
+                     th:data-razon-social="${#strings.toLowerCase(empresa.razonSocial)}"
+                     th:data-estado="${empresa.estadoEmpresa}">
 
-                <td th:text="${empresa.id}"></td>
-                <td th:text="${empresa.razonSocial}"></td>
-                <td th:text="${empresa.cuit}"></td>
-                <td th:text="${empresa.rubro}"></td>
-                <td th:text="${empresa.email}"></td>
+                <div class="empresa-icon">
+                    <i class="fa-solid fa-building"></i>
+                </div>
 
-                <td>
-                    <span class="estado"
-                          th:classappend="${#strings.toLowerCase(empresa.estadoEmpresa)}"
-                          th:text="${#strings.replace(empresa.estadoEmpresa, '_', ' ')}">
-                    </span>
-                </td>
+                <div class="empresa-info">
 
-                <td>
-                    <a th:href="@{/empresas/{id}(id=${empresa.id})}"
-                       class="btn btn-edit">
-                        <i class="fa-solid fa-eye"></i>
-                        Ver detalle
-                    </a>
-                </td>
+                    <div class="empresa-header">
+                        <div class="empresa-title">
+                            <span class="empresa-id" th:text="${empresa.id}">1</span>
+                            <h4 th:text="${empresa.razonSocial}">Patagonia Logística</h4>
+                        </div>
 
-            </tr>
-            </tbody>
-        </table>
+                        <span class="estado"
+                              th:classappend="${#strings.toLowerCase(empresa.estadoEmpresa)}"
+                              th:text="${#strings.replace(empresa.estadoEmpresa, '_', ' ')}">
+                    Radicada
+                </span>
+                    </div>
+
+                    <div class="empresa-detalles">
+                        <p>
+                            <i class="fa-regular fa-id-card"></i>
+                            <strong>CUIT:</strong>
+                            <span th:text="${empresa.cuit}">20-12345678-9</span>
+                        </p>
+
+                        <p>
+                            <i class="fa-solid fa-briefcase"></i>
+                            <strong>Rubro:</strong>
+                            <span th:text="${empresa.rubro}">Logística</span>
+                        </p>
+
+                        <p>
+                            <i class="fa-regular fa-envelope"></i>
+                            <strong>Email:</strong>
+                            <span th:text="${empresa.email}">contacto@empresa.com</span>
+                        </p>
+                    </div>
+
+                    <div class="empresa-actions">
+                        <a th:href="@{/empresas/{id}(id=${empresa.id})}"
+                           class="btn btn-edit">
+                            <i class="fa-solid fa-eye"></i>
+                            Ver detalle
+                        </a>
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
 
     </section>
 

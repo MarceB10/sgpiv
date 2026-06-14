@@ -248,8 +248,7 @@ public class LoteController {
     //DESADJUDICACION DEL LOTE
     @GetMapping("/gerente/ocupaciones/{id}/detalle")
     public String detalleOcupacion(@PathVariable Long id,
-                                   Model model,
-                                   HttpSession session) {
+                                   Model model, HttpSession session) {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
         if (usuario == null) return "redirect:/";
 
