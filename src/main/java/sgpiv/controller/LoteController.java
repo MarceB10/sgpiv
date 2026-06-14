@@ -19,6 +19,8 @@ import sgpiv.service.ProyectoService;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -51,6 +53,18 @@ public class LoteController {
         model.addAttribute("ocupaciones", ocupaciones);
         /// ----------------------------------------------------------------------------
 
+        Map<Long, String> representantesPorLote = ocupaciones.stream()
+                .filter(OcupacionLoteResponseDTO::isActiva)
+                .filter(o -> o.getIdLote() != null)
+                .filter(o -> o.getNombreRepresentante() != null || o.getApellidoRepresentante() != null)
+                .collect(Collectors.toMap(
+                        OcupacionLoteResponseDTO::getIdLote,
+                        o -> ((o.getNombreRepresentante() != null ? o.getNombreRepresentante() : "") + " " +
+                                (o.getApellidoRepresentante() != null ? o.getApellidoRepresentante() : "")).trim(),
+                        (representanteExistente, representanteNuevo) -> representanteExistente
+                ));
+
+        model.addAttribute("representantesPorLote", representantesPorLote);
 
         List<LoteResponseDTO> lotes = loteService.obtenerTodosLosLotes();
         model.addAttribute("lotes", lotes);

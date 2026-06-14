@@ -4,79 +4,84 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Gestión de Lotes</title>
+
+    <link rel="stylesheet" th:href="@{/css/global.css}"/>
     <link rel="stylesheet" th:href="@{/css/lotes.css}"/>
     <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
-    <!-- Iconos -->
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
 <div class="main-content">
+
     <!-- HEADER -->
     <div class="header">
         <div class="header-text">
             <h1>Gestión de Lotes</h1>
             <p>Administrá el estado y la disponibilidad de los lotes</p>
         </div>
+
         <a th:href="@{/gerente/lotes/nuevo-lote}" class="btn-nuevo">
             + Nuevo Lote
         </a>
     </div>
-    <!-- Mensaje Creacion Lote -->
+
     <div th:if="${mensaje}" class="alert alert-warning" th:text="${mensaje}"></div>
 
     <!-- CARDS DE RESUMEN -->
     <div class="cards">
-        <div class="card">
-            <i class="material-icons">layers</i> <!-- Icono de Lotes Disponibles -->
-            <h3>Disponibles</h3>
+
+        <div class="card-counter">
+            <div class="counter-left">
+                <i class="material-icons">layers</i>
+                <h3>Disponibles</h3>
+            </div>
+
+            <div class="counter-divider"></div>
+
             <h2 th:text="${totalDisponibles != null ? totalDisponibles : 0}">0</h2>
         </div>
-        <div class="card">
-            <i class="material-icons">layers_clear</i> <!-- icono de layer para los lotes en uso -->
-            <h3>En Uso</h3>
+
+        <div class="card-counter">
+            <div class="counter-left">
+                <i class="material-icons">layers_clear</i>
+                <h3>En Uso</h3>
+            </div>
+
+            <div class="counter-divider"></div>
+
             <h2 th:text="${totalEnUso != null ? totalEnUso : 0}">0</h2>
         </div>
-        <div class="card">
 
-            <i class="material-icons">terrain</i> <!-- tengo que darle un nombre al icono --->
-            <h3>Total de Lotes</h3>
+        <div class="card-counter">
+            <div class="counter-left">
+                <i class="material-icons">terrain</i>
+                <h3>Total de Lotes</h3>
+            </div>
+
+            <div class="counter-divider"></div>
+
             <h2 th:text="${totalLotes != null ? totalLotes : 0}">0</h2>
         </div>
+
     </div>
 
-    <!-- TABLA CONTAINER -->
-    <div class="table-container">
+    <!-- LISTADO DE LOTES EN TARJETAS -->
+    <div class="table-container lotes-container">
 
-        <!-- TOP: título + búsqueda -->
         <div class="table-top">
             <h3>Listado de Lotes</h3>
-            <!--
-            <form th:action="@{/gerente/lotes}" method="get" class="search-form">
-                <input
-                        type="text"
-                        name="ubicacion"
-                        th:value="${param.ubicacion}"
-                        placeholder="Buscar por ubicación..."
-                />
-                <select name="estado">
-                    <option value="">Todos los estados</option>
-                    <option value="DISPONIBLE"
-                            th:selected="${param.estado == 'DISPONIBLE'}">Disponible</option>
-                    <option value="EN_USO"
-                            th:selected="${param.estado == 'EN_USO'}">En Uso</option>
-                </select>
-                <button type="submit" class="search-button">Buscar</button>
-            </form>
-            -->
+
             <div class="search-form">
                 <input
                         type="text"
                         id="buscadorLote"
                         placeholder="Buscar por ubicación..."
                 />
+
                 <select id="filtroEstado">
                     <option value="">Todos los estados</option>
                     <option value="DISPONIBLE">Disponible</option>
@@ -85,19 +90,100 @@
             </div>
         </div>
 
-        <!-- FRAGMENTO DE TABLA -->
-        <div th:replace="~{fragments/tablaLotes :: tablaLotes}"></div>
+        <div class="lotes-grid">
 
+            <article
+                    class="lote-card fila-lote"
+                    th:each="lote : ${lotes}"
+                    th:attr="
+                        data-ubicacion=${#strings.toLowerCase(lote.ubicacion)},
+                        data-estado=${#strings.toLowerCase(#strings.toString(lote.estadoLote))}
+                    ">
+
+                <div class="lote-icon">
+                    <i class="material-icons">location_on</i>
+                </div>
+
+                <div class="lote-info">
+
+                    <div class="lote-card-header">
+                        <h4 class="col-ubicacion" th:text="${lote.ubicacion}">
+                            Sector A - Lote 1
+                        </h4>
+
+                        <span
+                                class="estado-card col-estado"
+                                th:text="${#strings.replace(#strings.toString(lote.estadoLote), '_', ' ')}"
+                                th:classappend="${#strings.toString(lote.estadoLote) == 'DISPONIBLE'} ? ' disponible' : ' en-uso'">
+                            DISPONIBLE
+                        </span>
+                    </div>
+
+                    <div class="lote-dato">
+                        <span>Superficie</span>
+                        <strong th:text="${lote.superficie + ' m²'}">1200.0 m²</strong>
+                    </div>
+
+                    <div class="lote-servicios">
+                        <span class="section-label">Servicios</span>
+
+                        <div
+                                class="services-list"
+                                th:if="${lote.servicios != null and !#lists.isEmpty(lote.servicios)}">
+
+                            <span
+                                    class="service-badge"
+                                    th:each="servicio : ${lote.servicios}"
+                                    th:text="${servicio}">
+                                ELECTRICIDAD
+                            </span>
+
+                        </div>
+
+                        <p
+                                class="empty-services"
+                                th:if="${lote.servicios == null or #lists.isEmpty(lote.servicios)}">
+                            No contienen servicios
+                        </p>
+                    </div>
+
+                    <!--
+                        Para mostrar representante, el controlador debería enviar:
+                        representantesPorLote = Map<Long, String>
+                    -->
+                    <div
+                            class="lote-representante"
+                            th:if="${representantesPorLote != null and representantesPorLote[lote.id] != null}">
+
+                        <span class="section-label">Representante</span>
+                        <p th:text="${representantesPorLote[lote.id]}">
+                            Nombre Representante
+                        </p>
+
+                    </div>
+
+                    <div class="lote-actions">
+                        <a
+                                class="btn btn-edit"
+                                th:href="@{/gerente/lotes/{id}/editar(id=${lote.id})}">
+                            Editar
+                        </a>
+                    </div>
+
+                </div>
+
+            </article>
+
+        </div>
 
     </div>
-    <!-- /table-container -->
 
-    <!-- TABLA CONTAINER -->
+    <!-- LISTADO DE LOTES OCUPADOS -->
     <div class="table-container">
 
-        <!-- TOP: título + búsqueda -->
         <div class="table-top">
             <h3>Listado de Lotes Ocupados</h3>
+
             <form th:action="@{/gerente/lotes}" method="get" class="search-form">
                 <input
                         type="text"
@@ -105,68 +191,59 @@
                         th:value="${param.ubicacion}"
                         placeholder="Buscar por ubicación..."
                 />
+
                 <select name="activa">
                     <option value="">Todas</option>
                     <option value="true"
-                            th:selected="${param.activa == 'Activa'}">Activa</option>
+                            th:selected="${param.activa == 'true'}">
+                        Activa
+                    </option>
                     <option value="false"
-                            th:selected="${param.activa == 'Finalizada'}">Finalizada</option>
+                            th:selected="${param.activa == 'false'}">
+                        Finalizada
+                    </option>
                 </select>
+
                 <button type="submit" class="search-button">Buscar</button>
             </form>
         </div>
 
-        <!-- FRAGMENTO DE TABLA -->
-
         <div th:replace="~{fragments/tablaOcupaciones :: tablaOcupaciones}"></div>
 
     </div>
-    <!-- /table-container -->
 
-
-
-    <!-- LISTADO DE PROYECTOS -->
-    <!-- TABLA CONTAINER PROYECTOS SIN LOTE -->
+    <!-- PROYECTOS PENDIENTES DE ASIGNACIÓN -->
     <div class="table-container">
 
         <div class="table-top">
-
             <h3>Proyectos Pendientes de Asignación de Lote</h3>
 
             <div class="search-form">
-
                 <input
                         type="text"
                         id="buscadorProyecto"
                         placeholder="Buscar por empresa o CUIT..."
                 />
-
             </div>
-
         </div>
 
         <table>
-
             <thead>
             <tr>
-
                 <th>ID</th>
                 <th>Proyecto</th>
                 <th>Empresa</th>
                 <th>CUIT</th>
                 <th>Superficie Solicitada</th>
                 <th>Acciones</th>
-
             </tr>
             </thead>
 
             <tbody id="tablaProyectos">
-
             <tr th:each="proyecto : ${proyectos}"
                 class="fila-proyecto">
 
                 <td th:text="${proyecto.id}"></td>
-
                 <td th:text="${proyecto.titulo}"></td>
 
                 <td class="col-empresa"
@@ -180,125 +257,73 @@
                 <td th:text="${proyecto.necesidadM2 + ' m²'}"></td>
 
                 <td>
-
                     <a class="btn btn-edit"
                        th:href="@{/gerente/proyectos/{id}/detalle(id=${proyecto.id})}">
                         Ver detalle
                     </a>
-
                 </td>
 
             </tr>
-
             </tbody>
-
         </table>
 
     </div>
 
-
-
-
-
-
-
 </div>
-<!-- /main-content -->
 
 <script>
-
-    const buscador =
-        document.getElementById("buscadorLote");
-
-    const filtroEstado =
-        document.getElementById("filtroEstado");
+    const buscador = document.getElementById("buscadorLote");
+    const filtroEstado = document.getElementById("filtroEstado");
 
     function filtrarLotes() {
+        const texto = buscador.value.toLowerCase().trim();
+        const estado = filtroEstado.value.toLowerCase();
 
-        let texto =
-            buscador.value.toLowerCase().trim();
+        const tarjetas = document.querySelectorAll(".fila-lote");
 
-        let estado =
-            filtroEstado.value.toLowerCase();
+        tarjetas.forEach(tarjeta => {
+            const ubicacion = tarjeta.dataset.ubicacion || "";
+            const estadoTarjeta = tarjeta.dataset.estado || "";
 
-        let filas =
-            document.querySelectorAll(".fila-lote");
+            const coincideTexto = ubicacion.startsWith(texto);
 
-        filas.forEach(fila => {
-
-            let ubicacion =
-                fila.querySelector(".col-ubicacion")
-                    .innerText
-                    .toLowerCase();
-
-            let estadoFila =
-                fila.querySelector(".col-estado")
-                    .innerText
-                    .toLowerCase();
-
-            let coincideTexto =
-                ubicacion.startsWith(texto);
-
-            let coincideEstado =
+            const coincideEstado =
                 estado === "" ||
-                estadoFila === estado;
+                estadoTarjeta === estado.toLowerCase();
 
-            if (coincideTexto && coincideEstado) {
-                fila.style.display = "";
-            }
-            else {
-                fila.style.display = "none";
-            }
-
+            tarjeta.style.display =
+                coincideTexto && coincideEstado ? "" : "none";
         });
     }
 
-    buscador.addEventListener(
-        "input",
-        filtrarLotes
-    );
-
-    filtroEstado.addEventListener(
-        "change",
-        filtrarLotes
-    );
-
+    buscador.addEventListener("input", filtrarLotes);
+    filtroEstado.addEventListener("change", filtrarLotes);
 </script>
 
 <script>
-    const buscadorProyecto =
-    document.getElementById("buscadorProyecto");
+    const buscadorProyecto = document.getElementById("buscadorProyecto");
 
-buscadorProyecto.addEventListener("input", function () {
+    buscadorProyecto.addEventListener("input", function () {
+        const texto = this.value.toLowerCase().trim();
 
-    let texto =
-        this.value.toLowerCase().trim();
+        const filas = document.querySelectorAll(".fila-proyecto");
 
-    let filas =
-        document.querySelectorAll(".fila-proyecto");
-
-    filas.forEach(fila => {
-
-        let empresa =
-            fila.querySelector(".col-empresa")
+        filas.forEach(fila => {
+            const empresa = fila.querySelector(".col-empresa")
                 .innerText
                 .toLowerCase();
 
-        let cuit =
-            fila.querySelector(".col-cuit")
+            const cuit = fila.querySelector(".col-cuit")
                 .innerText
                 .toLowerCase();
 
-        let visible =
-            empresa.includes(texto) ||
-            cuit.includes(texto);
+            const visible =
+                empresa.includes(texto) ||
+                cuit.includes(texto);
 
-        fila.style.display =
-            visible ? "" : "none";
-
+            fila.style.display = visible ? "" : "none";
+        });
     });
-
-});
 </script>
 
 </body>
