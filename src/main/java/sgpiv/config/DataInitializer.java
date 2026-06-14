@@ -9,10 +9,7 @@ import sgpiv.dtos.response.LoteResponseDTO;
 import sgpiv.enums.*;
 import sgpiv.model.*;
 import sgpiv.repository.*;
-import sgpiv.service.LoteService;
-import sgpiv.service.OcupacionLoteService;
-import sgpiv.service.SolicitudService;
-import sgpiv.service.UsuarioService;
+import sgpiv.service.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -49,7 +46,7 @@ public class DataInitializer implements CommandLineRunner {
     private final LoteService loteService;
     private final OcupacionLoteService ocupacionLoteService;
 
-    
+    private final NotificacionService notificacionService;
 
     @Override
     public void run(String... args) {
@@ -214,6 +211,11 @@ public class DataInitializer implements CommandLineRunner {
         solicitudRadicacionRepository.save(solicitudRadicacion);
 
         System.out.println("Solicitud de radicación de Alan Turing cargada");
+        notificacionService.crearNotificacion(
+                solicitudService.NOTIFICACION_SOLICITUD_RADICACION_ENVIADA,
+                alan)
+        ;
+        notificarGerente(solicitudService.NOTIFICACION_NUEVA_SOLICITUD_RADICACION + solicitudRadicacion.getRazonSocial());
     }
 
     private SolicitudRadicacion crearSRparaAlan(Usuario alan) {
@@ -261,6 +263,10 @@ public class DataInitializer implements CommandLineRunner {
         solicitudRadicacionRepository.save(solicitud);
 
         System.out.println("Solicitud de radicación de Alan Turing aceptada");
+        notificacionService.crearNotificacion(
+                solicitudService.NOTIFICACION_SOLICITUD_RADICACION_APROBADA,
+                alan
+        );
     }
 
     private void precargarSolicitudProyectoAlan() {
@@ -332,6 +338,9 @@ public class DataInitializer implements CommandLineRunner {
         solicitudService.guardarSolicitudProyecto(dto);
 
         System.out.println("Solicitud de proyecto de Alan Turing cargada con tareas");
+        notificacionService.crearNotificacion(
+                solicitudService.NOTIFICACION_SOLICITUD_PROYECTO_ENVIADA,
+                alan);
     }
 
     private void aprobarSolicitudProyectoAlan() {
@@ -355,6 +364,10 @@ public class DataInitializer implements CommandLineRunner {
         solicitudProyectoRepository.save(solicitudProyecto);
         solicitudRadicacionRepository.save(solicitudRadicacion);
         System.out.println("Solicitud de proyecto de Alan Turing aprobada");
+        notificacionService.crearNotificacion(
+                solicitudService.NOTIFICACION_SOLICITUD_PROYECTO_APROBADA,
+                alan)
+        ;
     }
 
     private void convertirAlanEnRepresentante() {
@@ -496,10 +509,6 @@ public class DataInitializer implements CommandLineRunner {
 
         System.out.println("Lote adjudicado al proyecto de Alan Turing");
     }
-
-
-
-
 
 
     private void precargarInfraestructura() {
@@ -734,6 +743,8 @@ public class DataInitializer implements CommandLineRunner {
         solicitudPendiente.setFechaEnvio(LocalDate.now());
         solicitudOrganismoPublicoRepository.save(solicitudPendiente);
 
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_RADICACION_ENVIADA, usuarioPendiente);
+        notificarGerente(solicitudService.NOTIFICACION_NUEVA_SOLICITUD_RADICACION + solicitudPendiente.getNombreOrganismo());
 
         // ── ETAPA 2: USUARIO CON SOLICITUD APROBADA → ROL_ORGANISMO_PUBLICO ──
         Usuario usuarioAprobado = new Usuario(
@@ -754,6 +765,10 @@ public class DataInitializer implements CommandLineRunner {
         solicitudAprobada.setCargoSolicitante("Subsecretario de Industria");
         solicitudAprobada.setMotivoAcceso("El Ministerio de Producción requiere acceso para auditoría " +
                 "y seguimiento de los proyectos productivos radicados en el Parque Industrial.");
+
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_RADICACION_ENVIADA,usuarioAprobado);
+        notificarGerente(solicitudService.NOTIFICACION_NUEVA_SOLICITUD_RADICACION + solicitudAprobada.getNombreOrganismo());
+
         solicitudAprobada.setEstado(EstadoSolicitudOrganismo.APROBADA);
         solicitudAprobada.setFechaEnvio(LocalDate.now().minusDays(10));
         solicitudOrganismoPublicoRepository.save(solicitudAprobada);
@@ -766,6 +781,7 @@ public class DataInitializer implements CommandLineRunner {
         organismoAprobado.setActivo(true);
         organismoPublicoRepository.save(organismoAprobado);
 
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_RADICACION_APROBADA,usuarioAprobado);
 
         // ── ETAPA 3: USUARIO CON SOLICITUD RECHAZADA → puede reintentar ──
         Usuario usuarioRechazado = new Usuario(
@@ -789,8 +805,16 @@ public class DataInitializer implements CommandLineRunner {
         solicitudRechazada.setFechaEnvio(LocalDate.now().minusDays(5));
         solicitudRechazada.setMotivoRechazo("La solicitud no adjunta documentación respaldatoria suficiente. " +
                 "Por favor reenviar con nota oficial y resolución que avale el acceso.");
+
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_PROYECTO_ENVIADA,usuarioRechazado);
+        notificarGerente(solicitudService.NOTIFICACION_NUEVA_SOLICITUD_DE_PROYECTO + solicitudRechazada.getNombreOrganismo());
+
         solicitudOrganismoPublicoRepository.save(solicitudRechazada);
 
+        notificacionService.crearNotificacion(
+                "Tu solicitud como Organismo Público fue rechazada. Motivo: La solicitud no adjunta documentación respaldatoria suficiente.",
+                usuarioRechazado
+        );
 
         // ── ETAPA 4: ORGANISMO DADO DE BAJA ──
         Usuario usuarioBaja = new Usuario(
@@ -860,6 +884,11 @@ public class DataInitializer implements CommandLineRunner {
         solicitudRadicacionRepository.save(solicitud);
 
         System.out.println("Solicitud de radicación de Linus Torvalds cargada (PENDIENTE)");
+
+        //notificacion
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_RADICACION_ENVIADA,linus);
+        notificarGerente(solicitudService.NOTIFICACION_NUEVA_SOLICITUD_RADICACION + solicitud.getRazonSocial());
+
     }
 
     // ── ETAPA B: SOLICITUD DE RADICACION REQUIERE MODIFICACION ──
@@ -883,6 +912,10 @@ public class DataInitializer implements CommandLineRunner {
         solicitud.setActividadPrincipal("Instalación de redes.");
         solicitud.setNecesidadM2(1200D);
         solicitud.setTienePlanos(true);
+
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_RADICACION_ENVIADA, tim);
+        notificarGerente(solicitudService.NOTIFICACION_NUEVA_SOLICITUD_RADICACION + solicitud.getRazonSocial());
+
         solicitud.setEstado(EstadoSolicitud.REQUIERE_MODIFICACION);
         solicitud.setMotivoRechazo("Falta adjuntar documentación técnica de la empresa existente.");
         solicitud.setFechaEnvio(LocalDate.of(2025, 2, 15));
@@ -890,6 +923,8 @@ public class DataInitializer implements CommandLineRunner {
         solicitudRadicacionRepository.save(solicitud);
 
         System.out.println("Solicitud de radicación de Tim Berners cargada (REQUIERE_MODIFICACION)");
+
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_REQUIERE_MODIFICACION + solicitud.getMotivoRechazo(),tim);
     }
 
     // ── ETAPA C: SOLICITUD DE PROYECTO PENDIENTE ──
@@ -917,6 +952,9 @@ public class DataInitializer implements CommandLineRunner {
         sr.setFechaEnvio(LocalDate.of(2025, 3, 1));
         sr.setUsuario(dennis);
         solicitudRadicacionRepository.save(sr);
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_RADICACION_ENVIADA, dennis);
+        notificarGerente(solicitudService.NOTIFICACION_NUEVA_SOLICITUD_RADICACION + sr.getRazonSocial());
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_RADICACION_APROBADA,dennis);
 
         SolicitudProyecto sp = new SolicitudProyecto();
         sp.setSolicitudRadicacion(sr);
@@ -953,6 +991,10 @@ public class DataInitializer implements CommandLineRunner {
         tareaSolicitudRepository.save(t2);
 
         System.out.println("Solicitud de proyecto de Dennis Ritchie cargada (PENDIENTE)");
+
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_PROYECTO_ENVIADA, dennis);
+        notificarGerente(solicitudService.NOTIFICACION_NUEVA_SOLICITUD_DE_PROYECTO + sr.getRazonSocial());
+
     }
 
     // ── ETAPA D: SOLICITUD DE PROYECTO REQUIERE MODIFICACION ──
@@ -1060,10 +1102,17 @@ public class DataInitializer implements CommandLineRunner {
         proyecto.setGeneraResiduos(false);
         proyecto.setServiciosRequeridos(List.of(ServicioLote.ELECTRICIDAD, ServicioLote.INTERNET));
         proyecto.setEmpresa(empresaGuardada);
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_RADICACION_ENVIADA, james);
+        notificarGerente(solicitudService.NOTIFICACION_NUEVA_SOLICITUD_RADICACION + empresa.getRazonSocial());
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_RADICACION_APROBADA,james);
+
         proyecto.setRepresentanteEmpresa(representanteGuardado);
         proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
         proyecto.setFechaInicio(LocalDate.of(2025, 4, 1));
         Proyecto proyectoGuardado = proyectoRepository.save(proyecto);
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_PROYECTO_ENVIADA, james);
+        notificarGerente(solicitudService.NOTIFICACION_NUEVA_SOLICITUD_DE_PROYECTO + empresa.getRazonSocial());
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_PROYECTO_APROBADA,james);
 
         Tarea t1 = new Tarea();
         t1.setTitulo("Instalar entorno de desarrollo");
@@ -1080,6 +1129,7 @@ public class DataInitializer implements CommandLineRunner {
         tareaRepository.save(t2);
 
         System.out.println("Empresa JavaPatagonia (sin lote) y proyecto cargados");
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_PROYECTO_APROBADA, james);
     }
 
     // ── ETAPA F: EMPRESA RADICADA CON LOTE ──
@@ -1110,6 +1160,10 @@ public class DataInitializer implements CommandLineRunner {
         representante.setEmpresa(empresa);
         representanteRepository.save(representante);
 
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_RADICACION_ENVIADA, guido);
+        notificarGerente(solicitudService.NOTIFICACION_NUEVA_SOLICITUD_RADICACION + empresa.getRazonSocial());
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_RADICACION_APROBADA,guido);
+
         Proyecto proyecto = new Proyecto();
         proyecto.setTitulo("Automatización PythonIndustria");
         proyecto.setDescripcion("Planta de automatización industrial usando Python y IoT.");
@@ -1135,6 +1189,9 @@ public class DataInitializer implements CommandLineRunner {
         proyecto.setEstadoProyecto(EstadoProyecto.ACTIVO);
         proyecto.setFechaInicio(LocalDate.of(2025, 5, 1));
         Proyecto proyectoGuardado = proyectoRepository.save(proyecto);
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_PROYECTO_ENVIADA, guido);
+        notificarGerente(solicitudService.NOTIFICACION_NUEVA_SOLICITUD_DE_PROYECTO + empresa.getRazonSocial());
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_PROYECTO_APROBADA,guido);
 
         Tarea t1 = new Tarea();
         t1.setTitulo("Instalar sensores IoT");
@@ -1179,8 +1236,9 @@ public class DataInitializer implements CommandLineRunner {
             representanteRepository.save(representante);
             proyectoRepository.save(proyecto);
         }
+        notificacionService.crearNotificacion(solicitudService.NOTIFICACION_SOLICITUD_PROYECTO_APROBADA,guido);
+        notificacionService.crearNotificacion(ocupacionLoteService.NOTIFICACION_LOTE_ADJUDICADO + lote.getUbicacion(), guido);
 
-        System.out.println("Empresa PythonIndustria (con lote) y proyecto cargados");
     }
 
 
@@ -1528,4 +1586,9 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("Solicitud de radicación y proyecto de Frigorífico Patagónico cargados");
     }
 
+    private void notificarGerente(String mensaje) {
+        usuarioRepository.findByCuit("00000000000").ifPresent(gerente ->
+                notificacionService.crearNotificacion(mensaje, gerente)
+        );
+    }
 }
