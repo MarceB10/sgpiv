@@ -1,15 +1,3 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Arial, sans-serif;
-}
-
-body {
-    background: #f4f6f9;
-    display: flex;
-}
-
 /* MAIN */
 
 .main-content {
