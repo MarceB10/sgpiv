@@ -4,30 +4,37 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Solicitudes - SGPIV</title>
+
     <link rel="stylesheet" th:href="@{/css/solicitudesGerente.css}"/>
     <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+
 <body>
 
-<!-- SIDEBAR -->
 <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<div class="main-content">
+<main class="main-content">
 
-    <!-- HEADER (Mismo estilo que Gestión de Lotes) -->
-    <div class="header">
+    <!-- HEADER -->
+    <section class="header">
         <div class="header-text">
             <h1>Solicitudes recibidas</h1>
             <p>Administrá y evaluá las radicaciones para el Parque Industrial</p>
         </div>
-    </div>
+    </section>
 
-    <!-- TABLA CONTAINER -->
-    <div class="table-container">
+    <!-- SOLICITUDES DE NUEVAS EMPRESAS -->
+    <section class="requests-section">
 
-        <!-- TOP: título + filtros (Estilo idéntico a Lotes) -->
-        <div class="table-top">
-            <h3>Solicitudes de nuevas empresas</h3>
+        <div class="section-top">
+            <div>
+                <h2>Solicitudes de nuevas empresas</h2>
+                <p>Empresas que solicitan radicarse en el Parque Industrial.</p>
+            </div>
+
             <form th:action="@{/solicitudesGerente}" method="get" class="search-form">
                 <input
                         type="text"
@@ -35,63 +42,84 @@
                         th:value="${param.empresa}"
                         placeholder="Buscar por empresa..."
                 />
+
                 <select name="estado">
                     <option value="">Todos los estados</option>
-                    <option value="PENDIENTE" th:selected="${param.estado == 'PENDIENTE'}">Pendiente</option>
-                    <option value="APROBADA" th:selected="${param.estado == 'APROBADA'}">Aprobada</option>
-                    <option value="RECHAZADA" th:selected="${param.estado == 'RECHAZADA'}">Rechazada</option>
+                    <option value="PENDIENTE"
+                            th:selected="${param.estado != null and param.estado[0] == 'PENDIENTE'}">
+                        Pendiente
+                    </option>
+                    <option value="APROBADA"
+                            th:selected="${param.estado != null and param.estado[0] == 'APROBADA'}">
+                        Aprobada
+                    </option>
+                    <option value="RECHAZADA"
+                            th:selected="${param.estado != null and param.estado[0] == 'RECHAZADA'}">
+                        Rechazada
+                    </option>
                 </select>
-                <button type="submit" class="search-button">Buscar</button>
+
+                <button type="submit" class="search-button">
+                    Buscar
+                </button>
             </form>
         </div>
 
-        <!-- LISTADO -->
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Empresa</th>
-                <th>CUIT</th>
-                <th>Tipo</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="solicitud : ${solicitudes}">
-                <td th:text="${solicitud.id}"></td>
-                <td th:text="${solicitud.razonSocial}" style="font-weight: 500;"></td>
-                <td th:text="${solicitud.cuitEmpresa}"></td>
-                <td th:text="${solicitud.tipoEmpresa}"></td>
-                <td>
-                    <!-- Usamos la clase unificada .estado y los modificadores específicos -->
-                    <span th:text="${solicitud.estado}"
-                          th:classappend="${solicitud.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
-                         (${solicitud.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">
-                    </span>
-                </td>
-                <td th:text="${solicitud.fechaEnvio}"></td>
-                <td>
-                    <!-- Botón estilizado con la clase .btn y .btn-edit de tu compañero -->
-                    <a class="btn btn-edit" th:href="@{/solicitudesGerente/{id}(id=${solicitud.id})}">
-                        <i class="fa-regular fa-eye"></i> Ver detalle
+        <div class="requests-list">
+
+            <div class="empty-message" th:if="${#lists.isEmpty(solicitudes)}">
+                No hay solicitudes de nuevas empresas
+            </div>
+
+            <article class="request-card" th:each="solicitud : ${solicitudes}">
+
+                <div class="request-left">
+                    <div class="request-icon empresa">
+                        <i class="fa-solid fa-building"></i>
+                    </div>
+
+                    <div class="request-info">
+                        <div class="request-title-row">
+                            <h3 th:text="${solicitud.razonSocial}"></h3>
+
+                            <span th:text="${solicitud.estado}"
+                                  th:class="${solicitud.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
+                                            (${solicitud.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">
+                            </span>
+                        </div>
+
+                        <div class="request-meta">
+                            <span>ID: <strong th:text="${solicitud.id}"></strong></span>
+                            <span>CUIT: <strong th:text="${solicitud.cuitEmpresa}"></strong></span>
+                            <span>Tipo: <strong th:text="${solicitud.tipoEmpresa}"></strong></span>
+                            <span>Fecha: <strong th:text="${solicitud.fechaEnvio}"></strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="request-actions">
+                    <a class="btn-detail"
+                       th:href="@{/solicitudesGerente/{id}(id=${solicitud.id})}">
+                        <i class="fa-regular fa-eye"></i>
+                        Ver detalle
                     </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                </div>
 
-    </div>
-    <!-- /table-container -->
+            </article>
 
+        </div>
 
-    <!-- TABLA CONTAINER -->
-    <div class="table-container">
+    </section>
 
-        <!-- TOP: título + filtros (Estilo idéntico a Lotes) -->
-        <div class="table-top">
-            <h3>Solicitudes de proyectos productivos</h3>
+    <!-- SOLICITUDES DE PROYECTOS PRODUCTIVOS -->
+    <section class="requests-section">
+
+        <div class="section-top">
+            <div>
+                <h2>Solicitudes de proyectos productivos</h2>
+                <p>Proyectos enviados por empresas para su evaluación.</p>
+            </div>
+
             <form th:action="@{/solicitudesGerente}" method="get" class="search-form">
                 <input
                         type="text"
@@ -99,60 +127,83 @@
                         th:value="${param.empresa}"
                         placeholder="Buscar por empresa..."
                 />
+
                 <select name="estado">
                     <option value="">Todos los estados</option>
-                    <option value="PENDIENTE" th:selected="${param.estado == 'PENDIENTE'}">Pendiente</option>
-                    <option value="APROBADA" th:selected="${param.estado == 'APROBADA'}">Aprobada</option>
-                    <option value="RECHAZADA" th:selected="${param.estado == 'RECHAZADA'}">Rechazada</option>
+                    <option value="PENDIENTE"
+                            th:selected="${param.estado != null and param.estado[0] == 'PENDIENTE'}">
+                        Pendiente
+                    </option>
+                    <option value="APROBADA"
+                            th:selected="${param.estado != null and param.estado[0] == 'APROBADA'}">
+                        Aprobada
+                    </option>
+                    <option value="RECHAZADA"
+                            th:selected="${param.estado != null and param.estado[0] == 'RECHAZADA'}">
+                        Rechazada
+                    </option>
                 </select>
-                <button type="submit" class="search-button">Buscar</button>
+
+                <button type="submit" class="search-button">
+                    Buscar
+                </button>
             </form>
         </div>
 
-        <!-- LISTADO DE PROYECTOS -->
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Proyecto</th>
-                <th>Empresa</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="proyecto : ${proyectos}">
-                <td th:text="${proyecto.id}"></td>
-                <td th:text="${proyecto.titulo}" style="font-weight: 500;"></td>
-                <td th:text="${proyecto.razonSocial}"></td>
-                <td>
-        <span th:text="${proyecto.estado}"
-              th:classappend="${proyecto.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
-                 (${proyecto.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">
-        </span>
-                </td>
-                <td th:text="${proyecto.fechaEnvio}"></td>
-                <td>
-                    <a class="btn btn-edit" th:href="@{/proyectos/{id}(id=${proyecto.id})}">
-                        <i class="fa-regular fa-eye"></i> Ver detalle
+        <div class="requests-list">
+
+            <div class="empty-message" th:if="${#lists.isEmpty(proyectos)}">
+                No hay solicitudes de proyectos productivos
+            </div>
+
+            <article class="request-card" th:each="proyecto : ${proyectos}">
+
+                <div class="request-left">
+                    <div class="request-icon proyecto">
+                        <i class="fa-solid fa-diagram-project"></i>
+                    </div>
+
+                    <div class="request-info">
+                        <div class="request-title-row">
+                            <h3 th:text="${proyecto.titulo}"></h3>
+
+                            <span th:text="${proyecto.estado}"
+                                  th:class="${proyecto.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
+                                            (${proyecto.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">
+                            </span>
+                        </div>
+
+                        <div class="request-meta">
+                            <span>ID: <strong th:text="${proyecto.id}"></strong></span>
+                            <span>Empresa: <strong th:text="${proyecto.razonSocial}"></strong></span>
+                            <span>Fecha: <strong th:text="${proyecto.fechaEnvio}"></strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="request-actions">
+                    <a class="btn-detail"
+                       th:href="@{/proyectos/{id}(id=${proyecto.id})}">
+                        <i class="fa-regular fa-eye"></i>
+                        Ver detalle
                     </a>
-                </td>
-            </tr>
-            </tbody>
+                </div>
 
-        </table>
+            </article>
 
+        </div>
 
-    </div>
-    <!-- /table-container -->
+    </section>
 
-    <!-- TABLA CONTAINER -->
-    <div class="table-container">
+    <!-- SOLICITUDES DE ORGANISMOS PÚBLICOS -->
+    <section class="requests-section">
 
-        <!-- TOP -->
-        <div class="table-top">
-            <h3>Solicitudes de organismos públicos</h3>
+        <div class="section-top">
+            <div>
+                <h2>Solicitudes de organismos públicos</h2>
+                <p>Organismos que solicitan acceso al sistema.</p>
+            </div>
+
             <form th:action="@{/solicitudesGerente}" method="get" class="search-form">
                 <input
                         type="text"
@@ -160,67 +211,80 @@
                         th:value="${param.organismo}"
                         placeholder="Buscar por organismo..."
                 />
+
                 <select name="estadoOrganismo">
                     <option value="">Todos los estados</option>
                     <option value="PENDIENTE"
-                            th:selected="${param.estadoOrganismo == 'PENDIENTE'}">Pendiente</option>
+                            th:selected="${param.estadoOrganismo != null and param.estadoOrganismo[0] == 'PENDIENTE'}">
+                        Pendiente
+                    </option>
                     <option value="APROBADA"
-                            th:selected="${param.estadoOrganismo == 'APROBADA'}">Aprobada</option>
+                            th:selected="${param.estadoOrganismo != null and param.estadoOrganismo[0] == 'APROBADA'}">
+                        Aprobada
+                    </option>
                     <option value="RECHAZADA"
-                            th:selected="${param.estadoOrganismo == 'RECHAZADA'}">Rechazada</option>
+                            th:selected="${param.estadoOrganismo != null and param.estadoOrganismo[0] == 'RECHAZADA'}">
+                        Rechazada
+                    </option>
                 </select>
-                <button type="submit" class="search-button">Buscar</button>
+
+                <button type="submit" class="search-button">
+                    Buscar
+                </button>
             </form>
         </div>
 
-        <!-- LISTADO -->
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Organismo</th>
-                <th>Tipo</th>
-                <th>Solicitante</th>
-                <th>Cargo</th>
-                <th>Estado</th>
-                <th>Fecha</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:if="${#lists.isEmpty(solicitudesOrganismo)}">
-                <td colspan="8" style="text-align:center; color:#94a3b8; padding: 20px;">
-                    No hay solicitudes de organismos públicos
-                </td>
-            </tr>
-            <tr th:each="solicitud : ${solicitudesOrganismo}">
-                <td th:text="${solicitud.id}"></td>
-                <td th:text="${solicitud.nombreOrganismo}" style="font-weight: 500;"></td>
-                <td th:text="${solicitud.tipoOrganismo}"></td>
-                <td th:text="${solicitud.nombreUsuario + ' ' + solicitud.apellidoUsuario}"></td>
-                <td th:text="${solicitud.cargoSolicitante}"></td>
-                <td>
-                <span th:text="${solicitud.estado}"
-                      th:classappend="${solicitud.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
-                                     (${solicitud.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">
-                </span>
-                </td>
-                <td th:text="${solicitud.fechaEnvio}"></td>
-                <td>
-                    <a class="btn btn-edit"
+        <div class="requests-list">
+
+            <div class="empty-message" th:if="${#lists.isEmpty(solicitudesOrganismo)}">
+                No hay solicitudes de organismos públicos
+            </div>
+
+            <article class="request-card" th:each="solicitud : ${solicitudesOrganismo}">
+
+                <div class="request-left">
+                    <div class="request-icon organismo">
+                        <i class="fa-solid fa-landmark"></i>
+                    </div>
+
+                    <div class="request-info">
+                        <div class="request-title-row">
+                            <h3 th:text="${solicitud.nombreOrganismo}"></h3>
+
+                            <span th:text="${solicitud.estado}"
+                                  th:class="${solicitud.estado.name() == 'PENDIENTE'} ? 'estado pendiente' :
+                                            (${solicitud.estado.name() == 'APROBADA'} ? 'estado aprobada' : 'estado rechazada')">
+                            </span>
+                        </div>
+
+                        <div class="request-meta">
+                            <span>ID: <strong th:text="${solicitud.id}"></strong></span>
+                            <span>Tipo: <strong th:text="${solicitud.tipoOrganismo}"></strong></span>
+                            <span>
+                                Solicitante:
+                                <strong th:text="${solicitud.nombreUsuario + ' ' + solicitud.apellidoUsuario}"></strong>
+                            </span>
+                            <span>Cargo: <strong th:text="${solicitud.cargoSolicitante}"></strong></span>
+                            <span>Fecha: <strong th:text="${solicitud.fechaEnvio}"></strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="request-actions">
+                    <a class="btn-detail"
                        th:href="@{/gerente/solicitudesOrganismo/{id}(id=${solicitud.id})}">
-                        <i class="fa-regular fa-eye"></i> Ver detalle
+                        <i class="fa-regular fa-eye"></i>
+                        Ver detalle
                     </a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                </div>
 
-    </div>
-    <!--- /table container --->
+            </article>
 
-</div>
-<!-- /main-content -->
+        </div>
+
+    </section>
+
+</main>
 
 </body>
 </html>
