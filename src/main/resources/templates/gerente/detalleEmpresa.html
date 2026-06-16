@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Empresa - SGPIV</title>
+    <link rel="stylesheet" th:href="@{/css/global.css}">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/detalleSolicitud.css}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-text">
+            <h1 th:text="${empresa.razonSocial}">Empresa</h1>
+            <p>Detalle y gestión de la empresa radicada</p>
+        </div>
+        <button onclick="window.history.back()" class="btn-volver">← Volver</button>
+    </div>
+
+    <!-- ERROR -->
+    <div th:if="${error}" class="info-box" style="border-left: 5px solid red">
+        <div class="info-icon" style="background: red">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div class="info-text">
+            <h3>Error</h3>
+            <p th:text="${error}"></p>
+        </div>
+    </div>
+
+    <!-- DATOS EMPRESA -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">🏢 Datos de la empresa</h2>
+        <div class="datos-grid">
+            <div class="dato-item">
+                <span class="dato-label">Razón social</span>
+                <span class="dato-valor" th:text="${empresa.razonSocial}"></span>
+            </div>
+            <div class="dato-item">
+                <span class="dato-label">CUIT</span>
+                <span class="dato-valor" th:text="${empresa.cuit}"></span>
+            </div>
+            <div class="dato-item">
+                <span class="dato-label">Rubro</span>
+                <span class="dato-valor" th:text="${empresa.rubro}"></span>
+            </div>
+            <div class="dato-item">
+                <span class="dato-label">Email</span>
+                <span class="dato-valor" th:text="${empresa.email}"></span>
+            </div>
+            <div class="dato-item">
+                <span class="dato-label">Dirección</span>
+                <span class="dato-valor"
+                      th:text="${empresa.direccion != null ? empresa.direccion : '-'}"></span>
+            </div>
+            <div class="dato-item">
+                <span class="dato-label">Estado</span>
+                <span class="dato-valor" th:text="${empresa.estadoEmpresa}"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROYECTOS -->
+    <div class="seccion">
+        <h2 class="seccion-titulo">📋 Proyectos</h2>
+
+        <div th:if="${empresa.proyectos.isEmpty()}" class="lote-badge sin-lote">
+            ⚠️ Esta empresa no tiene proyectos registrados.
+        </div>
+
+        <div th:each="proyecto : ${empresa.proyectos}" class="datos-grid">
+            <div class="dato-item">
+                <span class="dato-label">Título</span>
+                <span class="dato-valor" th:text="${proyecto.titulo}"></span>
+            </div>
+            <div class="dato-item">
+                <span class="dato-label">Estado</span>
+                <span class="dato-valor"
+                      th:text="${proyecto.estado}"
+                      th:classappend="${proyecto.estado == 'ACTIVO'} ?
+                                      ' badge-activo' : ''">
+                </span>
+            </div>
+        </div>
+    </div>
+
+<!--    &lt;!&ndash; CONDICIONES PARA BAJA &ndash;&gt;-->
+<!--    <div class="seccion"-->
+<!--         th:if="${empresa.estadoEmpresa == 'RADICADA' or-->
+<!--                  empresa.estadoEmpresa == 'ADJUDICADA'}">-->
+
+<!--        <h2 class="seccion-titulo">⚠️ Condiciones para dar de baja</h2>-->
+
+<!--        <div class="lote-badge"-->
+<!--             th:classappend="${tieneProyectosActivos} ? ' sin-lote' : ''">-->
+<!--            <span th:if="${!tieneProyectosActivos}">-->
+<!--                ✅ Sin proyectos activos — la empresa puede darse de baja-->
+<!--            </span>-->
+<!--            <span th:if="${tieneProyectosActivos}">-->
+<!--                ❌ Tiene proyectos activos — deben finalizarse antes de dar de baja-->
+<!--            </span>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <!-- ACCIONES -->
+    <div class="acciones"
+         th:if="${empresa.estadoEmpresa == 'RADICADA' or
+                  empresa.estadoEmpresa == 'ADJUDICADA'}">
+
+        <form th:action="@{/empresas/{id}/desadjudicar(id=${empresa.id})}"
+              method="post"
+              onsubmit="return confirmarBaja(this)">
+
+            <!-- ADVERTENCIA SI TIENE LOTE -->
+            <div th:if="${empresa.tieneLoteOcupado}" class="advertencia-lote">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Esta empresa tiene adjudicado el
+                <strong>Lote #<span th:text="${empresa.loteId}"></span></strong>
+                (<span th:text="${empresa.loteUbicacion}"></span> —
+                <span th:text="${empresa.loteSuperficie}"></span> m²).
+                <br/>
+                Al confirmar la baja, el lote será liberado y quedará disponible nuevamente.
+            </div>
+
+            <input type="text"
+                   name="motivo"
+                   placeholder="Motivo de baja (obligatorio)"
+                   class="input-motivo"
+                   required/>
+
+            <button type="submit"
+                    class="btn-rechazar"
+                    th:disabled="${tieneProyectosActivos}">
+                <i class="fa-solid fa-ban"></i>
+                Dar de baja y desadjudicar lote
+            </button>
+        </form>
+
+    </div>
+
+    <div th:if="${empresa.estadoEmpresa == 'BAJA'}"
+         class="lote-badge sin-lote">
+        ⛔ Esta empresa ya está dada de baja.
+    </div>
+
+</div>
+
+
+<script>
+    function confirmarBaja(form) {
+        const tieneLote = /*[[${empresa.tieneLoteOcupado}]]*/ false;
+        if (tieneLote) {
+            return confirm("Esta empresa tiene un lote adjudicado. " +
+                "¿Confirmás dar de baja la empresa y liberar el lote?");
+        }
+        return confirm("¿Confirmás dar de baja esta empresa?");
+    }
+</script>
+
+</body>
+</html>

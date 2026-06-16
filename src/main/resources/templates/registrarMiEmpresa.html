@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Empresa</title>
+
+    <link rel="stylesheet" th:href="@{/css/registrarMiEmpresa.css}">
+
+    <!-- ICONOS -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="page-header">
+        <h1>Registrar mi empresa</h1>
+        <p>Panel de usuario — Parque Industrial Viedma</p>
+    </div>
+
+    <!-- ALERTA -->
+    <div class="info-box">
+        <div class="info-icon">
+            <i class="fa-solid fa-circle-info"></i>
+        </div>
+
+        <div class="info-text">
+            <h3>Información importante</h3>
+            <p>
+                Completá los datos de tu empresa para registrarla en el sistema.
+                Esta información será revisada por el Gerente del Parque Industrial.
+            </p>
+        </div>
+    </div>
+
+    <!-- FORMULARIO -->
+    <div class="form-card">
+
+        <h2>Datos de la empresa</h2>
+
+        <form th:action="@{/empresas/registrarMiEmpresa}"
+              th:object="${empresaDTO}"
+              method="post">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Razón social *</label>
+                    <input type="text" th:field="*{razonSocial}"
+                           placeholder="Ej: Mi Empresa SRL">
+                    <p th:if="${#fields.hasErrors('razonSocial')}"
+                       th:errors="*{razonSocial}"
+                       class="error-message"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>CUIT *</label>
+                    <input type="text" th:field="*{cuit}"
+                           placeholder="Ej: 30-12345678-9">
+                    <p th:if="${#fields.hasErrors('cuit')}"
+                       th:errors="*{cuit}"
+                       class="error-message"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Ingresos brutos</label>
+                    <input type="text" th:field="*{ingresoBrutos}"
+                           placeholder="Ej: 901-123456-7">
+                </div>
+
+                <div class="form-group">
+                    <label>Rubro *</label>
+                    <input type="text" th:field="*{rubro}"
+                           placeholder="Ej: Tecnología">
+                    <p th:if="${#fields.hasErrors('rubro')}"
+                       th:errors="*{rubro}"
+                       class="error-message"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Tipo de industria</label>
+                    <input type="text" th:field="*{tipoIndustria}"
+                           placeholder="Ej: Industrial">
+                </div>
+
+                <div class="form-group">
+                    <label>Email de contacto *</label>
+                    <input type="email" th:field="*{email}"
+                           placeholder="Ej: contacto@miempresa.com">
+                    <p th:if="${#fields.hasErrors('email')}"
+                       th:errors="*{email}"
+                       class="error-message"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Teléfono de contacto</label>
+                    <input type="text" th:field="*{telefono}"
+                           placeholder="Ej: 2920 12-3456">
+                </div>
+
+                <div class="form-group">
+                    <label>Dirección *</label>
+                    <input type="text" th:field="*{direccion}"
+                           placeholder="Ej: Calle 123 N° 456, Viedma">
+                </div>
+
+            </div>
+
+            <div class="form-group full-width">
+                <label>Descripción de bienes / servicios *</label>
+                <textarea th:field="*{descripcionBienServicio}"
+                          placeholder="Contá brevemente qué bienes producís o qué servicios ofrecés..."></textarea>
+                <p th:if="${#fields.hasErrors('descripcionBienServicio')}"
+                   th:errors="*{descripcionBienServicio}"
+                   class="error-message"></p>
+            </div>
+
+            <!-- error general -->
+            <p th:if="${error}" th:text="${error}" class="error-message"></p>
+
+            <div class="buttons">
+                <button class="btn-primary" type="submit">
+                    <i class="fa-regular fa-floppy-disk"></i>
+                    Guardar y enviar
+                </button>
+                <button class="btn-secondary" type="button"
+                        onclick="window.history.back()">
+                    Cancelar
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Usuarios - SGPIV</title>
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/gerente.css}">
+
+    <!-- Aca vinculé el diseño de los botones -->
+    <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<!-- CONTENIDO -->
+<div class="main-content">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div>
+            <h1>Gestión de Usuarios</h1>
+            <p>Validá y asigná roles a los usuarios registrados.</p>
+        </div>
+    </div>
+
+    <!-- TABLA PENDIENTES -->
+    <div th:replace="~{fragments/tablaUsuarios :: tablaUsuarios('Usuarios pendientes de validación', ${pendientes}, false)}"></div>
+
+    <div class="separador"></div>
+
+    <!-- TABLA TODOS -->
+    <div th:replace="~{fragments/tablaUsuarios :: tablaUsuarios('Todos los usuarios', ${todos}, true)}"></div>
+
+</div>
+
+</body>
+</html>

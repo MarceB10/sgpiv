@@ -1,0 +1,376 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+    background: #f4f6f9;
+    display: flex;
+    overflow-x: hidden;
+}
+
+.main-content {
+    margin-left: 250px;
+    width: calc(100vw - 250px);
+    padding: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-x: hidden;
+}
+
+/* HEADER */
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-text h1 {
+    font-size: 32px;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.header-text p {
+    color: #64748b;
+}
+
+.btn-volver {
+    background: #f1f5f9;
+    color: #0f172a;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.btn-volver:hover {
+    background: #e2e8f0;
+}
+
+/* SECCIONES */
+
+.seccion {
+    background: white;
+    border-radius: 18px;
+    padding: 28px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.seccion-titulo {
+    font-size: 18px;
+    color: #0f172a;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+/* GRID DE DATOS */
+
+.datos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.dato-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.dato-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.dato-label {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.dato-valor {
+    font-size: 15px;
+    color: #0f172a;
+    font-weight: 500;
+}
+
+/* ========================= */
+/* ACCIONES */
+/* ========================= */
+
+.acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* CADA BLOQUE */
+
+.accion-grupo {
+    background: white;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    width: 100%;
+    max-width: 100%;
+}
+.accion-titulo {
+    font-size: 16px;
+    color: #0f172a;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+/* FORMULARIOS */
+
+.accion-grupo form{
+
+    display:flex;
+    flex-direction:column;
+
+    gap:16px;
+
+}
+.accion-grupo p {
+    color: #475569;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+/* TEXTAREA */
+
+.input-motivo{
+
+    width:100%;
+    min-height:130px;
+
+    resize:vertical;
+
+    padding:18px;
+
+    border:2px solid #e2e8f0;
+
+    border-radius:14px;
+
+    font-size:15px;
+
+    line-height:1.6;
+
+    outline:none;
+
+    background:#f8fafc;
+
+    transition:0.2s;
+
+}
+
+.input-motivo:focus{
+
+    border-color:#2563eb;
+
+    background:white;
+
+}
+
+/* BOTONES BASE */
+
+.btn-aprobar,
+.btn-rechazar,
+.btn-modificar,
+.btn-adjudicar,
+.btn-cerrar{
+    border:none;
+    border-radius:14px;
+    padding:14px 22px;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.2s ease;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    width:fit-content;
+}
+
+/* HOVER GENERAL */
+
+.btn-aprobar:hover,
+.btn-rechazar:hover,
+.btn-modificar:hover,
+.btn-adjudicar:hover,
+.btn-cerrar:hover{
+
+    transform:translateY(-2px);
+
+}
+
+/* BOTONES */
+
+.btn-aprobar{
+
+    background:#10b981;
+    color:white;
+
+}
+
+.btn-aprobar:hover{
+
+    background:#059669;
+
+}
+
+.btn-rechazar{
+
+    background:#ef4444;
+    color:white;
+
+}
+
+.btn-rechazar:hover{
+
+    background:#dc2626;
+
+}
+
+.btn-modificar{
+
+    background:#8b5cf6;
+    color:white;
+
+}
+
+.btn-modificar:hover{
+
+    background:#7c3aed;
+
+}
+
+/*SERVICIOS REQUERIDOS*/
+
+.chips-container{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.chip-servicio{
+    background:#eef4ff;
+    color:#1e4fa1;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:0.9rem;
+    font-weight:500;
+}
+
+
+/*.btn-adjudicar{*/
+
+/*    background:#2563eb;*/
+/*    color:white;*/
+
+/*}*/
+
+/*.btn-adjudicar:hover{*/
+
+/*    background:#1d4ed8;*/
+
+/*}*/
+
+.btn-cerrar{
+
+    background:#e2e8f0;
+    color:#0f172a;
+
+}
+
+.btn-cerrar:hover{
+
+    background:#cbd5e1;
+
+}
+
+
+/*ADVERTENCIAS AL DESADJUDICAR*/
+.advertencia-lote {
+    background: #fff7ed;
+    border: 1.5px solid #fed7aa;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    font-size: 0.9rem;
+    color: #9a3412;
+    line-height: 1.5;
+}
+
+.advertencia-lote i {
+    color: #f97316;
+    margin-right: 6px;
+}
+
+
+/*!* LOTE *!*/
+
+/*.lote-badge{*/
+
+/*    background:#f0fdf4;*/
+
+/*    border:1px solid #10b981;*/
+
+/*    color:#065f46;*/
+
+/*    padding:16px 18px;*/
+
+/*    border-radius:14px;*/
+
+/*    font-size:15px;*/
+
+/*    font-weight:600;*/
+
+/*    margin-top:10px;*/
+
+/*}*/
+
+/*.lote-badge.sin-lote{*/
+
+/*    background:#fef9c3;*/
+
+/*    border-color:#f59e0b;*/
+
+/*    color:#854d0e;*/
+
+/*}*/
+
+/*!* BOTON DESHABILITADO *!*/
+
+/*.btn-aprobar.deshabilitado{*/
+
+/*    background:#94a3b8;*/
+
+/*    opacity:0.7;*/
+
+/*    cursor:not-allowed;*/
+
+/*}*/

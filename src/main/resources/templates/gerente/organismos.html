@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Organismos Públicos</title>
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+  <link rel="stylesheet" th:href="@{/css/empresas.css}">
+  <link rel="stylesheet" th:href="@{/css/components/buttons.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <h1>Organismos Públicos</h1>
+      <p>Gestioná y consultá los organismos públicos con acceso al sistema.</p>
+    </div>
+  </div>
+
+  <!-- CARDS -->
+  <div class="cards">
+
+    <div class="card">
+      <h3>Total organismos</h3>
+      <h2 th:text="${totalOrganismos}">0</h2>
+    </div>
+    <div class="card">
+      <h3>Activos</h3>
+      <h2 th:text="${activos}">0</h2>
+    </div>
+    <div class="card">
+      <h3>Inactivos</h3>
+      <h2 th:text="${inactivos}">0</h2>
+    </div>
+
+  </div>
+
+  <!-- TABLA -->
+  <div class="table-container">
+
+    <div class="table-top">
+      <h3>Lista de organismos</h3>
+      <div class="search-box">
+        <div class="search-form">
+          <input
+                  id="buscador"
+                  type="text"
+                  placeholder="Buscar organismo..."
+          />
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>Organismo</th>
+        <th>Tipo</th>
+        <th>Representante</th>
+        <th>CUIT</th>
+        <th>Email</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+      </thead>
+      <tbody id="tablaOrganismos">
+      <tr th:if="${#lists.isEmpty(organismos)}">
+        <td colspan="8" style="text-align:center; color:#94a3b8; padding:20px;">
+          No hay organismos públicos registrados
+        </td>
+      </tr>
+      <tr th:each="organismo : ${organismos}">
+        <td th:text="${organismo.id}"></td>
+        <td th:text="${organismo.nombreOrganismo}" style="font-weight:500;"></td>
+        <td th:text="${organismo.tipoOrganismo}"></td>
+        <td th:text="${organismo.nombreUsuario + ' ' + organismo.apellidoUsuario}"></td>
+        <td th:text="${organismo.cuitUsuario}"></td>
+        <td th:text="${organismo.emailUsuario}"></td>
+        <td>
+                    <span class="estado"
+                          th:classappend="${organismo.activo} ? ' radicada' : ' baja'"
+                          th:text="${organismo.activo} ? 'Activo' : 'Inactivo'">
+                    </span>
+        </td>
+        <td>
+          <a th:href="@{/gerente/organismos/{id}(id=${organismo.id})}"
+             class="btn btn-edit">
+            <i class="fa-solid fa-eye"></i> Ver detalle
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<script>
+  const buscador = document.getElementById("buscador");
+
+  buscador.addEventListener("input", function () {
+      let texto = this.value.toLowerCase().trim();
+      let filas = document.querySelectorAll("#tablaOrganismos tr");
+
+      filas.forEach(fila => {
+          if (!fila.cells || fila.cells.length < 2) return;
+          let nombreOrganismo = fila.cells[1].innerText.toLowerCase();
+          fila.style.display = nombreOrganismo.includes(texto) ? "" : "none";
+      });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detalle de Ocupación</title>
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+  <link rel="stylesheet" th:href="@{/css/detalleSolicitud.css}"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-text">
+      <h1>Detalle de Ocupación</h1>
+      <p>Información del lote adjudicado y opción de desadjudicación</p>
+    </div>
+    <button onclick="window.history.back()" class="btn-volver">← Volver</button>
+  </div>
+
+  <!-- ERROR -->
+  <div th:if="${error}" class="motivo-box">
+    <h3><i class="fa-solid fa-triangle-exclamation"></i> No se pudo desadjudicar</h3>
+    <p th:text="${error}"></p>
+  </div>
+
+  <!-- SECCION: DATOS DEL LOTE -->
+  <div class="seccion">
+    <h2 class="seccion-titulo">📍 Datos del lote</h2>
+    <div class="datos-grid">
+
+      <div class="dato-item">
+        <span class="dato-label">Lote</span>
+        <span class="dato-valor" th:text="'#' + ${ocupacion.idLote}">-</span>
+      </div>
+
+      <div class="dato-item">
+        <span class="dato-label">Ubicación</span>
+        <span class="dato-valor" th:text="${ocupacion.ubicacionLote}">-</span>
+      </div>
+
+      <div class="dato-item">
+        <span class="dato-label">Superficie</span>
+        <span class="dato-valor" th:text="${ocupacion.superficieLote} + ' m²'">-</span>
+      </div>
+
+      <div class="dato-item">
+        <span class="dato-label">Estado</span>
+        <span class="dato-valor" th:text="${ocupacion.fechaFin == null ? 'Activa' : 'Finalizada'}">-</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECCION: EMPRESA Y REPRESENTANTE -->
+  <div class="seccion">
+    <h2 class="seccion-titulo">🏢 Empresa y representante</h2>
+    <div class="datos-grid">
+
+      <div class="dato-item">
+        <span class="dato-label">Razón social</span>
+        <span class="dato-valor" th:text="${ocupacion.razonSocialEmpresa}">-</span>
+      </div>
+
+      <div class="dato-item">
+        <span class="dato-label">CUIT empresa</span>
+        <span class="dato-valor" th:text="${ocupacion.cuitEmpresa}">-</span>
+      </div>
+
+      <div class="dato-item">
+        <span class="dato-label">Representante</span>
+        <span class="dato-valor"
+              th:text="${ocupacion.nombreRepresentante + ' ' + ocupacion.apellidoRepresentante}">-</span>
+      </div>
+
+      <div class="dato-item">
+        <span class="dato-label">CUIT representante</span>
+        <span class="dato-valor" th:text="${ocupacion.cuitRepresentante}">-</span>
+      </div>
+
+      <div class="dato-item">
+        <span class="dato-label">Proyecto</span>
+        <span class="dato-valor" th:text="${ocupacion.tituloProyecto}">-</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECCION: FECHAS -->
+  <div class="seccion">
+    <h2 class="seccion-titulo">📅 Fechas de ocupación</h2>
+    <div class="datos-grid">
+
+      <div class="dato-item">
+        <span class="dato-label">Fecha inicio</span>
+        <span class="dato-valor" th:text="${ocupacion.fechaInicio}">-</span>
+      </div>
+
+      <div class="dato-item">
+        <span class="dato-label">Fecha fin</span>
+        <span class="dato-valor"
+              th:text="${ocupacion.fechaFin != null ? ocupacion.fechaFin : '-'}">-</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ACCIONES -->
+  <div class="acciones">
+
+    <button onclick="window.history.back()" class="btn-cerrar">
+      Cerrar
+    </button>
+
+    <!-- DESADJUDICAR solo si la ocupacion esta activa -->
+    <div th:if="${ocupacion.fechaFin == null}" class="accion-grupo">
+      <h3 class="accion-titulo">
+        <i class="fa-solid fa-ban"></i>
+        Desadjudicar lote
+      </h3>
+
+      <!-- ADVERTENCIA -->
+      <div class="advertencia-lote">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        Esta acción liberará el
+        <strong>Lote #<span th:text="${ocupacion.idLote}"></span></strong>
+        (<span th:text="${ocupacion.ubicacionLote}"></span>),
+        que quedará disponible nuevamente para ser adjudicado a otro proyecto.
+      </div>
+
+      <form th:action="@{/gerente/ocupaciones/{id}/desadjudicar(id=${ocupacion.id})}"
+            method="post"
+            onsubmit="return confirmarDesadjudicacion()">
+
+                <textarea name="motivo"
+                          placeholder="Motivo de la desadjudicación (obligatorio)"
+                          class="input-motivo"
+                          required></textarea>
+
+        <button type="submit" class="btn-rechazar">
+          <i class="fa-solid fa-ban"></i>
+          Confirmar desadjudicación
+        </button>
+
+      </form>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  function confirmarDesadjudicacion() {
+      return confirm(
+          "¿Confirmás la desadjudicación de este lote? " +
+          "El lote quedará disponible nuevamente y se finalizará la ocupación actual."
+      );
+  }
+</script>
+
+</body>
+</html>

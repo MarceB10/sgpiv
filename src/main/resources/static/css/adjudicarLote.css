@@ -1,0 +1,182 @@
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    color:#0f172a;
+}
+
+/* CONTENIDO PRINCIPAL */
+.main-content{
+    margin-left:280px;
+    padding:40px;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:40px;
+}
+
+.header h1{
+    margin:0;
+    font-size:42px;
+    font-weight:700;
+}
+
+.header p{
+    margin-top:10px;
+    color:#64748b;
+    font-size:16px;
+}
+
+/* BOTON VOLVER */
+.btn-volver{
+    background:#e2e8f0;
+    color:#0f172a;
+    text-decoration:none;
+    padding:12px 18px;
+    border-radius:12px;
+    font-weight:600;
+    transition:0.2s;
+}
+
+.btn-volver:hover{
+    background:#cbd5e1;
+}
+
+/* GRID */
+.lotes-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+    gap:24px;
+}
+
+/* CARD */
+.lote-card{
+    background:white;
+    border-radius:18px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.06);
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+}
+
+/* HEADER CARD */
+.lote-card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 24px;
+    border-bottom:1px solid #e2e8f0;
+}
+
+.estado{
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:700;
+    color:white;
+}
+
+.disponible{
+    background:#10b981;
+}
+
+.lote-id{
+    color:#64748b;
+    font-weight:600;
+}
+
+/* BODY CARD */
+.lote-card-body{
+    padding:24px;
+}
+
+.lote-card-body h3{
+    margin-top:0;
+    margin-bottom:24px;
+    font-size:24px;
+}
+
+.lote-datos{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.dato{
+    display:flex;
+    flex-direction:column;
+}
+
+.dato-label{
+    color:#64748b;
+    font-size:14px;
+    margin-bottom:4px;
+}
+
+.dato-valor{
+    font-size:17px;
+    font-weight:600;
+}
+
+/* FOOTER */
+.lote-card-footer{
+    margin-top:auto;
+    padding:24px;
+}
+
+/* BOTON ADJUDICAR */
+.btn-adjudicar{
+    display:block;
+    text-align:center;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+    padding:14px;
+    border-radius:12px;
+    font-weight:700;
+    transition:0.2s;
+}
+
+.btn-adjudicar:hover{
+    background:#1d4ed8;
+}
+
+/* EMPTY STATE */
+.empty-state{
+    background:white;
+    border-radius:18px;
+    padding:60px;
+    text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.06);
+}
+
+.empty-icon{
+    font-size:64px;
+    margin-bottom:20px;
+}
+
+/* iconos de servicios */
+.services-list{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+
+.service-badge{
+
+    background:#eef4ff;
+    color:#2f6df5;
+
+    padding:6px 10px;
+
+    border-radius:999px;
+
+    font-size:12px;
+    font-weight:600;
+
+    border:1px solid #cddcff;
+}

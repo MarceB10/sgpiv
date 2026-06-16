@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div th:fragment="tablaUsuarios(titulo, usuarios, mostrarBaja)">
+
+  <div class="table-container">
+
+    <!-- TOP BAR -->
+    <div class="table-top">
+      <h3 th:text="${titulo}"></h3>
+    </div>
+
+    <!-- TABLA -->
+    <table>
+      <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>CUIT</th>
+        <th>Email</th>
+        <th>Estado</th>
+        <th>Rol actual</th>
+        <th>Asignar Rol</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="u : ${usuarios}">
+        <td th:text="${u.nombre}"></td>
+        <td th:text="${u.apellido}"></td>
+        <td th:text="${u.cuit}"></td>
+        <td th:text="${u.email}"></td>
+        <td>
+                        <span th:text="${u.activo} ? 'Activo' : 'Inactivo'"
+                              th:classappend="${u.activo} ? ' estado-activo' : ' estado-inactivo'"
+                              class="estado">
+                        </span>
+        </td>
+        <td th:text="${u.roles[0].nombre}"></td>
+        <td>
+          <form th:action="@{/gerente/usuarios/{cuit}/rol(cuit=${u.cuit})}" method="post">
+            <select name="rol" class="select-rol">
+              <option value="ROL_GERENTE">Gerente</option>
+<!--              <option value="ROL_REPRESENTANTE_EMPRESA">Representante</option>-->
+<!--              <option value="ROL_PROVEEDOR">Proveedor</option>-->
+<!--              <option value="ROL_ORGANISMO_PUBLICO">Organismo Público</option>-->
+            </select>
+            <button type="submit" class="btn btn-edit">Asignar</button>
+          </form>
+
+          <form th:if="${mostrarBaja}"
+                th:action="@{/gerente/usuarios/{cuit}/baja(cuit=${u.cuit})}" method="post">
+            <button type="submit" class="btn btn-delete">Dar de baja</button>
+          </form>
+
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>
+
+</body>
+</html>

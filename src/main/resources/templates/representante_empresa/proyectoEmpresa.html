@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Proyecto</title>
+
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/proyectoEmpresa.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="content">
+
+    <div class="dashboard">
+
+        <div class="header">
+
+            <div class="header-top">
+                <h1 th:text="${proyecto.titulo}">
+                    Proyecto
+                </h1>
+
+                <a th:href="@{/empresas/proyectos}"
+                   class="btn-volver">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Volver a proyectos
+
+                </a>
+            </div>
+
+        </div>
+
+        <!-- tarjetas -->
+        <div class="cards">
+            <div class="card">
+                <h3>Estado</h3>
+                <p th:text="${proyecto.estadoProyecto}">
+                    ACTIVO
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>Inicio</h3>
+                <p th:text="${proyecto.fechaInicio}">
+                    2026-06-01
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>Personal</h3>
+                <p th:text="${proyecto.personalAOcupar}">
+                    12
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>Progreso</h3>
+                <p th:text="${#numbers.formatDecimal(proyecto.obtenerProgreso(),0,0)} + '%'">
+                    70%
+                </p>
+            </div>
+        </div>
+
+        <!-- tareas -->
+        <div class="tareas-card">
+
+            <h2>Tareas asignadas</h2>
+
+            <!-- SI HAY TAREAS -->
+            <div th:if="${proyecto.tareas != null and !proyecto.tareas.isEmpty()}">
+
+                <div class="tarea-item" th:each="tarea : ${proyecto.tareas}">
+
+                    <div class="tarea-info">
+                        <h4 th:text="${tarea.titulo}">
+                            Titulo tarea
+                        </h4>
+
+                        <p th:text="${tarea.descripcion}">
+                            descripcion
+                        </p>
+                    </div>
+
+                    <!--div>
+                        <span class="estado"
+                              th:classappend="${tarea.completa} ?
+                              ' completada' : ' pendiente'"
+
+                              th:text="${tarea.completa} ?
+                              'Completada' : 'Pendiente'">
+                        </span>
+                    </div-->
+                    <form th:action="@{/tareas/{id}/toggle(id=${tarea.id})}" method="post">
+                        <button type="submit" class="check-btn">
+                            <i th:if="${tarea.completa}"
+                               class="fa-solid fa-circle-check"></i>
+                            <i th:if="${!tarea.completa}"
+                               class="fa-regular fa-circle"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- SI NO HAY TAREAS -->
+            <div class="sin-tareas"
+                 th:if="${proyecto.tareas == null or proyecto.tareas.isEmpty()}">
+
+                <i class="fa-regular fa-clipboard"></i>
+
+                <p>
+                    Este proyecto aún no tiene tareas asignadas.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

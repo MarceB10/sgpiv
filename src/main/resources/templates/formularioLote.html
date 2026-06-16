@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nuevo Lote</title>
+  <link rel="stylesheet" th:href="@{/css/formularioLote.css}"/>
+  <link rel="stylesheet" th:href="@{/css/sidebar.css}"/>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<div class="main-content">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-text">
+      <h1>Nuevo Lote</h1>
+      <p>Completá los datos para registrar un nuevo lote</p>
+    </div>
+    <a th:href="@{/gerente/lotes}" class="btn-volver">← Volver al listado</a>
+  </div>
+
+  <!-- FORMULARIO -->
+  <div class="form-container">
+    <form th:action="@{/gerente/lotes/nuevo-lote}"
+          th:object="${loteRequestDTO}"
+          method="post"
+    >
+
+      <div class="form-grid">
+
+        <!-- Ubicación -->
+        <div class="form-group full-width">
+          <label for="ubicacion">Ubicación</label>
+          <input
+                  type="text"
+                  id="ubicacion"
+                  th:field="*{ubicacion}"
+                  placeholder="Ej: Sector A - Parcela 12"
+                  th:classappend="${#fields.hasErrors('ubicacion')} ? 'input-error' : ''"
+          />
+          <span class="error-msg" th:if="${#fields.hasErrors('ubicacion')}"
+                th:errors="*{ubicacion}"></span>
+        </div>
+
+        <!-- Superficie -->
+        <div class="form-group">
+          <label for="superficie">Superficie (m²)</label>
+          <input
+                  type="number"
+                  id="superficie"
+                  th:field="*{superficie}"
+                  placeholder="Ej: 150"
+                  step="0.01"
+                  min="0"
+                  th:classappend="${#fields.hasErrors('superficie')} ? 'input-error' : ''"
+          />
+          <span class="error-msg" th:if="${#fields.hasErrors('superficie')}"
+                th:errors="*{superficie}"></span>
+        </div>
+
+        <!-- Precio -->
+        <div class="form-group">
+          <label for="precio">Precio ($)</label>
+          <input
+                  type="number"
+                  id="precio"
+                  th:field="*{precio}"
+                  placeholder="Ej: 5000"
+                  step="0.01"
+                  min="0"
+                  th:classappend="${#fields.hasErrors('precio')} ? 'input-error' : ''"
+          />
+          <span class="error-msg" th:if="${#fields.hasErrors('precio')}"
+                th:errors="*{precio}"></span>
+        </div>
+
+
+        <!-- Fecha de Uso -->
+<!--        <div class="form-group">-->
+<!--          <label for="fechaUso">Fecha de Uso</label>-->
+<!--          <input-->
+<!--                  type="date"-->
+<!--                  id="fechaUso"-->
+<!--                  th:field="*{fechaUso}"-->
+<!--          />-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Fecha de Adjudicación &ndash;&gt;-->
+<!--        <div class="form-group">-->
+<!--          <label for="fechaAdjudicacion">Fecha de Adjudicación</label>-->
+<!--          <input-->
+<!--                  type="date"-->
+<!--                  id="fechaAdjudicacion"-->
+<!--                  th:field="*{fechaAdjudicacion}"-->
+<!--          />-->
+<!--        </div>-->
+
+        <!-- Servicios -->
+
+        <div class="form-group full-width">
+          <label>Servicios disponibles</label>
+
+          <div class="services-grid">
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="AGUA">
+              <i class="fa-solid fa-droplet"></i>
+              Agua
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="ELECTRICIDAD">
+              <i class="fa-solid fa-bolt"></i>
+              Electricidad
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="INTERNET">
+              <i class="fa-solid fa-wifi"></i>
+              Internet
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="GAS_NATURAL">
+              <i class="fa-solid fa-fire"></i>
+              Gas natural
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="CLOACAS">
+              <i class="fa-solid fa-toilet"></i>
+              Cloacas
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="DESAGUE_PLUVIAL">
+              <i class="fa-solid fa-cloud-rain"></i>
+              Desagüe pluvial
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="SEGURIDAD_24HS">
+              <i class="fa-solid fa-shield-halved"></i>
+              Seguridad 24hs
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="CALLES_PAVIMENTADAS">
+              <i class="fa-solid fa-road"></i>
+              Calles pavimentadas
+            </label>
+
+            <label class="service-item">
+              <input type="checkbox"
+                     th:field="*{servicios}"
+                     value="ALUMBRADO_PUBLICO">
+              <i class="fa-solid fa-lightbulb"></i>
+              Alumbrado público
+            </label>
+
+          </div>
+
+        </div>
+        <!-- Restricciones -->
+        <div class="form-group full-width">
+          <label for="restricciones">Restricciones</label>
+          <textarea
+                  id="restricciones"
+                  th:field="*{restricciones}"
+                  placeholder="Ingresá restricciones o aclaraciones (opcional)"
+                  rows="4"
+          ></textarea>
+        </div>
+
+      </div>
+
+      <!-- ACCIONES -->
+      <div class="form-actions">
+        <a th:href="@{/gerente/lotes}" class="btn-cancelar">Cancelar</a>
+        <button type="submit" class="btn-guardar">Guardar Lote</button>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+
+</body>
+</html>

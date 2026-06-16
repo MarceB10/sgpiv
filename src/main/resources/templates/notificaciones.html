@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notificaciones - SGPIV</title>
+
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/lote.css}">-->
+    <link rel="stylesheet" th:href="@{/css/notificaciones.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+
+
+    <!-- Sidebar existente -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+    <!-- Contenido principal -->
+
+    <div class="main-content">
+
+        <!-- Cabecera de la página -->
+        <div class="notif-page-header">
+            <div class="notif-page-header-left">
+                <h2 class="notif-page-title">
+                    <i class="fa-solid fa-bell"></i>
+                    Notificaciones
+                </h2>
+                <span class="notif-count-label"
+                      th:if="${notificaciones != null}"
+                      th:text="${#lists.size(notificaciones)} + ' en total'">
+                </span>
+            </div>
+            <div class="notif-page-header-right">
+                <form th:action="@{/notificaciones/marcar-leidas}" method="post" style="display:inline;">
+                    <button type="submit" class="btn-mark-all">
+                        <i class="fa-solid fa-check-double"></i>
+                        Marcar todas como leídas
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Barra de estadísticas -->
+        <div class="notif-stats-bar">
+            <div class="notif-stat">
+                <span class="notif-stat-num"
+                      th:text="${notificaciones != null ? #lists.size(notificaciones) : 0}">0</span>
+                <span class="notif-stat-label">Total</span>
+            </div>
+            <div class="notif-stat">
+                <span class="notif-stat-num blue"
+                      th:text="${notificacionesNoLeidas != null ? notificacionesNoLeidas : 0}">0</span>
+                <span class="notif-stat-label">Sin leer</span>
+            </div>
+            <div class="notif-stat">
+                <span class="notif-stat-num"
+                      th:text="${notificaciones != null ? #lists.size(notificaciones) - (notificacionesNoLeidas != null ? notificacionesNoLeidas : 0) : 0}">0</span>
+                <span class="notif-stat-label">Leídas</span>
+            </div>
+        </div>
+
+        <!-- Layout de dos paneles -->
+        <div class="notif-layout">
+
+            <!-- Panel izquierdo: lista -->
+            <div class="notif-list-panel">
+
+                <!-- Filtros -->
+                <div class="notif-filter-bar">
+                    <button class="notif-filter-pill active" onclick="filtrar('all', this)">Todas</button>
+                    <button class="notif-filter-pill" onclick="filtrar('noleida', this)">Sin leer</button>
+                    <button class="notif-filter-pill" onclick="filtrar('solicitud', this)">Solicitudes</button>
+                    <button class="notif-filter-pill" onclick="filtrar('aprobada', this)">Aprobadas</button>
+                    <button class="notif-filter-pill" onclick="filtrar('rechazada', this)">Rechazadas</button>
+                </div>
+
+                <!-- Lista de notificaciones -->
+                <div class="notif-list" id="notif-list">
+
+                    <!-- Estado vacío -->
+                    <div th:if="${#lists.isEmpty(notificaciones)}" class="notif-empty">
+                        <i class="fa-regular fa-bell-slash"></i>
+                        <p>No tenés notificaciones.</p>
+                    </div>
+
+                    <!-- Ítem por cada notificación -->
+                    <div th:each="notif : ${notificaciones}"
+                         th:data-id="${notif.id}"
+                         th:data-mensaje="${notif.mensaje}"
+                         th:data-fecha="${#temporals.format(notif.fecha, 'dd/MM/yyyy HH:mm')}"
+                         th:data-leida="${notif.leida}"
+                         th:data-tipo="${
+                             notif.mensaje.contains('aprobada') ? 'aprobada' :
+                             notif.mensaje.contains('rechazada') ? 'rechazada' :
+                             notif.mensaje.contains('desadjudicado') ? 'rechazada' :
+                             notif.mensaje.contains('modificaciones') ? 'modificacion' :
+                             'solicitud'
+                         }"
+                         th:classappend="${!notif.leida} ? 'unread'"
+                         class="notif-item"
+                         onclick="seleccionarNotif(this)">
+
+                        <!-- Punto de no leída -->
+                        <div class="notif-dot-wrapper">
+                            <span th:if="${!notif.leida}" class="notif-dot"></span>
+                        </div>
+
+                        <!-- Ícono por tipo -->
+                        <div class="notif-item-icon"
+                             th:classappend="${
+                                 notif.mensaje.contains('aprobada') ? 'ic-ok' :
+                                 notif.mensaje.contains('rechazada') ? 'ic-rej' :
+                                 notif.mensaje.contains('desadjudicado') ? 'ic-rej' :
+                                 notif.mensaje.contains('modificaciones') ? 'ic-mod' :
+                                 'ic-new'
+                             }">
+                            <i th:class="${
+                                notif.mensaje.contains('aprobada') ? 'fa-solid fa-circle-check' :
+                                notif.mensaje.contains('rechazada') ? 'fa-solid fa-circle-xmark' :
+                                notif.mensaje.contains('modificaciones') ? 'fa-solid fa-pen-to-square' :
+                                'fa-solid fa-file-circle-plus'
+                            }"></i>
+                        </div>
+
+                        <!-- Contenido -->
+                        <div class="notif-item-body">
+                            <div class="notif-item-sender">Sistema · SGPIV</div>
+                            <div class="notif-item-msg" th:text="${notif.mensaje}"></div>
+                            <div class="notif-item-meta">
+                                <span class="notif-type-badge"
+                                      th:classappend="${
+                                          notif.mensaje.contains('aprobada') ? 'badge-ok' :
+                                          notif.mensaje.contains('rechazada') ? 'badge-rej' :
+                                          notif.mensaje.contains('desadjudicado') ? 'badge-rej' :
+                                          notif.mensaje.contains('modificaciones') ? 'badge-mod' :
+                                          'badge-new'
+                                      }"
+                                      th:text="${
+                                          notif.mensaje.contains('aprobada') ? 'Aprobada' :
+                                          notif.mensaje.contains('rechazada') ? 'Rechazada' :
+                                          notif.mensaje.contains('desadjudicado') ? 'Desadjudicación' :
+                                          notif.mensaje.contains('modificaciones') ? 'Modificación' :
+                                          'Nueva solicitud'
+                                      }">
+                                </span>
+                                <span class="notif-item-time"
+                                      th:text="${#temporals.format(notif.fecha, 'dd/MM/yyyy HH:mm')}">
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Acciones hover -->
+                        <div class="notif-item-actions">
+                            <form th:if="${!notif.leida}"
+                                  th:action="@{/notificaciones/marcar-leida/{id}(id=${notif.id})}"
+                                  method="post" style="display:inline;"
+                                  onclick="event.stopPropagation()">
+                                <button type="submit" class="notif-act-btn" title="Marcar como leída">
+                                    <i class="fa-regular fa-envelope-open"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+                    <!-- fin th:each -->
+
+                </div>
+                <!-- fin notif-list -->
+
+            </div>
+            <!-- fin notif-list-panel -->
+
+            <!-- Panel derecho: detalle -->
+            <div class="notif-detail-panel" id="detail-panel">
+                <div class="notif-detail-empty" id="detail-empty">
+                    <i class="fa-regular fa-envelope-open"></i>
+                    <p>Seleccioná una notificación para ver el detalle</p>
+                </div>
+                <div class="notif-detail-content" id="detail-content" style="display:none;">
+                    <div class="detail-icon-wrap" id="detail-icon"></div>
+                    <span class="notif-type-badge" id="detail-badge" style="display:inline-block; margin-bottom: 14px;"></span>
+                    <p class="detail-mensaje" id="detail-mensaje"></p>
+                    <hr class="detail-divider">
+                    <div class="detail-field">
+                        <div class="detail-label">Fecha y hora</div>
+                        <div class="detail-value" id="detail-fecha"></div>
+                    </div>
+                    <div class="detail-field">
+                        <div class="detail-label">Estado</div>
+                        <div class="detail-value blue" id="detail-estado"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- fin notif-layout -->
+
+    </div>
+    <!-- fin notif-page-wrapper -->
+
+
+<script>
+    /* ── Filtrado ── */
+    function filtrar(tipo, btn) {
+        document.querySelectorAll('.notif-filter-pill').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+
+        document.querySelectorAll('.notif-item').forEach(item => {
+            const leida  = item.dataset.leida === 'true';
+            const tipoDato = item.dataset.tipo;
+
+            let visible = true;
+            if (tipo === 'noleida')   visible = !leida;
+            else if (tipo !== 'all') visible = tipoDato === tipo;
+
+            item.style.display = visible ? 'flex' : 'none';
+        });
+    }
+
+    /* ── Selección y panel de detalle ── */
+    const tipoConfig = {
+        solicitud:   { iconClass: 'ic-new', icon: 'fa-solid fa-file-circle-plus', badgeClass: 'badge-new', label: 'Nueva solicitud' },
+        aprobada:    { iconClass: 'ic-ok',  icon: 'fa-solid fa-circle-check',     badgeClass: 'badge-ok',  label: 'Aprobada' },
+        rechazada:   { iconClass: 'ic-rej', icon: 'fa-solid fa-circle-xmark',     badgeClass: 'badge-rej', label: 'Rechazada' },
+        modificacion:{ iconClass: 'ic-mod', icon: 'fa-solid fa-pen-to-square',    badgeClass: 'badge-mod', label: 'Modificación' },
+    };
+
+    function seleccionarNotif(el) {
+        document.querySelectorAll('.notif-item').forEach(i => i.classList.remove('sel'));
+        el.classList.add('sel');
+
+        const mensaje = el.dataset.mensaje;
+        const fecha   = el.dataset.fecha;
+        const leida   = el.dataset.leida === 'true';
+        const tipo    = el.dataset.tipo || 'solicitud';
+        const cfg     = tipoConfig[tipo] || tipoConfig.solicitud;
+
+        document.getElementById('detail-empty').style.display   = 'none';
+        document.getElementById('detail-content').style.display = 'block';
+
+        const iconWrap = document.getElementById('detail-icon');
+        iconWrap.className = 'detail-icon-wrap ' + cfg.iconClass;
+        iconWrap.innerHTML = `<i class="${cfg.icon}"></i>`;
+
+        const badge = document.getElementById('detail-badge');
+        badge.className = 'notif-type-badge ' + cfg.badgeClass;
+        badge.textContent = cfg.label;
+
+        document.getElementById('detail-mensaje').textContent = mensaje;
+        document.getElementById('detail-fecha').textContent   = fecha;
+        document.getElementById('detail-estado').textContent  = leida ? 'Leída' : 'Sin leer';
+    }
+</script>
+
+</body>
+</html>

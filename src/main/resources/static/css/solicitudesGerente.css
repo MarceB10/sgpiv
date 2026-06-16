@@ -1,0 +1,174 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+    background: #f4f6f9;
+    display: flex;
+}
+
+/* MAIN */
+.main-content {
+    margin-left: 250px;
+    width: 100%;
+    padding: 35px;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header-text h1 {
+    font-size: 32px;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.header-text p {
+    color: #64748b;
+}
+
+/* TABLA CONTAINER */
+.table-container {
+    background: white;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    margin-bottom: 40px;
+    max-height: 400px;       /* altura máxima visible */
+    overflow-y: auto;        /* scroll vertical interno por si entran muchas solicitudes*/
+}
+
+/* TOP TABLA */
+.table-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.table-top h3 {
+    color: #0f172a;
+    font-size: 18px;
+}
+
+/* SEARCH & FILTROS */
+.search-form {
+    display: flex;
+    gap: 12px;
+}
+
+.search-form input,
+.search-form select {
+    padding: 12px 14px;
+    border: none;
+    border-radius: 12px;
+    background: #f1f5f9;
+    outline: none;
+    font-size: 14px;
+    color: #0f172a;
+}
+
+.search-form input {
+    width: 260px;
+}
+
+.search-form input:focus,
+.search-form select:focus {
+    border: 2px solid #2563eb;
+}
+
+.search-button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-button:hover {
+    background: #1d4ed8;
+}
+
+/* TABLA STYLES */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    padding: 15px;
+    color: #64748b;
+    font-size: 14px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+td {
+    padding: 18px 15px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #0f172a;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+tr:hover {
+    background: #f8fafc;
+}
+
+/* ESTADOS (Píldoras con la misma onda que Lotes) */
+.estado {
+    padding: 7px 14px;
+    border-radius: 20px;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.pendiente {
+    background: #f59e0b; /* Mismo tono naranja que "Reservado" */
+}
+
+.aprobada {
+    background: #10b981; /* Mismo tono verde que "Disponible" */
+}
+
+.rechazada {
+    background: #ef4444; /* Mismo tono rojo que "En Uso" */
+}
+
+/* BOTONES */
+.btn {
+    border: none;
+    padding: 9px 14px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    font-size: 13px;
+    cursor: pointer;
+    margin-right: 6px;
+    transition: background 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-edit {
+    background: #2563eb;
+}
+
+.btn-edit:hover {
+    background: #1d4ed8;
+}

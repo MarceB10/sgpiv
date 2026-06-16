@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<body>
+
+<div th:fragment="tablaOcupaciones">
+
+  <div th:if="${ocupaciones == null or ocupaciones.isEmpty()}" class="alert alert-warning">
+    No hay ocupaciones registradas.
+  </div>
+
+  <div th:if="${ocupaciones != null and !ocupaciones.isEmpty()}">
+    <table>
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>Lote</th>
+        <th>Ubicación</th>
+        <th>Superficie (m²)</th>
+        <th>Empresa</th>
+        <th>CUIT Empresa</th>
+        <th>Representante</th>
+        <th>CUIT Representante</th>
+        <th>Fecha Inicio</th>
+        <th>Fecha Fin</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="ocupacion : ${ocupaciones}">
+        <td th:text="${ocupacion.id}">-</td>
+        <td th:text="'#' + ${ocupacion.idLote}">-</td>
+        <td th:text="${ocupacion.ubicacionLote}">-</td>
+        <td th:text="${ocupacion.superficieLote} + ' m²'">-</td>
+        <td th:text="${ocupacion.razonSocialEmpresa}">-</td>
+        <td th:text="${ocupacion.cuitEmpresa}">-</td>
+        <td th:text="${ocupacion.nombreRepresentante} + ' ' + ${ocupacion.apellidoRepresentante}">-</td>
+        <td th:text="${ocupacion.cuitRepresentante}">-</td>
+        <td th:text="${ocupacion.fechaInicio}">-</td>
+        <td th:text="${ocupacion.fechaFin != null ? ocupacion.fechaFin : '-'}">-</td>
+        <td>
+                    <span th:text="${ocupacion.activa ? 'Activa' : 'Finalizada'}"
+                          th:classappend="${ocupacion.activa} ? 'estado disponible' : 'estado en-uso'">
+                    </span>
+        </td>
+
+        <td>
+          <a class="btn btn-edit"
+             th:href="@{/gerente/ocupaciones/{id}/detalle(id=${ocupacion.id})}">
+            <i class="fa-regular fa-eye"></i> Ver detalle
+          </a>
+        </td>
+
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>
