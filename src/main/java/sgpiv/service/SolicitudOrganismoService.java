@@ -37,8 +37,7 @@ public class SolicitudOrganismoService {
     public static final String NOTIFICACION_NUEVA_SOLICITUD_ORG_PUBLICO = "Nueva Solicitud de Org Publico de: ";
 
 
-
-
+    
     @Transactional
     public void guardar(SolicitudOrganismoRequestDTO dto,
                         MultipartFile archivo,

@@ -19,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OcupacionLoteService {
 
+
     private final OcupacionLoteRepository ocupacionLoteRepository;
     private final RepresentanteRepository representanteRepository;
     private final LoteRepository loteRepository;
@@ -28,6 +29,9 @@ public class OcupacionLoteService {
     private final NotificacionService notificacionService;
 
     private final ProyectoService proyectoService;
+
+    public static final String NOTIFICACION_LOTE_ADJUDICADO = "Se te ha adjudicado un Lote: \n" +
+            "Ubicacion: ";
 
 
     public List<OcupacionLoteResponseDTO> obtenerTodas() {
@@ -103,8 +107,8 @@ public class OcupacionLoteService {
         loteRepository.save(lote);
 
         notificacionService.crearNotificacion(
-                "Se te ha adjudicado un Lote: \n" +
-                        "Ubicacion: " + lote.getUbicacion(),
+                 NOTIFICACION_LOTE_ADJUDICADO +
+                         lote.getUbicacion(),
                 proyecto.getRepresentanteEmpresa().getUsuario()
         );
     }
@@ -174,6 +178,11 @@ public class OcupacionLoteService {
 //                    rep.getUsuario().desactivar();
 //                    representanteRepository.save(rep);
 //                });
+
+        notificacionService.crearNotificacion(
+                "Se te ha desadjudicado el lote del parque\n" +
+                        "Motivo: " + motivo + ".\n Lote" + lote.getUbicacion() + " liberado.",
+                ocupacionActiva.getProyecto().getRepresentanteEmpresa().getUsuario());
     }
 
     public boolean existeOcupacion(Empresa empresa){

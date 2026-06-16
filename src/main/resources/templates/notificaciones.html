@@ -94,6 +94,7 @@
                          th:data-tipo="${
                              notif.mensaje.contains('aprobada') ? 'aprobada' :
                              notif.mensaje.contains('rechazada') ? 'rechazada' :
+                             notif.mensaje.contains('desadjudicado') ? 'rechazada' :
                              notif.mensaje.contains('modificaciones') ? 'modificacion' :
                              'solicitud'
                          }"
@@ -111,6 +112,7 @@
                              th:classappend="${
                                  notif.mensaje.contains('aprobada') ? 'ic-ok' :
                                  notif.mensaje.contains('rechazada') ? 'ic-rej' :
+                                 notif.mensaje.contains('desadjudicado') ? 'ic-rej' :
                                  notif.mensaje.contains('modificaciones') ? 'ic-mod' :
                                  'ic-new'
                              }">
@@ -131,12 +133,14 @@
                                       th:classappend="${
                                           notif.mensaje.contains('aprobada') ? 'badge-ok' :
                                           notif.mensaje.contains('rechazada') ? 'badge-rej' :
+                                          notif.mensaje.contains('desadjudicado') ? 'badge-rej' :
                                           notif.mensaje.contains('modificaciones') ? 'badge-mod' :
                                           'badge-new'
                                       }"
                                       th:text="${
                                           notif.mensaje.contains('aprobada') ? 'Aprobada' :
                                           notif.mensaje.contains('rechazada') ? 'Rechazada' :
+                                          notif.mensaje.contains('desadjudicado') ? 'Desadjudicación' :
                                           notif.mensaje.contains('modificaciones') ? 'Modificación' :
                                           'Nueva solicitud'
                                       }">

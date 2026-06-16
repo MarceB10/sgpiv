@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SolicitudService {
 
+
     private final NotificacionService notificacionService;
 
     private final SolicitudRadicacionRepository solicitudRadicacionRepository;
@@ -46,10 +47,14 @@ public class SolicitudService {
     public final String NOTIFICACION_SOLICITUD_RADICACION_RECHAZADA = "Tu solicitud de radicación fue rechazada. Motivo: ";
     public final String NOTIFICACION_SOLICITUD_REQUIERE_MODIFICACION = "Tu solicitud requiere modificaciones. Motivo: ";
     public final String NOTIFICACION_SOLICITUD_PROYECTO_RECHAZADA = "Tu Solicitud De Proyecto fue Rechazada";
-
+    public final String NOTIFICACION_SOLICITUD_PROYECTO_ENVIADA = "Tu solicitud De Proyecto fue enviada para la evaluacion de la gerencia del parque industrial";
 
 
     public void enviarSolicitudInicial(SolicitudRequestDTO dto, String cuitUsuario) {
+
+        if(solicitudRadicacionRepository.existsByCuitEmpresa(dto.getCuitEmpresa())){
+            throw new RuntimeException("Ya existe una empresa con este cuit");
+        }
 
         Usuario usuario = usuarioRepository.findByCuit(cuitUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -119,6 +124,8 @@ public class SolicitudService {
         );
 
         solicitudRadicacionRepository.save(solicitud);
+
+        System.out.println("nueva solicitud de radicacion creada");
     }
 
     @Transactional
