@@ -180,7 +180,8 @@ public class OcupacionLoteService {
 //                });
 
         notificacionService.crearNotificacion(
-                "Tu empresa fue dada de baja del parque. Lote liberado.",
+                "Se te ha desadjudicado el lote del parque\n" +
+                        "Motivo: " + motivo + ".\n Lote" + lote.getUbicacion() + " liberado.",
                 ocupacionActiva.getProyecto().getRepresentanteEmpresa().getUsuario());
     }
 
