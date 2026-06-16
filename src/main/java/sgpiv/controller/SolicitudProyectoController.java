@@ -23,7 +23,7 @@ public class SolicitudProyectoController {
     @GetMapping
     public String formulario(HttpSession session, Model model) {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         // Verificar que tenga una solicitud de radicacion aprobada
         SolicitudResponseDTO solicitudRadicacion = solicitudService

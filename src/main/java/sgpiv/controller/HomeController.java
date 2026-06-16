@@ -72,7 +72,7 @@ public class HomeController {
     @GetMapping("/miSolicitudOrganismo")
     public String miSolicitudOrganismo(HttpSession session, Model model) {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         SolicitudOrganismoPublico solicitud = solicitudOrganismoPublicoRepository
                 .findByUsuarioId(usuario.getId())

@@ -24,7 +24,7 @@ public class OrganismoPublicoController {
     @GetMapping
     public String listar(Model model, HttpSession session) {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         List<OrganismoPublicoResponseDTO> organismos = organismoService.listarTodos();
 
