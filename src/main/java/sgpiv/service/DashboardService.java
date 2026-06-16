@@ -74,6 +74,7 @@ public class DashboardService {
         Map<String, Long> rubros =
                 proyectoRepository.findAll()
                         .stream()
+                        .filter(p -> p.getEmpresa().getEstadoEmpresa() != EstadoEmpresa.BAJA)
                         .filter(p -> p.getRubro() != null)
                         .collect(
                                 Collectors.groupingBy(
@@ -207,7 +208,7 @@ public class DashboardService {
 
         return proyectoRepository.findAll()
                 .stream()
-                .filter(p -> p.getPersonalAOcupar() != null)
+                .filter(p -> p.getPersonalAOcupar() != null && p.getEmpresa().getEstadoEmpresa() != EstadoEmpresa.BAJA)
                 .mapToInt(Proyecto::getPersonalAOcupar)
                 .sum();
     }
@@ -216,6 +217,7 @@ public class DashboardService {
 
         return proyectoRepository.findAll()
                 .stream()
+                .filter(p -> p.getEmpresa().getEstadoEmpresa() != EstadoEmpresa.BAJA)
                 .flatMap(p -> p.getServiciosRequeridos().stream())
                 .collect(Collectors.groupingBy(
                         ServicioLote::name,
@@ -228,6 +230,7 @@ public class DashboardService {
 
         return proyectoRepository.findAll()
                 .stream()
+                .filter(p -> p.getEmpresa().getEstadoEmpresa() != EstadoEmpresa.BAJA)
                 .map(Proyecto::getInversionEstimada)
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
@@ -237,6 +240,7 @@ public class DashboardService {
 
         return proyectoRepository.findAll()
                 .stream()
+                .filter(p -> p.getEmpresa().getEstadoEmpresa() != EstadoEmpresa.BAJA)
                 .filter(p -> p.getRubro() != null)
                 .collect(Collectors.groupingBy(
 

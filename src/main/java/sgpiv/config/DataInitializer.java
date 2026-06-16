@@ -124,6 +124,9 @@ public class DataInitializer implements CommandLineRunner {
             gerente.getRoles().add(rolGerente);
 
             usuarioRepository.save(gerente);
+
+            usuarioService.asignarRol(gerente.getCuit(), NombreRol.ROL_GERENTE);
+
         }
     }
     private void precargarUsuariosNulos() {

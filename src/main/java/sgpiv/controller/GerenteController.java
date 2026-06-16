@@ -75,7 +75,7 @@ public class GerenteController {
                 (UsuarioResponseDTO) session.getAttribute("usuario");
 
         if (usuario == null){
-            return "redirect:/login";
+            return "redirect:/";
         }
 
         model.addAttribute("usuario", usuario);
@@ -145,7 +145,7 @@ public class GerenteController {
     @GetMapping("/gerente/solicitudes")
     public String listarSolicitudes(Model model, HttpSession session) {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         List<SolicitudRadicacion> solicitudesIniciales = solicitudService.listarSolicitudesInicialesPendientes();
         model.addAttribute("solicitudesIniciales", solicitudesIniciales);
@@ -157,7 +157,7 @@ public class GerenteController {
     @PostMapping("/gerente/solicitudes/{id}/aceptar")
     public String aceptarSolicitud(@PathVariable Long id, HttpSession session) {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         try {
             solicitudService.aceptarSolicitudInicial(id);
@@ -172,7 +172,7 @@ public class GerenteController {
                                     @RequestParam String motivo,
                                     HttpSession session) {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         try {
             solicitudService.rechazarSolicitudInicial(id, motivo);
@@ -188,7 +188,7 @@ public class GerenteController {
                                   Model model,
                                   HttpSession session) {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         model.addAttribute("usuario", usuario);
         model.addAttribute("proyecto", solicitudService.obtenerProyectoPorId(id));
@@ -226,7 +226,7 @@ public class GerenteController {
     @GetMapping("/gerente/solicitudesOrganismo")
     public String listarSolicitudesOrganismo(Model model, HttpSession session) {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         model.addAttribute("solicitudes", solicitudOrganismoService.listarPendientes());
         model.addAttribute("usuario", usuario);
@@ -239,7 +239,7 @@ public class GerenteController {
                                             Model model,
                                             HttpSession session) {
         UsuarioResponseDTO usuario = (UsuarioResponseDTO) session.getAttribute("usuario");
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null) return "redirect:/";
 
         model.addAttribute("solicitud", solicitudOrganismoService.obtenerSolicitudPorId(id));
         model.addAttribute("usuario", usuario);

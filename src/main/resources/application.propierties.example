@@ -1,5 +1,7 @@
 spring.application.name=sgpiv
 
+#http://localhost:8080/h2-console <-- link bd
+
 #--- H2 (desarrollo) ----
 # Esto es clave: evita que H2 cierre la BD antes de que la uses-----------
 spring.datasource.url=jdbc:h2:mem:sgpiv;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
@@ -20,24 +22,3 @@ spring.jpa.hibernate.ddl-auto=create-drop
 #spring.jpa.database-platform=org.hibernate.dialect.MySQLDialect
 
 server.port=8080
-
-# ejemplo de boton registrar mi empresa
-#/* TIPO DE BOTONES (general) */
-#.btn{
-#    border:none;
-#    padding:10px 14px;
-#    border-radius:10px;
-#    color:white;
-#    font-weight:bold;
-#    cursor:pointer;
-#    margin-right:8px;
-#    transition:0.2s;
-#}
-
-#/* BOTON Registrar mi empresa */
-#.btn-regMiEmpresa{
-#    background:#2563eb;
-#}
-
-database usada
-spring.datasource.url=jdbc:h2:file:./data/sgpiv2
