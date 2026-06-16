@@ -63,6 +63,12 @@
 
     </div>
 
+    <!-- ALERTA DE ERROR -->
+    <div class="motivo-box" th:if="${error}">
+        <h3><i class="fa-solid fa-triangle-exclamation"></i> Error al enviar</h3>
+        <p th:text="${error}"></p>
+    </div>
+
     <!-- FORM -->
     <div class="form-card">
 

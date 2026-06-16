@@ -52,6 +52,10 @@ public class SolicitudService {
 
     public void enviarSolicitudInicial(SolicitudRequestDTO dto, String cuitUsuario) {
 
+        if(solicitudRadicacionRepository.existsByCuitEmpresa(dto.getCuitEmpresa())){
+            throw new RuntimeException("Ya existe una empresa con este cuit");
+        }
+
         Usuario usuario = usuarioRepository.findByCuit(cuitUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -120,6 +124,8 @@ public class SolicitudService {
         );
 
         solicitudRadicacionRepository.save(solicitud);
+
+        System.out.println("nueva solicitud de radicacion creada");
     }
 
     @Transactional
